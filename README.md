@@ -118,11 +118,11 @@ Install all dependencies at once on OSX:
 
 Clone recursively to pull-in needed submodule(s):
 
-`$ git clone https://github.com/ElSamaritan/galaxia
+`$ git clone https://github.com/ElSamaritan/galaxia`
 
 If you already have a repo cloned, initialize and update:
 
-`$ cd galaxia && git checkout release-v0.2.0`    
+`$ cd galaxia && git checkout release-v0.3.0`    
 `$ git submodule init && git submodule update`    
 
 ### Build instructions
