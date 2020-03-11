@@ -36,7 +36,7 @@
 #include "span.h"
 
 //! If the expression is less than 0, return the current ZMQ error code.
-#define GALAXIA_ZMQ_CHECK(...)                       \
+#define MORELO_ZMQ_CHECK(...)                       \
     do                                             \
     {                                              \
         if (( __VA_ARGS__ ) < 0)                   \
@@ -44,15 +44,15 @@
     } while (0)
 
 //! Print a message followed by the current ZMQ error message. 
-#define GALAXIA_LOG_ZMQ_ERROR(...)                                                \
+#define MORELO_LOG_ZMQ_ERROR(...)                                                \
     do                                                                          \
     {                                                                           \
         MERROR( __VA_ARGS__ << ": " << ::net::zmq::get_error_code().message()); \
     } while (0)
 
 //! Throw an exception with a custom `msg`, current ZMQ error code, filename, and line number.
-#define GALAXIA_ZMQ_THROW(msg)                         \
-    GALAXIA_THROW( ::net::zmq::get_error_code(), msg )
+#define MORELO_ZMQ_THROW(msg)                         \
+    MORELO_THROW( ::net::zmq::get_error_code(), msg )
 
 namespace net
 {

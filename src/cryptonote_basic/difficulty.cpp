@@ -41,8 +41,8 @@
 #include "cryptonote_config.h"
 #include "difficulty.h"
 
-#undef GALAXIA_DEFAULT_LOG_CATEGORY
-#define GALAXIA_DEFAULT_LOG_CATEGORY "difficulty"
+#undef MORELO_DEFAULT_LOG_CATEGORY
+#define MORELO_DEFAULT_LOG_CATEGORY "difficulty"
 
 namespace cryptonote {
 

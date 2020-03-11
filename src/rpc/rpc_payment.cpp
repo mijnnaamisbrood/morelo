@@ -43,8 +43,8 @@
 #include "core_rpc_server_error_codes.h"
 #include "rpc_payment.h"
 
-#undef GALAXIA_DEFAULT_LOG_CATEGORY
-#define GALAXIA_DEFAULT_LOG_CATEGORY "daemon.rpc.payment"
+#undef MORELO_DEFAULT_LOG_CATEGORY
+#define MORELO_DEFAULT_LOG_CATEGORY "daemon.rpc.payment"
 
 #define STALE_THRESHOLD 15 /* seconds */
 

@@ -39,8 +39,8 @@
 
 using namespace epee;
 
-#undef GALAXIA_DEFAULT_LOG_CATEGORY
-#define GALAXIA_DEFAULT_LOG_CATEGORY "checkpoints"
+#undef MORELO_DEFAULT_LOG_CATEGORY
+#define MORELO_DEFAULT_LOG_CATEGORY "checkpoints"
 
 namespace cryptonote
 {
@@ -218,8 +218,8 @@ namespace cryptonote
 
     // All four ArQ-Net domains have DNSSEC on and valid
     static const std::vector<std::string> dns_urls = {
-        "checkpoints.galaxia-project.rf.gd",
-        "galaxia-project.go.ro/checkpoints"
+        "checkpoints.morelo-project.rf.gd",
+        "morelo-project.go.ro/checkpoints"
 	};
 
     static const std::vector<std::string> testnet_dns_urls = {

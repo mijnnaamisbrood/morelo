@@ -35,8 +35,8 @@
 #include "net/http_client.h"
 #include "download.h"
 
-#undef GALAXIA_DEFAULT_LOG_CATEGORY
-#define GALAXIA_DEFAULT_LOG_CATEGORY "net.dl"
+#undef MORELO_DEFAULT_LOG_CATEGORY
+#define MORELO_DEFAULT_LOG_CATEGORY "net.dl"
 
 namespace tools
 {

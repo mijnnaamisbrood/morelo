@@ -31,8 +31,8 @@
 #include "misc_os_dependent.h"
 #include "perf_timer.h"
 
-#undef GALAXIA_DEFAULT_LOG_CATEGORY
-#define GALAXIA_DEFAULT_LOG_CATEGORY "perf"
+#undef MORELO_DEFAULT_LOG_CATEGORY
+#define MORELO_DEFAULT_LOG_CATEGORY "perf"
 
 #define PERF_LOG_ALWAYS(level, cat, x) \
   el::base::Writer(level, __FILE__, __LINE__, ELPP_FUNC, el::base::DispatchAction::FileOnlyLog).construct(cat) << x

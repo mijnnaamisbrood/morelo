@@ -177,7 +177,7 @@ namespace daemonizer
     }
     else // interactive
     {
-      //LOG_PRINT_L0("Galaxia '" << GALAXIA_RELEASE_NAME << "' (v" << GALAXIA_VERSION_FULL);
+      //LOG_PRINT_L0("Morelo '" << MORELO_RELEASE_NAME << "' (v" << MORELO_VERSION_FULL);
       return executor.run_interactive(vm);
     }
 

@@ -28,13 +28,13 @@
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 cmake_minimum_required (VERSION 3.5.0)
-project (galaxia CXX)
+project (morelo CXX)
 
 file(GLOB CRYPTONOTE_PROTOCOL *)
 source_group(cryptonote_protocol FILES ${CRYPTONOTE_PROTOCOL})
 
-#galaxia_private_headers(cryptonote_protocol ${CRYPTONOTE_PROTOCOL})
-galaxia_add_library(cryptonote_protocol ${CRYPTONOTE_PROTOCOL})
+#morelo_private_headers(cryptonote_protocol ${CRYPTONOTE_PROTOCOL})
+morelo_add_library(cryptonote_protocol ${CRYPTONOTE_PROTOCOL})
 target_link_libraries(cryptonote_protocol
   PUBLIC
     p2p

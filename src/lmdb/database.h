@@ -119,18 +119,18 @@ namespace lmdb
                 if (!txn)
                     return txn.error();
 
-                GALAXIA_PRECOND(*txn != nullptr);
+                MORELO_PRECOND(*txn != nullptr);
                 const auto wrote = f(*(*txn));
                 if (wrote)
                 {
-                    GALAXIA_CHECK(commit(std::move(*txn)));
+                    MORELO_CHECK(commit(std::move(*txn)));
                     return wrote;
                 }
                 if (wrote != lmdb::error(MDB_MAP_FULL))
                     return wrote;
 
                 txn->reset();
-                GALAXIA_CHECK(this->resize());
+                MORELO_CHECK(this->resize());
             }
             return {lmdb::error(MDB_MAP_FULL)};
         }

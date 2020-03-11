@@ -35,9 +35,9 @@ set(serialization_headers)
 set(serialization_private_headers
   json_object.h)
 
-galaxia_private_headers(serialization
+morelo_private_headers(serialization
   ${serialization_private_headers})
-galaxia_add_library(serialization
+morelo_add_library(serialization
   ${serialization_sources}
   ${serialization_headers}
   ${serialization_private_headers})

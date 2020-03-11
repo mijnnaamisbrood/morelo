@@ -31,14 +31,14 @@ namespace lmdb
 {
     expect<MDB_dbi> table::open(MDB_txn& write_txn) const noexcept
     {
-        GALAXIA_PRECOND(name != nullptr);
+        MORELO_PRECOND(name != nullptr);
 
         MDB_dbi out;
-        GALAXIA_LMDB_CHECK(mdb_dbi_open(&write_txn, name, flags, &out));
+        MORELO_LMDB_CHECK(mdb_dbi_open(&write_txn, name, flags, &out));
         if (key_cmp && !(flags & MDB_INTEGERKEY))
-            GALAXIA_LMDB_CHECK(mdb_set_compare(&write_txn, out, key_cmp));
+            MORELO_LMDB_CHECK(mdb_set_compare(&write_txn, out, key_cmp));
         if (value_cmp && !(flags & MDB_INTEGERDUP))
-            GALAXIA_LMDB_CHECK(mdb_set_dupsort(&write_txn, out, value_cmp));
+            MORELO_LMDB_CHECK(mdb_set_dupsort(&write_txn, out, value_cmp));
         return out;
     }
 }

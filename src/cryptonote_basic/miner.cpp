@@ -73,8 +73,8 @@
   #include <unistd.h>
 #endif
 
-#undef GALAXIA_DEFAULT_LOG_CATEGORY
-#define GALAXIA_DEFAULT_LOG_CATEGORY "miner"
+#undef MORELO_DEFAULT_LOG_CATEGORY
+#define MORELO_DEFAULT_LOG_CATEGORY "miner"
 
 using namespace epee;
 

@@ -62,7 +62,7 @@ extern "C" {
 #define DP(x)
 #endif
 
-//atomic units of Galaxia
+//atomic units of Morelo
 #define ATOMS 64
 
 //for printing large ints
@@ -131,7 +131,7 @@ namespace rct {
         BEGIN_SERIALIZE_OBJECT()
           FIELD(mask)
           FIELD(amount)
-          // FIELD(senderPk) // not serialized, as we do not use it in Galaxia currently
+          // FIELD(senderPk) // not serialized, as we do not use it in Morelo currently
         END_SERIALIZE()
     };
 

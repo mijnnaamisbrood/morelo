@@ -188,24 +188,24 @@ RUN set -ex && \
     rm -rf /var/lib/apt
 COPY --from=builder /src/build/release/bin /usr/local/bin/
 
-# Below command is creating Galaxia user to do not run daemon as a root
-RUN adduser --system --group --disabled-password galaxia && \
-	mkdir -p /wallet /home/galaxia/.galaxia && \
-	chown -R galaxia:galaxia /home/galaxia/.galaxia && \
-	chown -R galaxia:galaxia /wallet
+# Below command is creating Morelo user to do not run daemon as a root
+RUN adduser --system --group --disabled-password morelo && \
+	mkdir -p /wallet /home/morelo/.morelo && \
+	chown -R morelo:morelo /home/morelo/.morelo && \
+	chown -R morelo:morelo /wallet
 
 # Contains the blockchain
-VOLUME /home/galaxia/.galaxia
+VOLUME /home/morelo/.morelo
 
 # Generate your wallet via accessing the container and run:
 # cd /wallet
-# galaxia-wallet-cli
+# morelo-wallet-cli
 VOLUME /wallet
 
 EXPOSE 42461
 EXPOSE 42462
 
-# switch to user galaxia
-USER galaxia
+# switch to user morelo
+USER morelo
 
-ENTRYPOINT ["galaxiad", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=42461", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=42462", "--non-interactive", "--confirm-external-bind"]
+ENTRYPOINT ["morelod", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=42461", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=42462", "--non-interactive", "--confirm-external-bind"]

@@ -45,9 +45,9 @@ set(checkpoints_headers)
 set(checkpoints_private_headers
   checkpoints.h)
 
-galaxia_private_headers(checkpoints
+morelo_private_headers(checkpoints
   ${checkpoints_private_headers})
-galaxia_add_library(checkpoints
+morelo_add_library(checkpoints
   ${checkpoints_sources}
   ${checkpoints_headers}
   ${checkpoints_private_headers})

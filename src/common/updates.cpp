@@ -33,8 +33,8 @@
 #include "dns_utils.h"
 #include "updates.h"
 
-#undef GALAXIA_DEFAULT_LOG_CATEGORY
-#define GALAXIA_DEFAULT_LOG_CATEGORY "updates"
+#undef MORELO_DEFAULT_LOG_CATEGORY
+#define MORELO_DEFAULT_LOG_CATEGORY "updates"
 
 namespace tools
 {
@@ -47,8 +47,8 @@ namespace tools
 
     // All four ArQ-Net domains have DNSSEC on and valid
     static const std::vector<std::string> dns_urls = {
-      "updates.galaxia-project.rf.gd",
-      "galaxia-project.go.ro/updates"
+      "updates.morelo-project.rf.gd",
+      "morelo-project.go.ro/updates"
     };
 
     if (!tools::dns_utils::load_txt_records_from_dns(records, dns_urls))
@@ -98,7 +98,7 @@ namespace tools
 
   std::string get_update_url(const std::string &software, const std::string &buildtag, const std::string &version, bool user)
   {
-    const char *base = user ? "https://downloads.galaxia-project.rf.gd" : "https://get.galaxia-project.rf.gd";
+    const char *base = user ? "https://downloads.morelo-project.rf.gd" : "https://get.morelo-project.rf.gd";
 #ifdef _WIN32
     static const char *extension = strncmp(buildtag.c_str(), "install-", 8) ? ".zip" : ".exe";
 #else

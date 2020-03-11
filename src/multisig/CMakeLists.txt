@@ -35,10 +35,10 @@ set(multisig_headers)
 set(multisig_private_headers
   multisig.h)
 
-galaxia_private_headers(multisig
+morelo_private_headers(multisig
   ${multisig_private_headers})
 
-galaxia_add_library(multisig
+morelo_add_library(multisig
   ${multisig_sources}
   ${multisig_headers}
   ${multisig_private_headers})

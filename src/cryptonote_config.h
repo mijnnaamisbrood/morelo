@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2020, The Galaxia Project
+// Copyright (c) 2019-2020, The Morelo Project
 // Copyright (c) 2018-2020, The Arqma Network
 // Copyright (c) 2014-2020, The Monero Project
 //
@@ -149,7 +149,7 @@
 
 #define ALLOW_DEBUG_COMMANDS
 
-#define CRYPTONOTE_NAME                                 "galaxia"
+#define CRYPTONOTE_NAME                                 "morelo"
 #define CRYPTONOTE_POOLDATA_FILENAME                    "poolstate.bin"
 #define CRYPTONOTE_BLOCKCHAINDATA_FILENAME              "data.mdb"
 #define CRYPTONOTE_BLOCKCHAINDATA_LOCK_FILENAME         "lock.mdb"
@@ -240,14 +240,14 @@ namespace config
      static constexpr uint64_t PREMINE_BURN = 0; // Will need to be set after knowing exact amount.
      static constexpr uint64_t MAXIMUM_BLOCK_SIZE_LIMIT = 2 * 1024 * 1024; // It is set to 2048kB (2MB)
      static constexpr uint64_t MINIMUM_BLOCK_SIZE_LIMIT = 1 * 1024 * 1024; // It is set to 1024kB (1MB)
-     static constexpr uint8_t GALAXIA_GENESIS_BLOCK_MAJOR_VERSION = 1;
-     static constexpr uint8_t GALAXIA_GENESIS_BLOCK_MINOR_VERSION = 1;
-     static constexpr uint8_t GALAXIA_BLOCK_UNLOCK_CONFIRMATIONS = 18; // How many blocks mined are needed to unlock block_reward.
+     static constexpr uint8_t MORELO_GENESIS_BLOCK_MAJOR_VERSION = 1;
+     static constexpr uint8_t MORELO_GENESIS_BLOCK_MINOR_VERSION = 1;
+     static constexpr uint8_t MORELO_BLOCK_UNLOCK_CONFIRMATIONS = 18; // How many blocks mined are needed to unlock block_reward.
    }
 
    namespace tx_settings
    {
-     static constexpr uint8_t GALAXIA_TX_CONFIRMATIONS_REQUIRED = 4; // How many blocks are needed to confirm transaction sent.
+     static constexpr uint8_t MORELO_TX_CONFIRMATIONS_REQUIRED = 4; // How many blocks are needed to confirm transaction sent.
      static constexpr uint8_t CURRENT_TX_VERSION = 2; // Current Transaction Version Valid on Arq-Net
      static constexpr uint64_t TRANSACTION_SIZE_LIMIT = 48 * 1024; // I did set it to 48kB for now but it need to be verified.
      static constexpr uint64_t MAX_TRANSACTIONS_IN_BLOCK = 1024; // Maximum allowed transactions in One Block
@@ -255,8 +255,8 @@ namespace config
 
    namespace sync
    {
-     static constexpr size_t NORMAL_SYNC = 20; // Amount of Blocks to download and Validate at ones while Synchronizung with Galaxia Network.
-     static constexpr size_t RAPID_SYNC = 250; // Amount of Blocks to download at ones from already known by Galaxia Daemon and Checkpoint are hardcoded into codebase
+     static constexpr size_t NORMAL_SYNC = 20; // Amount of Blocks to download and Validate at ones while Synchronizung with Morelo Network.
+     static constexpr size_t RAPID_SYNC = 250; // Amount of Blocks to download at ones from already known by Morelo Daemon and Checkpoint are hardcoded into codebase
    }
 }
 

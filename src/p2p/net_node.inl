@@ -1,4 +1,4 @@
-// Copyright (c) 2020, The Galaxia Project
+// Copyright (c) 2020, The Morelo Project
 // Copyright (c) 2018-2020, The Arqma Network
 // Copyright (c) 2014-2020, The Monero Project
 //
@@ -66,8 +66,8 @@
 #include <miniupnp/miniupnpc/upnpcommands.h>
 #include <miniupnp/miniupnpc/upnperrors.h>
 
-#undef GALAXIA_DEFAULT_LOG_CATEGORY
-#define GALAXIA_DEFAULT_LOG_CATEGORY "net.p2p"
+#undef MORELO_DEFAULT_LOG_CATEGORY
+#define MORELO_DEFAULT_LOG_CATEGORY "net.p2p"
 
 #define NET_MAKE_IP(b1,b2,b3,b4)  ((LPARAM)(((DWORD)(b1)<<24)+((DWORD)(b2)<<16)+((DWORD)(b3)<<8)+((DWORD)(b4))))
 
@@ -464,7 +464,7 @@ namespace nodetool
       full_addrs.insert("5.172.219.174:43461");
       full_addrs.insert("51.158.65.16:43461"); //eu
       full_addrs.insert("207.244.120.53:43461"); //us
-      full_addrs.insert("galaxia-project.go.ro:43461");
+      full_addrs.insert("morelo-project.go.ro:43461");
 
     }
     else if (nettype == cryptonote::STAGENET)
@@ -472,7 +472,7 @@ namespace nodetool
       full_addrs.insert("5.172.219.174:44461");
       full_addrs.insert("51.158.65.16:44461"); //eu
       full_addrs.insert("207.244.120.53:44461"); //us
-      full_addrs.insert("galaxia-project.go.ro:44461");
+      full_addrs.insert("morelo-project.go.ro:44461");
 
     }
     else if (nettype == cryptonote::FAKECHAIN)
@@ -483,7 +483,7 @@ namespace nodetool
       full_addrs.insert("5.172.219.174:42461");
       full_addrs.insert("51.158.65.16:42461"); //eu
       full_addrs.insert("207.244.120.53:42461"); //us
-      full_addrs.insert("galaxia-project.go.ro:42461");
+      full_addrs.insert("morelo-project.go.ro:42461");
 
     }
     return full_addrs;
@@ -1737,7 +1737,7 @@ namespace nodetool
     }
     rsp.connections_count = get_connections_count();
     rsp.incoming_connections_count = (rsp.connections_count - get_outgoing_connections_count());
-    rsp.version = GALAXIA_VERSION_FULL;
+    rsp.version = MORELO_VERSION_FULL;
     rsp.os_version = tools::get_os_version_string();
     m_payload_handler.get_stat_info(rsp.payload_info);
     return 1;

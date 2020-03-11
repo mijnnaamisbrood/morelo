@@ -50,9 +50,9 @@ set(mnemonics_private_headers
   esperanto.h
   lojban.h)
 
-galaxia_private_headers(mnemonics
+morelo_private_headers(mnemonics
   ${mnemonics_private_headers})
-galaxia_add_library(mnemonics
+morelo_add_library(mnemonics
   ${mnemonics_sources}
   ${mnemonics_headers}
   ${mnemonics_private_headers})

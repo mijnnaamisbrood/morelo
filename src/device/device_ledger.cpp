@@ -43,8 +43,8 @@ namespace hw {
 
   #ifdef WITH_DEVICE_LEDGER
 
-    #undef GALAXIA_DEFAULT_LOG_CATEGORY
-    #define GALAXIA_DEFAULT_LOG_CATEGORY "device.ledger"
+    #undef MORELO_DEFAULT_LOG_CATEGORY
+    #define MORELO_DEFAULT_LOG_CATEGORY "device.ledger"
 
     /* ===================================================================== */
     /* ===                           Debug                              ==== */

@@ -7,8 +7,8 @@
 namespace hw {
   namespace io {
 
-    #undef GALAXIA_DEFAULT_LOG_CATEGORY
-    #define GALAXIA_DEFAULT_LOG_CATEGORY "device.io"
+    #undef MORELO_DEFAULT_LOG_CATEGORY
+    #define MORELO_DEFAULT_LOG_CATEGORY "device.io"
 
     #define ASSERT_X(exp,msg)    CHECK_AND_ASSERT_THROW_MES(exp, msg);
 
