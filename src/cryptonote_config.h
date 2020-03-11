@@ -200,9 +200,9 @@ namespace config
    uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x786e; // Wallet prefix: gx... // decimal prefix: ......
    uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x1cf46e; // Wallet prefix: gxi... // decimal prefix: .....
    uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x77ee; // Wallet prefix: gxx... // decimal prefix: ......
-   uint16_t const P2P_DEFAULT_PORT = 42461;
-   uint16_t const RPC_DEFAULT_PORT = 42462;
-   uint16_t const ZMQ_RPC_DEFAULT_PORT = 42463;
+   uint16_t const P2P_DEFAULT_PORT = 48461;
+   uint16_t const RPC_DEFAULT_PORT = 48462;
+   uint16_t const ZMQ_RPC_DEFAULT_PORT = 48463;
    boost::uuids::uuid const NETWORK_ID = { {
        0x11, 0x11, 0x11, 0x11, 0xFF, 0xFF, 0xFF, 0x11, 0x44, 0x11, 0xFF, 0xFF, 0xFF, 0x55, 0x11, 0x1B
      } }; // Bender's nightmare
@@ -214,9 +214,9 @@ namespace config
      uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x186d; // Wallet prefix: gg... // decimal prefix: 21450
      uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x72ee; // Wallet prefix: gxa... // decimal prefix: 20554
      uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x1132ee; // Wallet prefix: gxb... // decimal prefix: 21066
-     uint16_t const P2P_DEFAULT_PORT = 43461;
-     uint16_t const RPC_DEFAULT_PORT = 43462;
-     uint16_t const ZMQ_RPC_DEFAULT_PORT = 43463;
+     uint16_t const P2P_DEFAULT_PORT = 47461;
+     uint16_t const RPC_DEFAULT_PORT = 47462;
+     uint16_t const ZMQ_RPC_DEFAULT_PORT = 47463;
      boost::uuids::uuid const NETWORK_ID = { {
          0x11, 0x11, 0x11, 0x11, 0xFF, 0xFF, 0xFF, 0x11, 0x11, 0x66, 0xFF, 0xFF, 0xFF, 0x66, 0x11, 0x1B
        } }; // Bender's daydream
@@ -227,9 +227,9 @@ namespace config
      uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x36ee; // Wallet prefix: gt... // decimal prefix: 14794
      uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x1102ee; // Wallet prefix: gtx... // decimal prefix: 1524426
      uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x41ee; // Wallet prefix: gts... // decimal prefix: 1934538
-     uint16_t const P2P_DEFAULT_PORT = 44461;
-     uint16_t const RPC_DEFAULT_PORT = 44462;
-     uint16_t const ZMQ_RPC_DEFAULT_PORT = 44463;
+     uint16_t const P2P_DEFAULT_PORT = 46461;
+     uint16_t const RPC_DEFAULT_PORT = 46462;
+     uint16_t const ZMQ_RPC_DEFAULT_PORT = 46463;
      boost::uuids::uuid const NETWORK_ID = { {
          0x11, 0x11, 0x11, 0x11, 0xFF, 0xFF, 0xFF, 0x11, 0x11, 0x77, 0xFF, 0xFF, 0xFF, 0x77, 0x11, 0x1C
        } }; // Bender's daydream

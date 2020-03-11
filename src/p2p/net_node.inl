@@ -461,18 +461,19 @@ namespace nodetool
     std::set<std::string> full_addrs;
     if (nettype == cryptonote::TESTNET)
     {
-      full_addrs.insert("5.172.219.174:43461");
-      full_addrs.insert("51.158.65.16:43461"); //eu
-      full_addrs.insert("207.244.120.53:43461"); //us
-      full_addrs.insert("morelo-project.go.ro:43461");
+      full_addrs.insert("5.172.219.174:47461"); //nl
+      full_addrs.insert("51.158.65.16:47461"); //fr
+      full_addrs.insert("207.244.120.53:47461"); //us
+      full_addrs.insert("185.108.80.101:47461"); //Africa
+
 
     }
     else if (nettype == cryptonote::STAGENET)
     {
-      full_addrs.insert("5.172.219.174:44461");
-      full_addrs.insert("51.158.65.16:44461"); //eu
-      full_addrs.insert("207.244.120.53:44461"); //us
-      full_addrs.insert("morelo-project.go.ro:44461");
+      full_addrs.insert("5.172.219.174:46461"); //nl
+      full_addrs.insert("51.158.65.16:46461"); //fr
+      full_addrs.insert("207.244.120.53:46461"); //us
+      full_addrs.insert("185.108.80.101:46461"); //Africa
 
     }
     else if (nettype == cryptonote::FAKECHAIN)
@@ -480,10 +481,10 @@ namespace nodetool
     }
     else
     {
-      full_addrs.insert("5.172.219.174:42461");
-      full_addrs.insert("51.158.65.16:42461"); //eu
-      full_addrs.insert("207.244.120.53:42461"); //us
-      full_addrs.insert("morelo-project.go.ro:42461");
+      full_addrs.insert("5.172.219.174:43461"); //nl
+      full_addrs.insert("51.158.65.16:43461"); //fr
+      full_addrs.insert("207.244.120.53:43461"); //us
+      full_addrs.insert("185.108.80.101:43461"); //Africa
 
     }
     return full_addrs;
