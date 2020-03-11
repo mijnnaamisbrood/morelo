@@ -7,9 +7,9 @@ Portions Copyright (c) 2012-2013 The Cryptonote developers.
 
 ## Development resources
 
-- Web: [http://morelo-project.rf.gd/](http://morelo-project.rf.gd/)
-- GitHub: [https://github.com/ElSamaritan/morelo/](https://github.com/ElSamaritan/morelo/)
-- Discord: [https://chat.morelo-project.com](https://chat.morelo-project.com)
+- Web: 
+- GitHub: 
+- Discord: 
 
 
 ## Introduction
@@ -118,7 +118,7 @@ Install all dependencies at once on OSX:
 
 Clone recursively to pull-in needed submodule(s):
 
-`$ git clone https://github.com/ElSamaritan/morelo`
+`$ git clone https://github.com/Morelo-Project/morelo`
 
 If you already have a repo cloned, initialize and update:
 
@@ -189,7 +189,7 @@ Tested on a Raspberry Pi Zero with a clean install of minimal Raspbian Stretch (
 ```
 * Clone morelo and checkout most recent release version:
 ```
-  git clone https://github.com/ElSamaritan/morelo.git
+  git clone https://github.com/Morelo-Project/morelo.git
 	cd morelo
 
 ```
@@ -275,7 +275,7 @@ application.
 
 * Download Morelo with command:
 
-	`git clone https://github.com/ElSamaritan/morelo
+	`git clone https://github.com/Morelo-Project/morelo
 
 * Change branch to last Release:
 
