@@ -197,9 +197,9 @@ namespace config
    uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)100000);
    std::string const P2P_REMOTE_DEBUG_TRUSTED_PUB_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
 
-   uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x786e; // Wallet prefix: gx... // decimal prefix: ......
-   uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x1cf46e; // Wallet prefix: gxi... // decimal prefix: .....
-   uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x77ee; // Wallet prefix: gxx... // decimal prefix: ......
+   uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x786e; // Wallet prefix: gx... // MainNet
+   uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x1cf46e; // Wallet prefix: gxi... // MainNet
+   uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x77ee; // Wallet prefix: gxx... // MainNet
    uint16_t const P2P_DEFAULT_PORT = 48461;
    uint16_t const RPC_DEFAULT_PORT = 48462;
    uint16_t const ZMQ_RPC_DEFAULT_PORT = 48463;
@@ -219,7 +219,7 @@ namespace config
      uint16_t const ZMQ_RPC_DEFAULT_PORT = 47463;
      boost::uuids::uuid const NETWORK_ID = { {
          0x11, 0x11, 0x11, 0x11, 0xFF, 0xFF, 0xFF, 0x11, 0x11, 0x66, 0xFF, 0xFF, 0xFF, 0x66, 0x11, 0x1B
-       } }; // 
+       } }; // TEST
    }
 
    namespace stagenet
@@ -232,7 +232,7 @@ namespace config
      uint16_t const ZMQ_RPC_DEFAULT_PORT = 46463;
      boost::uuids::uuid const NETWORK_ID = { {
          0x11, 0x11, 0x11, 0x11, 0xFF, 0xFF, 0xFF, 0x11, 0x11, 0x77, 0xFF, 0xFF, 0xFF, 0x77, 0x11, 0x1C
-       } }; // Bender's daydream
+       } }; // STAGE
    }
 
    namespace blockchain_settings
