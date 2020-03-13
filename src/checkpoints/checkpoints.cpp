@@ -218,8 +218,7 @@ namespace cryptonote
 
     // All four ArQ-Net domains have DNSSEC on and valid
     static const std::vector<std::string> dns_urls = {
-        "checkpoints.morelo-project.rf.gd",
-        "morelo-project.go.ro/checkpoints"
+
 	};
 
     static const std::vector<std::string> testnet_dns_urls = {
@@ -258,7 +257,7 @@ namespace cryptonote
         ADD_CHECKPOINT(height, hashStr);
       }
     }
-    return true;
+    return false;
   }
 
   bool checkpoints::load_new_checkpoints(const std::string &json_hashfile_fullpath, network_type nettype, bool dns)

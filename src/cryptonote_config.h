@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2020, The Morelo Project
+// Copyright (c) 2019-2020, The Morelo Network
 // Copyright (c) 2018-2020, The Arqma Network
 // Copyright (c) 2014-2020, The Monero Project
 //
@@ -51,9 +51,9 @@
 #define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V9            BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V2
 
 // MONEY_SUPPLY - total number coins to be generated
-#define MONEY_SUPPLY                                    ((uint64_t)55000000000000000)
-#define MONEY_PREMINE                                   ((uint64_t)550000000000000)
-#define EMISSION_SPEED_FACTOR_PER_MINUTE                (22)
+#define MONEY_SUPPLY                                    ((uint64_t)100000000000000000)
+#define MONEY_PREMINE                                   ((uint64_t)3500000000000000)
+#define EMISSION_SPEED_FACTOR_PER_MINUTE                (21)
 #define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)300000000)
 
 
@@ -197,12 +197,12 @@ namespace config
    uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)100000);
    std::string const P2P_REMOTE_DEBUG_TRUSTED_PUB_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
 
-   uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x786e; // Wallet prefix: gx... // MainNet
-   uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x1cf46e; // Wallet prefix: gxi... // MainNet
-   uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x77ee; // Wallet prefix: gxx... // MainNet
-   uint16_t const P2P_DEFAULT_PORT = 48461;
-   uint16_t const RPC_DEFAULT_PORT = 48462;
-   uint16_t const ZMQ_RPC_DEFAULT_PORT = 48463;
+   uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x1a29e1; // Wallet prefix: emo MainNet
+   uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x8a8e1; // Wallet prefix: emi MainNet
+   uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0xeaae1; // Wallet prefix: ems MainNet
+   uint16_t const P2P_DEFAULT_PORT = 38411;
+   uint16_t const RPC_DEFAULT_PORT = 38422;
+   uint16_t const ZMQ_RPC_DEFAULT_PORT = 38433;
    boost::uuids::uuid const NETWORK_ID = { {
        0x11, 0x11, 0x11, 0x11, 0xFF, 0xFF, 0xFF, 0x11, 0x44, 0x11, 0xFF, 0xFF, 0xFF, 0x55, 0x11, 0x1B
      } }; // 
@@ -211,9 +211,9 @@ namespace config
 
    namespace testnet
    {
-     uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x186d; // Wallet prefix: gg... // decimal prefix: 21450
-     uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x72ee; // Wallet prefix: gxa... // decimal prefix: 20554
-     uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x1132ee; // Wallet prefix: gxb... // decimal prefix: 21066
+     uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x80662; // Wallet prefix: eto... // decimal prefix: 21450
+     uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x4562; // Wallet prefix: eti... // decimal prefix: 20554
+     uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x4762; // Wallet prefix: ets... // decimal prefix: 21066
      uint16_t const P2P_DEFAULT_PORT = 47461;
      uint16_t const RPC_DEFAULT_PORT = 47462;
      uint16_t const ZMQ_RPC_DEFAULT_PORT = 47463;
@@ -224,9 +224,9 @@ namespace config
 
    namespace stagenet
    {
-     uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x36ee; // Wallet prefix: gt... // decimal prefix: 14794
-     uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x1102ee; // Wallet prefix: gtx... // decimal prefix: 1524426
-     uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x41ee; // Wallet prefix: gts... // decimal prefix: 1934538
+     uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x7b62; // Wallet prefix: exo... // decimal prefix: 14794
+     uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x19f9e2; // Wallet prefix: exi... // decimal prefix: 1524426
+     uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x1ffbe2; // Wallet prefix: exs... // decimal prefix: 1934538
      uint16_t const P2P_DEFAULT_PORT = 46461;
      uint16_t const RPC_DEFAULT_PORT = 46462;
      uint16_t const ZMQ_RPC_DEFAULT_PORT = 46463;
