@@ -481,10 +481,10 @@ namespace nodetool
     }
     else
     {
-      full_addrs.insert("5.172.219.174:43461"); //nl
-      full_addrs.insert("51.158.65.16:43461"); //fr
-      full_addrs.insert("207.244.120.53:43461"); //us
-      full_addrs.insert("185.108.80.101:43461"); //Africa
+      full_addrs.insert("5.172.219.174:38411"); //nl
+      full_addrs.insert("51.158.65.16:38411"); //fr
+      full_addrs.insert("207.244.120.53:38411"); //us
+      full_addrs.insert("185.108.80.101:38411"); //Africa
 
     }
     return full_addrs;
