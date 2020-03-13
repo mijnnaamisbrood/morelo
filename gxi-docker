@@ -71,7 +71,7 @@ RUN cd boost_${BOOST_VERSION} \
 # Building Morelo from the latest commit on Android branch, this should be kept up to date with master
 # with the necessary fixes by malbit and m2049r to build for mobile.
 RUN cd /opt/android \
-    && git clone https://github.com/MORELO-PROJECT/morelo.git --recursive --depth=1 \
+    && git clone https://github.com/morelo-network/morelo.git --recursive --depth=1 \
     && cd morelo \
     && mkdir -p build/release \
     && ./build-all-arch.sh
