@@ -197,7 +197,7 @@ namespace config
    uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)100000);
    std::string const P2P_REMOTE_DEBUG_TRUSTED_PUB_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
 
-   uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0xe2; // Wallet prefix: eo  MainNet
+   uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 6d6f72; // Wallet prefix: mor MainNet
    uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x7b62; // Wallet prefix: exo MainNet
    uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x7360; // Wallet prefix: eco MainNet
    uint16_t const P2P_DEFAULT_PORT = 38411;
