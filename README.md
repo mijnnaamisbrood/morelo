@@ -122,7 +122,7 @@ Clone recursively to pull-in needed submodule(s):
 
 If you already have a repo cloned, initialize and update:
 
-`$ cd morelo && git checkout release-v0.4.0`    
+`$ cd morelo && git checkout release-v0.4.0.1`    
 `$ git submodule init && git submodule update`    
 
 ### Build instructions
@@ -437,7 +437,7 @@ You can also cross-compile Morelo static binaries on Linux for Windows and macOS
 
 *** For `x86_64-apple-darwin14` you need to download SDK first ***    
 
-* ```git clone -b morelo https://github.com/malbit/MacOSX-SDKs.git contrib/depends/SDKs ```    
+* ```git clone -b arqma https://github.com/malbit/MacOSX-SDKs.git contrib/depends/SDKs ```    
 
 You can download SDK at https://github.com/malbit/MacOSX-SDKs/releases/download/MacOSX10.11.sdk.arqma/MacOSX10.11.sdk.tar.gz and unpack it and put to contrib/depends/SDKs    
 
