@@ -1,15 +1,33 @@
 ## Morelo
 
+Decentralized, Untraceable and Anonymous.
+
+## Licenses
+
 Copyright (c) 2019-2020 The Morelo Network.    
 Copyright (c) 2018-2020 The Arqma Network.    
 Copyright (c) 2014-2020 The Monero Project.  
 Portions Copyright (c) 2012-2013 The Cryptonote developers.
 
-## Development resources
+## BlockChain Specifications
 
-- Web: 
-- GitHub: 
-- Discord: 
+- Name: MORELO
+- Ticker: MRL
+- Max supply: 75 million
+- Block time: 120 seconds
+- Decimals: 9
+- PoW algorithm: RandomARQ
+- BulletProof RingCT
+
+## Morelo resources
+
+- Website: http://morelo.is-great.net/
+- Block Explorer: https://mrl.supportcryptonight.com/
+- Source: https://github.com/morelo-network/morelo
+- CLI Binaries: https://github.com/morelo-network/morelo/releases
+- GUI wallet Electron: https://github.com/morelo-network/morelo-electron-wallet
+- GUI wallet releases: https://github.com/morelo-network/morelo-electron-wallet/releases
+- Discord: https://discord.gg/eRZUjdG 
 
 
 ## Introduction
