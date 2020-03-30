@@ -1620,9 +1620,21 @@ namespace cryptonote
         main_message = "The daemon will start synchronizing with the network. This may take a long time to complete.";
       MGINFO_CYAN(ENDL <<
       "\n \n"
-"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW\n"
-"WWWWWWWWWWWWW MORELO (MRL) WWWWWWWWWWWW\n"
-"WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW" << ENDL);
+"      o***o o\n"
+"      O *oO O ooo\n"
+"     o****oOO* o *o\n"
+"    O    O   *O * O\n"
+"   O    O      *O*\n"
+"   O   O        O\n"
+"   O   O        O\n"
+"   O  O         O\n"
+"    O O        o*\n"
+"     *O      o*\n"
+"       ******\n\n"
+"  _____ _____ __\n"
+" |     | __  |  |\n"
+" | | | |    -|  |__\n"
+" |_|_|_|__|__|_____|\n" << ENDL);
       MGINFO_YELLOW(ENDL << "**********************************************************************" << ENDL
         << main_message << ENDL
         << ENDL
