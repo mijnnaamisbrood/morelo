@@ -464,7 +464,7 @@ namespace nodetool
       full_addrs.insert("5.172.219.174:47461"); //nl
       full_addrs.insert("51.158.65.16:47461"); //fr
       full_addrs.insert("207.244.120.53:47461"); //us
-      full_addrs.insert("185.108.80.101:47461"); //Africa
+      full_addrs.insert("moreloglobal.hopto.org:47461"); //global
 
 
     }
@@ -473,7 +473,7 @@ namespace nodetool
       full_addrs.insert("5.172.219.174:46461"); //nl
       full_addrs.insert("51.158.65.16:46461"); //fr
       full_addrs.insert("207.244.120.53:46461"); //us
-      full_addrs.insert("185.108.80.101:46461"); //Africa
+      full_addrs.insert("moreloglobal.hopto.org:46461"); //global
 
     }
     else if (nettype == cryptonote::FAKECHAIN)
@@ -484,7 +484,7 @@ namespace nodetool
       full_addrs.insert("5.172.219.174:38411"); //nl
       full_addrs.insert("51.158.65.16:38411"); //fr
       full_addrs.insert("207.244.120.53:38411"); //us
-      full_addrs.insert("185.108.80.101:38411"); //Africa
+      full_addrs.insert("moreloglobal.hopto.org:38411"); //global
 
     }
     return full_addrs;
