@@ -1,3 +1,4 @@
+// Copyright (c) 2020, The Morelo Network
 // Copyright (c) 2018-2019, The Arqma Network
 // Copyright (c) 2014-2018, The Monero Project
 //
@@ -26,17 +27,12 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 #pragma once
 #include <boost/program_options.hpp>
-
 #undef MORELO_DEFAULT_LOG_CATEGORY
 #define MORELO_DEFAULT_LOG_CATEGORY "daemon"
-
 namespace daemonize {
-
 struct t_internals;
-
 class t_daemon final {
 public:
   static void init_options(boost::program_options::options_description & option_spec);
@@ -44,9 +40,14 @@ private:
   void stop_p2p();
 private:
   std::unique_ptr<t_internals> mp_internals;
+  boost::program_options::variables_map m_vm;
   uint16_t public_rpc_port;
   std::string zmq_rpc_bind_address;
   std::string zmq_rpc_bind_port;
+  std::string zmq_bind_address;
+  std::string zmq_bind_port;
+  bool zmq_enabled;
+  uint16_t zmq_max_clients;
 public:
   t_daemon(
       boost::program_options::variables_map const & vm, uint16_t public_rpc_port = 0
@@ -54,7 +55,6 @@ public:
   t_daemon(t_daemon && other);
   t_daemon & operator=(t_daemon && other);
   ~t_daemon();
-
   bool run(bool interactive = false);
   void stop();
 };
