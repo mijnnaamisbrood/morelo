@@ -27,7 +27,7 @@ Portions Copyright (c) 2012-2013 The Cryptonote developers.
 - CLI Binaries: https://github.com/morelo-network/morelo/releases
 - GUI wallet Electron: https://github.com/morelo-network/morelo-electron-wallet
 - GUI wallet releases: https://github.com/morelo-network/morelo-electron-wallet/releases
-- Discord: https://discord.gg/eRZUjdG 
+- Discord: https://discord.gg/eRZUjdG
 
 
 ## Introduction
@@ -140,7 +140,7 @@ Clone recursively to pull-in needed submodule(s):
 
 If you already have a repo cloned, initialize and update:
 
-`$ cd morelo && git checkout release-v0.4.0.2`    
+`$ cd morelo && git checkout release-v0.4.0.3`    
 `$ git submodule init && git submodule update`    
 
 ### Build instructions

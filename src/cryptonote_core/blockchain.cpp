@@ -466,7 +466,7 @@ bool Blockchain::init(BlockchainDB* db, const network_type nettype, bool offline
     if(!update_next_cumulative_weight_limit())
       return false;
   }
-  
+
   if (zmq_enabled)
   {
     try
@@ -563,7 +563,7 @@ bool Blockchain::deinit()
   m_hardfork = NULL;
   delete m_db;
   m_db = NULL;
-  
+
   if (zmq_enabled)
   {
     try
@@ -577,7 +577,7 @@ bool Blockchain::deinit()
       LOG_ERROR(std::string("Error closing zmq: ") + e.what());
     }
   }
-  
+
   return true;
 }
 //------------------------------------------------------------------
@@ -3996,7 +3996,7 @@ leave:
       MERROR(std::string("Failed to construct morelo block producer") + e.what());
     }
   }
-  
+
   std::shared_ptr<tools::Notify> block_notify = m_block_notify;
   if (block_notify)
     block_notify->notify("%s", epee::string_tools::pod_to_hex(id).c_str(), NULL);
@@ -4988,7 +4988,7 @@ void Blockchain::cancel()
 }
 
 #if defined(PER_BLOCK_CHECKPOINT)
-static const char expected_block_hashes_hash[] = "9f12b079644fbb1bb0f2a7b77ba5484622fb2fe65d71b9851f8dc47f76300da7";
+static const char expected_block_hashes_hash[] = "572cfb1929ebbed5723dadc18da1a0fc3e9cb684261060c0c0972383b317096b";
 void Blockchain::load_compiled_in_block_hashes(const GetCheckpointsCallback& get_checkpoints)
 {
   if (get_checkpoints == nullptr || !m_fast_sync)
