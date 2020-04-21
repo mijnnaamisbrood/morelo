@@ -938,13 +938,13 @@ namespace cryptonote
     switch (std::atomic_load(&default_decimal_point))
     {
       case 9:
-        return "gxi";
+        return "MRL";
       case 6:
-        return "milligxi";
+        return "milliMRL";
       case 3:
-        return "microgxi";
+        return "microMRL";
       case 0:
-        return "nanogxi";
+        return "nanoMRL";
       default:
         ASSERT_MES_AND_THROW("Invalid decimal point specification: " << default_decimal_point);
     }
