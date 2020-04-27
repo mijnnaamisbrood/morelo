@@ -72,7 +72,7 @@ uint16_t parse_public_rpc_port(const po::variables_map &vm)
   const auto &restricted_rpc_port = cryptonote::core_rpc_server::arg_rpc_restricted_bind_port;
   if (!command_line::is_arg_defaulted(vm, restricted_rpc_port))
   {
-	rpc_port_str = command_line::get_arg(vm, restricted_rpc_port);;
+	rpc_port_str = command_line::get_arg(vm, restricted_rpc_port);
   }
   else if (command_line::get_arg(vm, cryptonote::core_rpc_server::arg_restricted_rpc))
   {
@@ -109,6 +109,7 @@ uint16_t parse_public_rpc_port(const po::variables_map &vm)
 
   return rpc_port;
 }
+<<<<<<< HEAD
 // Helper function to generate genesis transaction made by TheDevMinerTV#9308
 void print_genesis_tx_hex(uint8_t nettype, std::string net_type)
 {
@@ -161,6 +162,8 @@ void print_genesis_tx_hex(uint8_t nettype, std::string net_type)
 
   return;
 }
+=======
+>>>>>>> 817330e2... Clean removal of empty statements #6339
 
 int main(int argc, char const * argv[])
 {
@@ -358,7 +361,11 @@ int main(int argc, char const * argv[])
 	  tools::set_max_concurrency(command_line::get_arg(vm, daemon_args::arg_max_concurrency));
 
 	// logging is now set up
+<<<<<<< HEAD
 	MGINFO("Morelo '" << MORELO_RELEASE_NAME << "' (v" << MORELO_VERSION_FULL << ")");
+=======
+	MGINFO("Arqma '" << ARQMA_RELEASE_NAME << "' (v" << ARQMA_VERSION_FULL << ")");
+>>>>>>> 817330e2... Clean removal of empty statements #6339
 
 
     // If there are positional options, we're running a daemon command
