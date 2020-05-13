@@ -1,3 +1,10 @@
+<p align="center">
+  <a href="https://github.com/morelo-network/Morelo-GUI">
+    <img src="https://i.imgur.com/QUho6b1.jpg" alt="Logo" align="center" width="100%">
+  </a>
+</p>
+
+
 # MORELO (MRL)
 
 Copyright (c) 2019-2020 The Morelo Network.    
