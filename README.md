@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="https://github.com/morelo-network/Morelo-GUI">
-    <img src="https://i.imgur.com/QUho6b1.jpg" alt="Logo" align="center" width="100%">
+  <a href="http://morelo.is-great.net/">
+    <img src="https://i.imgur.com/piFNWIo.png" alt="Logo" align="center" width="25%">
   </a>
 </p>
 
@@ -30,12 +30,28 @@ Network properties:
 - Website: http://morelo.is-great.net/
 - Block Explorer: https://mrl.supportcryptonight.com/
 - Source: https://github.com/morelo-network/morelo
+- Software: https://github.com/morelo-network/morelo/releases
 - Discord: https://discord.gg/eRZUjdG
 - Telegram: https://t.me/morelomrl
 - BitcoinTalk: https://bitcointalk.org/index.php?topic=5233023
+- Twitter: https://twitter.com/MoreloMrl
 
+## EXCHANGE & TRADE
 
-## Introduction
+- BKEX.Com: https://www.bkex.com/trade/MRL_USDT
+- Coinbig.com: https://www.coinbig.com/pl/trade/MRL_USDT
+
+## Community Links
+
+- CoinMarketCap: https://coinmarketcap.com/currencies/morelo/
+- CoinGecko: https://www.coingecko.com/en/coins/morelo
+- Cryptunit: https://www.cryptunit.com/coin/MRL
+- Coinstat.app: https://coinstats.app/en/coins/morelo
+- CMC.io: https://cmc.io/coins/morelo
+- Walemo: http://www.walemo.com/1582.html
+- Niubiquan: http://niubiquan.com/article/2895
+
+## MORELO Introduction
 
 Morelo is a private, secure, untraceable, decentralised digital currency. You are your bank, you control your funds, and nobody can trace your transfers unless you allow them to do so.
 
