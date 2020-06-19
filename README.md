@@ -27,7 +27,7 @@ Network properties:
 
 ## Morelo resources
 
-- Website: http://morelo.is-great.net/
+- Website: http://morelo-network.com/
 - Block Explorer: https://mrl.supportcryptonight.com/
 - Source: https://github.com/morelo-network/morelo
 - Software: https://github.com/morelo-network/morelo/releases
@@ -40,6 +40,11 @@ Network properties:
 
 - BKEX.Com: https://www.bkex.com/trade/MRL_USDT
 - Coinbig.com: https://www.coinbig.com/pl/trade/MRL_USDT
+
+## Mining MRL
+
+- Dev's pool: http://pool.morelo-network.com/
+- Pool's Stats: https://miningpoolstats.stream/morelo
 
 ## Community Links
 
