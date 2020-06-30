@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019, The Arqma Network
+// Copyright (c) 2018-2020, The Arqma Network
 // Copyright (c) 2014-2018, The Monero Project
 //
 // All rights reserved.
@@ -46,7 +46,6 @@
 #include "rpc/rpc_args.h"
 #include "daemon/command_line_args.h"
 #include "morelo_mq/moreloMQ.h"
-#include "blockchain_db/db_types.h"
 #include "version.h"
 
 #ifdef STACK_TRACE
@@ -133,8 +132,6 @@ int main(int argc, char const * argv[])
       command_line::add_arg(visible_options, command_line::arg_version);
       command_line::add_arg(visible_options, daemon_args::arg_os_version);
       command_line::add_arg(visible_options, daemon_args::arg_config_file);
-      command_line::add_arg(visible_options, daemon_args::arg_make_genesis_tx);
-	  command_line::add_arg(core_settings, daemon_args::arg_zmq_enabled);
 
       // Settings
       command_line::add_arg(core_settings, daemon_args::arg_log_file);
@@ -143,6 +140,7 @@ int main(int argc, char const * argv[])
       command_line::add_arg(core_settings, daemon_args::arg_max_log_files);
       command_line::add_arg(core_settings, daemon_args::arg_max_concurrency);
       command_line::add_arg(core_settings, daemon_args::arg_public_node);
+      command_line::add_arg(core_settings, daemon_args::arg_zmq_enabled);
       command_line::add_arg(core_settings, daemon_args::arg_zmq_bind_ip);
       command_line::add_arg(core_settings, daemon_args::arg_zmq_bind_port);
       command_line::add_arg(core_settings, daemon_args::arg_zmq_max_clients);
@@ -206,7 +204,7 @@ int main(int argc, char const * argv[])
       {
         po::store(po::parse_config_file<char>(config_path.string<std::string>().c_str(), core_settings), vm);
       }
-      catch (const std::exception &e)
+      catch (const std::exception& e)
       {
         // log system isn't initialized yet
         std::cerr << "Error parsing config file: " << e.what() << std::endl;
@@ -226,40 +224,6 @@ int main(int argc, char const * argv[])
     {
       std::cerr << "Can't specify more than one of --tesnet and --stagenet and --regtest" << ENDL;
       return 1;
-    }
-    // Make genesis tx
-    unsigned int genesis_tx_type = command_line::get_arg(vm, daemon_args::arg_make_genesis_tx);
-    switch (genesis_tx_type)
-    {
-      case 1:
-        print_genesis_tx_hex(cryptonote::MAINNET, "mainnet");
-        return 0;
-
-      case 2:
-        print_genesis_tx_hex(cryptonote::TESTNET, "testnet");
-        return 0;
-
-      case 3:
-        print_genesis_tx_hex(cryptonote::STAGENET, "stagenet");
-        return 0;
-
-      default:
-        if(genesis_tx_type > 3)
-        {
-          std::cout << "You might have messed something up, this should be 1 to 3, everything else will be ignored." << ENDL;
-          return 1;
-        }
-      break;
-    }
-
-    std::string db_type = command_line::get_arg(vm, cryptonote::arg_db_type);
-
-    // verify that blockchaindb type is valid
-    if(!cryptonote::blockchain_valid_db_type(db_type))
-    {
-      std::cout << "Invalid database type (" << db_type << "), available types are: " <<
-        cryptonote::blockchain_db_types(", ") << std::endl;
-      return 0;
     }
 
     // data_dir
