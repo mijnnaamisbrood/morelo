@@ -109,61 +109,6 @@ uint16_t parse_public_rpc_port(const po::variables_map &vm)
 
   return rpc_port;
 }
-<<<<<<< HEAD
-// Helper function to generate genesis transaction made by TheDevMinerTV#9308
-void print_genesis_tx_hex(uint8_t nettype, std::string net_type)
-{
-  using namespace cryptonote;
-
-  account_base miner_acc1;
-  miner_acc1.generate();
-
-  std::cout << "Generating miner wallet..." << std::endl;
-  std::cout << "Miner account address:" << std::endl;
-  std::cout << cryptonote::get_account_address_as_str((network_type)nettype, false, miner_acc1.get_keys().m_account_address);
-  std::cout << std::endl << "Miner spend secret key:"  << std::endl;
-  epee::to_hex::formatted(std::cout, epee::as_byte_span(miner_acc1.get_keys().m_spend_secret_key));
-  std::cout << std::endl << "Miner view secret key:" << std::endl;
-  epee::to_hex::formatted(std::cout, epee::as_byte_span(miner_acc1.get_keys().m_view_secret_key));
-  std::cout << std::endl << std::endl;
-
-  //Create file with miner keys information
-  auto t = std::time(nullptr);
-  auto tm = *std::localtime(&t);
-  std::stringstream key_fine_name_ss;
-  key_fine_name_ss << "./premine_keys_" << std::put_time(&tm, "%Y%m%d%H%M%S") << ".txt";
-  std::string key_file_name = key_fine_name_ss.str();
-  std::ofstream miner_key_file;
-  miner_key_file.open (key_file_name);
-  miner_key_file << "Network type:" << std::endl;
-  miner_key_file << net_type << std::endl;
-  miner_key_file << "Miner account address:" << std::endl;
-  miner_key_file << cryptonote::get_account_address_as_str((network_type)nettype, false, miner_acc1.get_keys().m_account_address) << std::endl;
-  miner_key_file << "Miner spend secret key:" << std::endl;
-  epee::to_hex::formatted(miner_key_file, epee::as_byte_span(miner_acc1.get_keys().m_spend_secret_key));
-  miner_key_file << std::endl << "Miner view secret key:" << std::endl;
-  epee::to_hex::formatted(miner_key_file, epee::as_byte_span(miner_acc1.get_keys().m_view_secret_key));
-  miner_key_file << std::endl;
-  miner_key_file.close();
-
-  //Prepare genesis_tx
-  cryptonote::transaction tx_genesis;
-  cryptonote::construct_miner_tx(0, 0, 0, 10, 0, miner_acc1.get_keys().m_account_address, tx_genesis);
-
-  std::cout << "Transaction object:" << std::endl;
-  std::cout << obj_to_json_str(tx_genesis) << std::endl << std::endl;
-
-  std::stringstream ss;
-  binary_archive<true> ba(ss);
-  ::serialization::serialize(ba, tx_genesis);
-  std::string tx_hex = ss.str();
-  std::cout << "Insert this line into your coin configuration file: " << std::endl;
-  std::cout << "std::string const GENESIS_TX = \"" << string_tools::buff_to_hex_nodelimer(tx_hex) << "\";" << std::endl;
-
-  return;
-}
-=======
->>>>>>> 817330e2... Clean removal of empty statements #6339
 
 int main(int argc, char const * argv[])
 {
@@ -361,11 +306,7 @@ int main(int argc, char const * argv[])
 	  tools::set_max_concurrency(command_line::get_arg(vm, daemon_args::arg_max_concurrency));
 
 	// logging is now set up
-<<<<<<< HEAD
 	MGINFO("Morelo '" << MORELO_RELEASE_NAME << "' (v" << MORELO_VERSION_FULL << ")");
-=======
-	MGINFO("Arqma '" << ARQMA_RELEASE_NAME << "' (v" << ARQMA_VERSION_FULL << ")");
->>>>>>> 817330e2... Clean removal of empty statements #6339
 
 
     // If there are positional options, we're running a daemon command
