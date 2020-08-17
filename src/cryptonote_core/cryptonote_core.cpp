@@ -602,7 +602,7 @@ namespace cryptonote
     {
       MERROR("Failed to parse block notify spec");
     }
-	
+
 	if(auto zmq_enabled = command_line::get_arg(vm, daemon_args::arg_zmq_enabled))
 	{
       try
@@ -1682,7 +1682,7 @@ namespace cryptonote
       m_starter_message_showed = true;
     }
 
-    m_fork_moaner.do_call(boost::bind(&core::check_fork_time, this));
+//    m_fork_moaner.do_call(boost::bind(&core::check_fork_time, this));
     m_txpool_auto_relayer.do_call(boost::bind(&core::relay_txpool_transactions, this));
     m_check_updates_interval.do_call(boost::bind(&core::check_updates, this));
     m_check_disk_space_interval.do_call(boost::bind(&core::check_disk_space, this));
@@ -1692,6 +1692,7 @@ namespace cryptonote
     return true;
   }
   //-----------------------------------------------------------------------------------------------
+/*
   bool core::check_fork_time()
   {
     HardFork::State state = m_blockchain_storage.get_hard_fork_state();
@@ -1713,6 +1714,7 @@ namespace cryptonote
     }
     return true;
   }
+*/
   //-----------------------------------------------------------------------------------------------
   uint8_t core::get_ideal_hard_fork_version() const
   {
