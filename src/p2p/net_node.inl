@@ -1,6 +1,5 @@
-// Copyright (c) 2020, The Morelo Project
 // Copyright (c) 2018-2020, The Arqma Network
-// Copyright (c) 2014-2020, The Monero Project
+// Copyright (c) 2014-2018, The Monero Project
 //
 // All rights reserved.
 //
@@ -33,7 +32,7 @@
 // IP blocking adapted from Boolberry
 
 #include <algorithm>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/optional/optional.hpp>
@@ -72,6 +71,8 @@
 #define NET_MAKE_IP(b1,b2,b3,b4)  ((LPARAM)(((DWORD)(b1)<<24)+((DWORD)(b2)<<16)+((DWORD)(b3)<<8)+((DWORD)(b4))))
 
 #define MIN_WANTED_SEED_NODES 8
+
+using namespace boost::placeholders;
 
 namespace nodetool
 {
@@ -462,19 +463,14 @@ namespace nodetool
     if (nettype == cryptonote::TESTNET)
     {
       full_addrs.insert("5.172.219.174:47461"); //nl
-      full_addrs.insert("51.158.65.16:47461"); //fr
-      full_addrs.insert("207.244.120.53:47461"); //us
-      full_addrs.insert("moreloglobal.hopto.org:47461"); //global
-
-
+      full_addrs.insert("164.68.123.118:47461"); // eu
+      full_addrs.insert("188.68.232.9:47461"); //global
     }
     else if (nettype == cryptonote::STAGENET)
     {
       full_addrs.insert("5.172.219.174:46461"); //nl
-      full_addrs.insert("51.158.65.16:46461"); //fr
-      full_addrs.insert("207.244.120.53:46461"); //us
-      full_addrs.insert("moreloglobal.hopto.org:46461"); //global
-
+      full_addrs.insert("164.68.123.118:46461"); //eu
+      full_addrs.insert("188.68.232.9:46461"); //global
     }
     else if (nettype == cryptonote::FAKECHAIN)
     {
@@ -482,10 +478,8 @@ namespace nodetool
     else
     {
       full_addrs.insert("5.172.219.174:38411"); //nl
-      full_addrs.insert("51.158.65.16:38411"); //fr
-      full_addrs.insert("207.244.120.53:38411"); //us
-      full_addrs.insert("moreloglobal.hopto.org:38411"); //global
-
+      full_addrs.insert("164.68.123.118:38411"); //eu
+      full_addrs.insert("188.68.232.9:38411"); //global
     }
     return full_addrs;
   }
@@ -1125,7 +1119,7 @@ namespace nodetool
     pe_local.last_seen = static_cast<int64_t>(last_seen);
     pe_local.pruning_seed = con->m_pruning_seed;
     pe_local.rpc_port = con->m_rpc_port;
-	pe_local.zmq_port = con->m_zmq_port;
+    pe_local.zmq_port = con->m_zmq_port;
     pe_local.rpc_credits_per_hash = con->m_rpc_credits_per_hash;
     zone.m_peerlist.append_with_peer_white(pe_local);
     //update last seen and push it to peerlist manager
@@ -1688,7 +1682,7 @@ namespace nodetool
     else
       node_data.my_port = 0;
     node_data.rpc_port = zone.m_can_pingback ? m_rpc_port : 0;
-	node_data.zmq_port = zone.m_can_pingback ? m_zmq_port : 0;
+    node_data.zmq_port = zone.m_can_pingback ? m_zmq_port : 0;
     node_data.rpc_credits_per_hash = zone.m_can_pingback ? m_rpc_credits_per_hash : 0;
     node_data.network_id = m_network_id;
     return true;
@@ -2039,7 +2033,7 @@ namespace nodetool
     context.peer_id = arg.node_data.peer_id;
     context.m_in_timedsync = false;
     context.m_rpc_port = arg.node_data.rpc_port;
-	context.m_zmq_port = arg.node_data.zmq_port;
+    context.m_zmq_port = arg.node_data.zmq_port;
     context.m_rpc_credits_per_hash = arg.node_data.rpc_credits_per_hash;
 
     if(arg.node_data.peer_id != zone.m_config.m_peer_id && arg.node_data.my_port && zone.m_can_pingback)
@@ -2061,7 +2055,7 @@ namespace nodetool
         pe.id = peer_id_l;
         pe.pruning_seed = context.m_pruning_seed;
         pe.rpc_port = context.m_rpc_port;
-		pe.zmq_port = context.m_zmq_port;
+        pe.zmq_port = context.m_zmq_port;
         pe.rpc_credits_per_hash = context.m_rpc_credits_per_hash;
         this->m_network_zones.at(context.m_remote_address.get_zone()).m_peerlist.append_with_peer_white(pe);
         LOG_DEBUG_CC(context, "PING SUCCESS " << context.m_remote_address.host_str() << ":" << port_l);
