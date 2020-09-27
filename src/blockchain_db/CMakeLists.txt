@@ -65,8 +65,7 @@ target_link_libraries(blockchain_db
     common
     cncrypto
     ringct
-    ${LMDB_LIBRARY}
-    ${BDB_LIBRARY}
+    lmdb
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_THREAD_LIBRARY}
   PRIVATE

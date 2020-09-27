@@ -52,8 +52,8 @@
 
 // MONEY_SUPPLY - total number coins to be generated
 #define MONEY_SUPPLY                                    ((uint64_t)75000000000000000)
-#define MONEY_PREMINE                                   ((uint64_t)3500000000000000)
 #define EMISSION_SPEED_FACTOR_PER_MINUTE                (21)
+#define EMISSION_SPEED_FACTOR_V16                       (20)
 #define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)300000000)
 
 
@@ -100,6 +100,12 @@
 #define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V11           11
 #define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V11          360
 #define DIFFICULTY_WINDOW_V11                           90
+
+#define DIFFICULTY_TARGET_V16                           60
+#define DIFFICULTY_WINDOW_V16                           45
+#define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V16           11
+#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V16          180
+#define DIFFICULTY_BLOCKS_COUNT_V16                     (DIFFICULTY_WINDOW_V16 + 1)
 
 #define DIFFICULTY_BLOCKS_COUNT_V3                      (DIFFICULTY_WINDOW_V3 + 1)
 #define DIFFICULTY_BLOCKS_COUNT_V2                      (DIFFICULTY_WINDOW_V2 + 1) // added to make N=N
@@ -193,7 +199,7 @@ static constexpr double POISSON_LOG_P_REJECT = -75.0; // Reject reorg if the pro
 // New constants are intended to go here
 namespace config
 {
-   uint64_t const DEFAULT_DUST_THRESHOLD = ((uint64_t)0); // Deprecated
+   uint64_t const DEFAULT_DUST_THRESHOLD = ((uint64_t)20000); // Deprecated
    uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)100000);
    std::string const P2P_REMOTE_DEBUG_TRUSTED_PUB_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
 
@@ -237,26 +243,34 @@ namespace config
 
    namespace blockchain_settings
    {
-     static constexpr uint64_t PREMINE_BURN = 0; // Will need to be set after knowing exact amount.
-     static constexpr uint64_t MAXIMUM_BLOCK_SIZE_LIMIT = 2 * 1024 * 1024; // It is set to 2048kB (2MB)
-     static constexpr uint64_t MINIMUM_BLOCK_SIZE_LIMIT = 1 * 1024 * 1024; // It is set to 1024kB (1MB)
-     static constexpr uint8_t MORELO_GENESIS_BLOCK_MAJOR_VERSION = 1;
-     static constexpr uint8_t MORELO_GENESIS_BLOCK_MINOR_VERSION = 1;
-     static constexpr uint8_t MORELO_BLOCK_UNLOCK_CONFIRMATIONS = 18; // How many blocks mined are needed to unlock block_reward.
+     const uint64_t MORELO_PREMINE = 3500000000000000;
+     const uint64_t PREMINE_BURN = 0; // Will need to be set after knowing exact amount.
+     const uint64_t MAXIMUM_BLOCK_SIZE_LIMIT = 2 * 1024 * 1024; // It is set to 2048kB (2MB)
+     const uint64_t MINIMUM_BLOCK_SIZE_LIMIT = 1 * 1024 * 1024; // It is set to 1024kB (1MB)
+     const uint8_t MORELO_GENESIS_BLOCK_MAJOR_VERSION = 1;
+     const uint8_t MORELO_GENESIS_BLOCK_MINOR_VERSION = 1;
+     const uint8_t MORELO_BLOCK_UNLOCK_CONFIRMATIONS = 18; // How many blocks mined are needed to unlock block_reward.
    }
 
    namespace tx_settings
    {
-     static constexpr uint8_t MORELO_TX_CONFIRMATIONS_REQUIRED = 4; // How many blocks are needed to confirm transaction sent.
-     static constexpr uint8_t CURRENT_TX_VERSION = 2; // Current Transaction Version Valid on Arq-Net
-     static constexpr uint64_t TRANSACTION_SIZE_LIMIT = 48 * 1024; // I did set it to 48kB for now but it need to be verified.
-     static constexpr uint64_t MAX_TRANSACTIONS_IN_BLOCK = 1024; // Maximum allowed transactions in One Block
+     const uint8_t MORELO_TX_CONFIRMATIONS_REQUIRED = 4; // How many blocks are needed to confirm transaction sent.
+     const uint8_t CURRENT_TX_VERSION = 2; // Current Transaction Version Valid on Arq-Net
+     const uint64_t TRANSACTION_SIZE_LIMIT = 48 * 1024; // I did set it to 48kB for now but it need to be verified.
+     const uint64_t MAX_TRANSACTIONS_IN_BLOCK = 1024; // Maximum allowed transactions in One Block
    }
 
    namespace sync
    {
-     static constexpr size_t NORMAL_SYNC = 20; // Amount of Blocks to download and Validate at ones while Synchronizung with Morelo Network.
-     static constexpr size_t RAPID_SYNC = 250; // Amount of Blocks to download at ones from already known by Morelo Daemon and Checkpoint are hardcoded into codebase
+     const size_t NORMAL_SYNC = 20; // Amount of Blocks to download and Validate at ones while Synchronizung with Morelo Network.
+     const size_t RAPID_SYNC = 250; // Amount of Blocks to download at ones from already known by Morelo Daemon and Checkpoint are hardcoded into codebase
+   }
+
+   namespace governance
+   {
+     static constexpr const char* MAINNET_WALLET_ADDRESS = "";
+     static constexpr const char* TESTNET_WALLET_ADDRESS = "eto1bryZzzTGPWQcfKwjZ5VK3t6N9vBFkYkmszNwN3c29izQQFmX12DVNywZB41XEH8pAbg57ibHdhjxNpBrFZwB8mBsnuLvVp";
+     static constexpr const char* STAGENET_WALLET_ADDRESS = "exoiurtmELfLdhWEvingGogv4L9a6gkhA2GUQRq1om2eSoUSg6StUekTYN6fvzw5FD2RPDC1XfdrY2iSmNFdDyxbAU2uaLQEjP";
    }
 }
 

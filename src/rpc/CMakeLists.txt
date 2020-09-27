@@ -27,7 +27,7 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-include_directories(SYSTEM ${ZMQ_INCLUDE_PATH})
+include_directories(SYSTEM ${ZMQ_INCLUDE_DIRS})
 
 set(rpc_base_sources
   rpc_args.cpp
@@ -56,7 +56,7 @@ set(rpc_headers
 set(daemon_rpc_server_headers)
 
 
-set(rpc_daemon_private_headers
+set(rpc_private_headers
   core_rpc_server.h
   rpc_payment.h
   core_rpc_server_commands_defs.h
@@ -145,7 +145,7 @@ target_link_libraries(daemon_rpc_server
     ${Boost_REGEX_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
     ${Boost_THREAD_LIBRARY}
-    ${ZMQ_LIB}
+    libzmq
     ${EXTRA_LIBRARIES})
-target_include_directories(daemon_rpc_server PUBLIC ${ZMQ_INCLUDE_PATH})
-target_include_directories(obj_daemon_rpc_server PUBLIC ${ZMQ_INCLUDE_PATH})
+target_include_directories(daemon_rpc_server PUBLIC ${ZMQ_INCLUDE_DIRS})
+target_include_directories(obj_daemon_rpc_server PUBLIC ${ZMQ_INCLUDE_DIRS})

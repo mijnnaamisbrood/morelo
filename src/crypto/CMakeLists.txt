@@ -85,7 +85,7 @@ target_link_libraries(cncrypto
     epee
     randomx
     ${Boost_SYSTEM_LIBRARY}
-    ${SODIUM_LIBRARY}
+    sodium
   PRIVATE
     ${EXTRA_LIBRARIES})
 

@@ -41,7 +41,6 @@ morelo_add_library(rpc_sig
   ${rpc_sig_headers}
   ${rpc_sig_private_headers})
 target_link_libraries(rpc_sig
-  PUBLIC
   PRIVATE
     ${EXTRA_LIBRARIES})
 

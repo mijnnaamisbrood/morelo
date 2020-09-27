@@ -66,12 +66,12 @@ target_link_libraries(morelo_mq
     common
     epee
     net
-	rpc
-	daemon_messages
-	cryptonote_core
+    rpc
+    daemon_messages
+    cryptonote_core
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
-    ${ZMQ_LIB}
+    libzmq
     ${EXTRA_LIBRARIES})
 
 add_dependencies(morelo_mq

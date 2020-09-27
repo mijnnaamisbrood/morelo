@@ -50,7 +50,7 @@ target_link_libraries(simplewallet
     cncrypto
     common
     mnemonics
-    ${EPEE_READLINE}
+    epee
     version
     ${Boost_CHRONO_LIBRARY}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}

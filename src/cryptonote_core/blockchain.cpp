@@ -91,7 +91,7 @@ static const struct {
 } mainnet_hard_forks[] = {
  // version 1 from the start of the blockchain
  { 1, 0, 0, 1581800400 },
- { 15, 1, 0, 1581806100 }
+ { 15, 1, 0, 1581806100 },
 };
 
 static const struct {
@@ -102,7 +102,7 @@ static const struct {
 } testnet_hard_forks[] = {
  // version 1 from the start of the blockchain
  { 1, 0, 0, 1581800400 },
- { 15, 1, 0, 1581806100 }
+ { 15, 1, 0, 1581806100 },
 };
 
 static const struct {
@@ -113,7 +113,8 @@ static const struct {
 } stagenet_hard_forks[] = {
  // version 1 from the start of the blockchain
  { 1, 0, 0, 1581800400 },
- { 15, 1, 0, 1581806100 }
+ { 15, 1, 0, 1581806100 },
+ { 16, 50, 0, 1601146980 },
 };
 
 //------------------------------------------------------------------
@@ -325,11 +326,11 @@ bool Blockchain::init(BlockchainDB* db, const network_type nettype, bool offline
   if (m_hardfork == nullptr)
   {
     if (m_nettype ==  FAKECHAIN || m_nettype == STAGENET)
-      m_hardfork = new HardFork(*db, 1);
+      m_hardfork = new HardFork(*db, 1, 0);
     else if (m_nettype == TESTNET)
-      m_hardfork = new HardFork(*db, 1);
+      m_hardfork = new HardFork(*db, 1, 0);
     else
-      m_hardfork = new HardFork(*db, 1);
+      m_hardfork = new HardFork(*db, 1, 0);
   }
   if (m_nettype == FAKECHAIN)
   {
@@ -475,7 +476,7 @@ bool Blockchain::init(BlockchainDB* db, const network_type nettype, bool offline
       producer.connect(bind_address);
       MINFO("Blockchain zmq producer binding");
     }
-    catch( const std::exception &e)
+    catch(const std::exception& e)
     {
       MERROR(std::string("Failed to construct morelo notifier ") + e.what());
     }
@@ -569,7 +570,7 @@ bool Blockchain::deinit()
       zmq_close(&producer);
       zmq_term(&context);
     }
-    catch (const std::exception e)
+    catch (const std::exception& e)
     {
       LOG_ERROR(std::string("Error closing zmq: ") + e.what());
     }
@@ -872,8 +873,23 @@ size_t get_difficulty_blocks_count(uint8_t version)
     return DIFFICULTY_BLOCKS_COUNT_V2;
   } else if(version < 10) {
     return DIFFICULTY_BLOCKS_COUNT_V3;
-  } else {
+  } else if(version < 16) {
     return DIFFICULTY_BLOCKS_COUNT_V11;
+  } else {
+    return DIFFICULTY_BLOCKS_COUNT_V16;
+  }
+}
+//-----------------------------------------------------------------
+uint8_t get_current_diff_target(uint8_t version)
+{
+  LOG_PRINT_L3("Blockchain::" << __func__);
+
+  if(version < 10) {
+    return DIFFICULTY_TARGET_V2;
+  } else if(version < 16) {
+    return DIFFICULTY_TARGET_V11;
+  } else {
+    return DIFFICULTY_TARGET_V16;
   }
 }
 //------------------------------------------------------------------
@@ -950,9 +966,11 @@ difficulty_type Blockchain::get_difficulty_for_next_block()
     m_difficulties = difficulties;
   }
 
-  if (version >= 10) {
+  if(version >= 16) {
+    return next_difficulty_v16(timestamps, difficulties);
+  } else if(version >= 10) {
     return next_difficulty_lwma_4(timestamps, difficulties);
-  } else if (version >= 7) {
+  } else if(version >= 7) {
     return next_difficulty_lwma(timestamps, difficulties, version);
   } else {
     return next_difficulty(timestamps, difficulties, DIFFICULTY_TARGET_V2);
@@ -1254,9 +1272,11 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
   }
 
   // FIXME: This will fail if fork activation heights are subject to voting
-  if (version >= 10) {
+  if(version >= 16) {
+    return next_difficulty_v16(timestamps, cumulative_difficulties);
+  } else if(version >= 10) {
     return next_difficulty_lwma_4(timestamps, cumulative_difficulties);
-  } else if (version >= 7) {
+  } else if(version >= 7) {
     return next_difficulty_lwma(timestamps, cumulative_difficulties, version);
   } else {
     return next_difficulty(timestamps, cumulative_difficulties, DIFFICULTY_TARGET_V2);
@@ -1296,7 +1316,7 @@ bool Blockchain::prevalidate_miner_transaction(const block& b, uint64_t height)
 }
 //------------------------------------------------------------------
 // This function validates the miner transaction reward
-bool Blockchain::validate_miner_transaction(const block& b, size_t cumulative_block_weight, uint64_t fee, uint64_t& base_reward, uint64_t already_generated_coins, bool &partial_block_reward, uint8_t version)
+bool Blockchain::validate_miner_transaction(const block& b, size_t cumulative_block_weight, uint64_t fee, uint64_t& base_reward, uint64_t already_generated_coins, bool &partial_block_reward, uint8_t hard_fork_version)
 {
   LOG_PRINT_L3("Blockchain::" << __func__);
   //validate reward
@@ -1307,27 +1327,62 @@ bool Blockchain::validate_miner_transaction(const block& b, size_t cumulative_bl
 
   std::vector<uint64_t> last_blocks_weights;
   get_last_n_blocks_weights(last_blocks_weights, CRYPTONOTE_REWARD_BLOCKS_WINDOW);
-  if (!get_block_reward(epee::misc_utils::median(last_blocks_weights), cumulative_block_weight, already_generated_coins, base_reward, version))
+  if (!get_block_reward(epee::misc_utils::median(last_blocks_weights), cumulative_block_weight, already_generated_coins, fee, base_reward, hard_fork_version))
   {
     MERROR_VER("block weight " << cumulative_block_weight << " is bigger than allowed for this blockchain");
     return false;
   }
-  auto h = m_db->height();
+  uint64_t height = m_db->height();
 
-  if(h == 1) {
-  base_reward = MONEY_PREMINE;
-  }
-  else if (h > 1 && base_reward + fee < money_in_use)
+  if(hard_fork_version >= 16)
   {
-    MERROR_VER("coinbase transaction spend too much money (" << print_money(money_in_use) << "). Block reward is " << print_money(base_reward + fee) << "(" << print_money(base_reward) << "+" << print_money(fee) << ")");
+    uint64_t governance_reward = get_governance_reward(height, base_reward, hard_fork_version);
+
+    if(b.miner_tx.vout.back().amount != governance_reward)
+    {
+      MERROR_VER("Governance reward amount incorrect. Should be: " << print_money(governance_reward) << ", While is: " << print_money(b.miner_tx.vout.back().amount));
+      return false;
+    }
+
+    std::string governance_wallet_address_str;
+    switch(m_nettype)
+    {
+      case STAGENET:
+        governance_wallet_address_str = std::string(config::governance::STAGENET_WALLET_ADDRESS);
+        break;
+      case TESTNET:
+        governance_wallet_address_str = std::string(config::governance::TESTNET_WALLET_ADDRESS);
+        break;
+      case MAINNET:
+        governance_wallet_address_str = std::string(config::governance::MAINNET_WALLET_ADDRESS);
+        break;
+      default:
+        return false;
+    }
+
+    if(!validate_governance_reward_key(height, governance_wallet_address_str, b.miner_tx.vout.size() - 1, boost::get<txout_to_key>(b.miner_tx.vout.back().target).key, m_nettype))
+    {
+      MERROR_VER("Governance reward public key incorrect.");
+      return false;
+    }
+  }
+
+  if(height == 1)
+  {
+    base_reward = config::blockchain_settings::MORELO_PREMINE;
+  }
+
+  if(height > 1 && base_reward < money_in_use)
+  {
+    MERROR_VER("coinbase transaction spend too much money (" << print_money(money_in_use) << "). Block reward is " << print_money(base_reward) << "(" << print_money(base_reward) << "+" << print_money(fee) << ")");
     return false;
   }
-  else {
-    CHECK_AND_ASSERT_MES(money_in_use - fee <= base_reward, false, "base reward calculation bug");
-    if(base_reward + fee != money_in_use)
-      partial_block_reward = true;
-    base_reward = money_in_use - fee;
+
+  if(height == 0 && base_reward != money_in_use)
+  {
+    base_reward = money_in_use;
   }
+
   return true;
 }
 //------------------------------------------------------------------
@@ -1474,7 +1529,7 @@ bool Blockchain::create_block_template(block& b, const crypto::hash *from_block,
   b.timestamp = time(NULL);
 
   uint8_t version = get_current_hard_fork_version();
-  uint64_t blockchain_timestamp_check_window = version > 9 ? BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V11 : BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V9;
+  uint64_t blockchain_timestamp_check_window = version >= 16 ? BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V16 : BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V11;
 
   if(m_db->height() >= blockchain_timestamp_check_window) {
     std::vector<uint64_t> timestamps;
@@ -1562,8 +1617,8 @@ bool Blockchain::create_block_template(block& b, const crypto::hash *from_block,
    */
   //make blocks coin-base tx looks close to real coinbase tx to get truthful blob weight
   uint8_t hf_version = b.major_version;
-  size_t max_outs = hf_version >= 4 ? 1 : 11;
-  bool r = construct_miner_tx(height, median_weight, already_generated_coins, txs_weight, fee, miner_address, b.miner_tx, ex_nonce, max_outs, hf_version);
+  size_t max_outs = 1;
+  bool r = construct_miner_tx(height, median_weight, already_generated_coins, txs_weight, fee, miner_address, b.miner_tx, ex_nonce, max_outs, hf_version, m_nettype);
   CHECK_AND_ASSERT_MES(r, false, "Failed to construct miner tx, first chance");
   size_t cumulative_weight = txs_weight + get_transaction_weight(b.miner_tx);
 #if defined(DEBUG_CREATE_BLOCK_TEMPLATE)
@@ -1572,7 +1627,7 @@ bool Blockchain::create_block_template(block& b, const crypto::hash *from_block,
 #endif
   for (size_t try_count = 0; try_count != 10; ++try_count)
   {
-    r = construct_miner_tx(height, median_weight, already_generated_coins, cumulative_weight, fee, miner_address, b.miner_tx, ex_nonce, max_outs, hf_version);
+    r = construct_miner_tx(height, median_weight, already_generated_coins, cumulative_weight, fee, miner_address, b.miner_tx, ex_nonce, max_outs, hf_version, m_nettype);
 
     CHECK_AND_ASSERT_MES(r, false, "Failed to construct miner tx, second chance");
     size_t coinbase_weight = get_transaction_weight(b.miner_tx);
@@ -3313,12 +3368,12 @@ bool Blockchain::check_fee(size_t tx_weight, uint64_t fee) const
   uint64_t median = 0;
   uint64_t already_generated_coins = 0;
   uint64_t base_reward = 0;
-  if (version >= HF_VERSION_DYNAMIC_FEE)
+  if(version >= HF_VERSION_DYNAMIC_FEE)
   {
     median = m_current_block_cumul_weight_limit / 2;
     const uint64_t blockchain_height = m_db->height();
     already_generated_coins = blockchain_height ? m_db->get_block_already_generated_coins(blockchain_height - 1) : 0;
-    if (!get_block_reward(median, 1, already_generated_coins, base_reward, version))
+    if(!get_block_reward(median, 1, already_generated_coins, fee, base_reward, version))
       return false;
   }
 
@@ -3384,7 +3439,7 @@ uint64_t Blockchain::get_dynamic_base_fee_estimate(uint64_t grace_blocks) const
 
   uint64_t already_generated_coins = db_height ? m_db->get_block_already_generated_coins(db_height - 1) : 0;
   uint64_t base_reward;
-  if (!get_block_reward(median, 1, already_generated_coins, base_reward, version))
+  if (!get_block_reward(median, 1, already_generated_coins, 0, base_reward, version))
   {
     MERROR("Failed to determine block reward, using placeholder " << print_money(BLOCK_REWARD_OVERESTIMATE) << " as a high bound");
     base_reward = BLOCK_REWARD_OVERESTIMATE;
@@ -3910,7 +3965,16 @@ leave:
   // coins will eventually exceed MONEY_SUPPLY and overflow a uint64. To prevent overflow, cap already_generated_coins
   // at MONEY_SUPPLY. already_generated_coins is only used to compute the block subsidy and MONEY_SUPPLY yields a
   // subsidy of 0 under the base formula and therefore the minimum subsidy >0 in the tail state.
-  already_generated_coins = base_reward < (MONEY_SUPPLY-already_generated_coins) ? already_generated_coins + base_reward : MONEY_SUPPLY;
+  if(fee_summary > base_reward)
+  {
+    MDEBUG("Block with id: " << id << " caused coin emmision rollback. Change is: -" << print_money(fee_summary - base_reward));
+    already_generated_coins = already_generated_coins - (fee_summary - base_reward);
+  }
+  else
+  {
+    already_generated_coins = (base_reward - fee_summary) < (MONEY_SUPPLY-already_generated_coins) ? already_generated_coins + (base_reward - fee_summary) : MONEY_SUPPLY;
+  }
+
   if(blockchain_height)
     cumulative_difficulty += m_db->get_block_cumulative_difficulty(blockchain_height - 1);
 
@@ -3961,10 +4025,13 @@ leave:
     return false;
   }
 
-  MINFO("+++++ BLOCK SUCCESSFULLY ADDED" << std::endl << "id:\t" << id << std::endl << "PoW:\t" << proof_of_work << std::endl << "HEIGHT " << new_height-1 << ", difficulty:\t" << current_diffic << std::endl << "block reward: " << print_money(fee_summary + base_reward) << "(" << print_money(base_reward) << " + " << print_money(fee_summary) << "), coinbase_weight: " << coinbase_weight << ", cumulative weight: " << cumulative_block_weight << ", " << block_processing_time << "(" << target_calculating_time << "/" << longhash_calculating_time << ")ms");
+  MGINFO_MAGENTA("+++++ BLOCK SUCCESSFULLY ADDED" << std::endl << "id:\t" << id << std::endl << "PoW:\t" << proof_of_work << std::endl << "HEIGHT " << new_height-1 << ", difficulty:\t"
+         << current_diffic << std::endl << "block reward: " << print_money(base_reward) << "(" << print_money(base_reward - fee_summary) << " + " << print_money(fee_summary)
+         << "), coinbase_weight: " << coinbase_weight << ", cumulative weight: " << cumulative_block_weight << ", " << block_processing_time << "(" << target_calculating_time
+         << "/" << longhash_calculating_time << ")ms");
   if(m_show_time_stats)
   {
-    MINFO("Height: " << new_height << " coinbase weight: " << coinbase_weight << " cumm: "
+    MGINFO_MAGENTA("Height: " << new_height << " coinbase weight: " << coinbase_weight << " cumm: "
         << cumulative_block_weight << " p/t: " << block_processing_time << " ("
         << target_calculating_time << "/" << longhash_calculating_time << "/"
         << t1 << "/" << t2 << "/" << t3 << "/" << t_exists << "/" << t_pool
@@ -4915,7 +4982,8 @@ bool Blockchain::get_hard_fork_voting_info(uint8_t version, uint32_t &window, ui
 uint64_t Blockchain::get_difficulty_target() const
 {
   LOG_PRINT_L3("Blockchain::" << __func__);
-  return get_current_hard_fork_version() >= 10 ? DIFFICULTY_TARGET_V11 : DIFFICULTY_TARGET_V2;
+  uint8_t version = get_current_hard_fork_version();
+  return get_current_diff_target(version);
 }
 
 std::map<uint64_t, std::tuple<uint64_t, uint64_t, uint64_t>> Blockchain:: get_output_histogram(const std::vector<uint64_t> &amounts, bool unlocked, uint64_t recent_cutoff, uint64_t min_count) const

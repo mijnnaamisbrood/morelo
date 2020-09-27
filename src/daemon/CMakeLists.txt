@@ -81,7 +81,7 @@ target_link_libraries(daemon
     daemonizer
     serialization
     daemon_rpc_server
-    ${EPEE_READLINE}
+    epee
     version
     ${Boost_CHRONO_LIBRARY}
     ${Boost_FILESYSTEM_LIBRARY}
@@ -89,10 +89,10 @@ target_link_libraries(daemon
     ${Boost_REGEX_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
-    ${ZMQ_LIB}
+    libzmq
     ${GNU_READLINE_LIBRARY}
     ${EXTRA_LIBRARIES}
-    ${Blocks})
+    blocks)
 set_property(TARGET daemon
   PROPERTY
     OUTPUT_NAME "morelod")
