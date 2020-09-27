@@ -268,9 +268,9 @@ namespace config
 
    namespace governance
    {
-     static constexpr const char* MAINNET_WALLET_ADDRESS = "";
-     static constexpr const char* TESTNET_WALLET_ADDRESS = "eto1bryZzzTGPWQcfKwjZ5VK3t6N9vBFkYkmszNwN3c29izQQFmX12DVNywZB41XEH8pAbg57ibHdhjxNpBrFZwB8mBsnuLvVp";
-     static constexpr const char* STAGENET_WALLET_ADDRESS = "exoiurtmELfLdhWEvingGogv4L9a6gkhA2GUQRq1om2eSoUSg6StUekTYN6fvzw5FD2RPDC1XfdrY2iSmNFdDyxbAU2uaLQEjP";
+     static constexpr const char* MAINNET_WALLET_ADDRESS = "emo1hsdY9BLhGUUZqFqNUgGowHwEcW9LzQ9kjN8GJrqbBhXe6L37gZ5Y2pa8eNRiyzabyP8ScDyi2hcbzH4akSvE8SuYr1dFeX";
+     static constexpr const char* TESTNET_WALLET_ADDRESS = "eto1UJjpbxTgM2kzrQNgrkazZLCyhGvcHaoFvsHypZ8JdvsXFQ9kb6zEMAxxJrkzBWKx1ZgxArfgiTudcrUvFBya7EwgQiftGn";
+     static constexpr const char* STAGENET_WALLET_ADDRESS = "exoiwUAF2AEDC8oniRiMXKEkmsLEtw7XNVm2Lc2NJsejU4nN2zWrCF9cjrPgEgUeiHLQ8gNkwyoHVRmkGpS87Eqh4G1yAjseHF";
    }
 }
 
