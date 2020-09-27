@@ -51,7 +51,7 @@ set(crypto_sources
   rx-slow-hash.c
   tree-hash.c)
 
-include_directories(${RANDOMX_INCLUDE})
+include_directories(${RANDOMARQ_INCLUDE})
 
 set(crypto_headers)
 
