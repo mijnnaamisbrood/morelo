@@ -43,8 +43,8 @@
 #include <functional>
 #include <unordered_map>
 #include <unordered_set>
-#include <zmq.hpp>
 
+#include "morelo_mq/zmq_addon.hpp"
 #include "span.h"
 #include "syncobj.h"
 #include "string_tools.h"

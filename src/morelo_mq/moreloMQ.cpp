@@ -63,7 +63,7 @@ using namespace epee;
 #undef MORELO_DEFAULT_LOG_CATEGORY
 #define MORELO_DEFAULT_LOG_CATEGORY "daemon.zmq"
 
-namespace moreloMQ 
+namespace moreloMQ
 {
 
 	 extern "C" void message_buffer_destroy(void*, void* hint) {

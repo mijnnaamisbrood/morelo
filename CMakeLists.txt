@@ -500,15 +500,15 @@ endif()
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads)
-add_c_flag_if_supported(-pthread CMAKE_C_FLAGS)
-add_cxx_flag_if_supported(-pthread CMAKE_CXX_FLAGS)
+#add_c_flag_if_supported(-pthread CMAKE_C_FLAGS)
+#add_cxx_flag_if_supported(-pthread CMAKE_CXX_FLAGS)
 
 if(CMAKE_SYSTEM_NAME MATCHES "(SunOS|Solaris)")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthreads")
 endif()
 
 if(APPLE AND NOT IOS)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -fvisibility=default -std=gnu++14")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -fvisibility=default -std=c++14")
   if(NOT OpenSSL_DIR)
       EXECUTE_PROCESS(COMMAND brew --prefix openssl
         OUTPUT_VARIABLE OPENSSL_ROOT_DIR
@@ -663,11 +663,13 @@ else()
 
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ARCH_FLAG}")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ARCH_FLAG}")
+
   if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
     set(WARNINGS "-Wall -Wextra -Wpointer-arith -Wundef -Wvla -Wwrite-strings -Wno-error=extra -Wno-error=deprecated-declarations -Wno-unused-lambda-capture -Wno-unused-parameter -Wno-unused-variable -Wno-error=unused-variable -Wno-error=undef -Wno-error=uninitialized")
   else()
     set(WARNINGS "-Wall -Wextra -Wpointer-arith -Wundef -Wvla -Wwrite-strings -Wno-error=extra -Wno-error=deprecated-declarations -Wno-unused-parameter -Wno-unused-variable -Wno-error=unused-variable -Wno-error=undef -Wno-error=uninitialized -Wno-maybe-uninitialized")
   endif()
+
   if(CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
     if(ARM)
       set(WARNINGS "${WARNINGS} -Wno-error=inline-asm")
@@ -675,6 +677,7 @@ else()
   else()
     set(WARNINGS "${WARNINGS} -Wlogical-op -Wno-error=maybe-uninitialized -Wno-error=cpp")
   endif()
+
   if(MINGW)
     set(WARNINGS "${WARNINGS} -Wno-misleading-indentation -Wno-maybe-uninitialized -Wno-error=unused-value -Wno-error=unused-but-set-variable")
     set(MINGW_FLAG "${MINGW_FLAG} -DWIN32_LEAN_AND_MEAN")
@@ -738,12 +741,9 @@ else()
   endif()
 
   # linker
-  if(NOT WIN32 AND NOT (CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "AppleClang") AND NOT (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_LESS 9.1))
+  if(NOT WIN32 AND (CMAKE_C_COMPILER_ID STREQUAL "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_LESS 9.1))
     # Windows binaries die on startup with PIE compiled with GCC < 9.x
     add_linker_flag_if_supported(-pie LD_SECURITY_FLAGS)
-  endif()
-  if(CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
-    add_linker_flag_if_supported(-Wl, -pie LD_SECURITY_FLAGS)
   endif()
   add_linker_flag_if_supported(-Wl,-z,relro LD_SECURITY_FLAGS)
   add_linker_flag_if_supported(-Wl,-z,now LD_SECURITY_FLAGS)
@@ -770,15 +770,17 @@ else()
     add_linker_flag_if_supported(-Wl,--high-entropy-va LD_SECURITY_FLAGS)
   endif()
 
-  if(NOT CMAKE_C_COMPILER_ID STREQUAL "Clang" OR CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
+  if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
     set(LINKER_FLAGS "${LINKER_FLAGS} -ffunction-sections -fdata-sections -Wl,--gc-sections")
   else()
     set(LINKER_FLAGS "${LINKER_FLAGS} -ffunction-sections -fdata-sections -Wl,-dead_strip")
   # silence warning in link cases dead_strip cannot be used
     set(WARNINGS "${WARNINGS} -Wno-unused-command-line-argument")
   endif()
-  if(STATIC OR DEPENDS OR MINGW)
-    set(CMAKE_EXE_LINKER_OPTIONS_FLAGS "${CMAKE_EXE_LINKER_OPTIONS_FLAGS} -Wl,-s")
+  if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    if(STATIC OR DEPENDS OR MINGW)
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-s")
+    endif()
   endif()
 
   statusinfo("Using C security hardening flags: ${C_SECURITY_FLAGS}")
@@ -788,12 +790,11 @@ else()
     statusinfo("Using linker elimination of unused data flags: ${LINKER_FLAGS}")
   else()
     statusinfo("Using linker elimination of unused data flags: ${LINKER_FLAGS}")
-    statusinfo("Using exe linker elimination of unused data flags: ${CMAKE_EXE_LINKER_OPTIONS_FLAGS}")
   endif()
 
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -D_GNU_SOURCE ${MINGW_FLAG} ${WARNINGS} ${C_WARNINGS} ${COVERAGE_FLAGS} ${PIC_FLAG} ${C_SECURITY_FLAGS} ${BUILD_FLAGS} ${LINKER_FLAGS} ${VAR_OPT_FLAGS}")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14 -D_GNU_SOURCE ${MINGW_FLAG} ${WARNINGS} ${CXX_WARNINGS} ${COVERAGE_FLAGS} ${PIC_FLAG} ${CXX_SECURITY_FLAGS} ${BUILD_FLAGS} ${LINKER_FLAGS} ${VAR_OPT_FLAGS}")
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LD_SECURITY_FLAGS} ${LD_BACKCOMPAT_FLAGS} ${VAR_OPT_FLAGS} ${CMAKE_EXE_LINKER_OPTIONS_FLAGS}")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -D_GNU_SOURCE ${MINGW_FLAG} ${WARNINGS} ${C_WARNINGS} ${COVERAGE_FLAGS} ${PIC_FLAG} ${C_SECURITY_FLAGS} ${BUILD_FLAGS} ${LINKER_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -D_GNU_SOURCE ${MINGW_FLAG} ${WARNINGS} ${CXX_WARNINGS} ${COVERAGE_FLAGS} ${PIC_FLAG} ${CXX_SECURITY_FLAGS} ${BUILD_FLAGS} ${LINKER_FLAGS}")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${LD_SECURITY_FLAGS} ${LD_BACKCOMPAT_FLAGS}")
 
   #  ${WRAP_CXA_THROW_FLAG}
   # With GCC 6.1.1 the compiled binary malfunctions due to aliasing. Until that
@@ -922,22 +923,13 @@ else()
     endif()
   endif()
 
-  if(CMAKE_BUILD_TYPE STREQUAL "Release" OR STATIC OR DEPENDS AND NOT (WIN32 OR MINGW))
-    set(VAR_OPT_FLAGS "${VAR_OPT_FLAGS} -fuse-ld=gold -foptimize-strlen -pipe")
-    set(CMAKE_AR "gcc-ar")
-    set(CMAKE_RANLIB "gcc-ranlib")
-    set(CMAKE_NM "gcc-nm")
-  endif()
 
-  set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${DEBUG_FLAGS}")
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${DEBUG_FLAGS}")
-  set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} ${RELEASE_FLAGS}")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${RELEASE_FLAGS}")
-
-  if(STATIC OR DEPENDS AND NOT (APPLE OR WIN32 OR MINGW))
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -lgcc_eh -lstdc++ -lm -latomic -lresolv -lrt")
-  elseif(WIN32 OR MINGW)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+  if(STATIC OR DEPENDS)
+    if(WIN32 OR MINGW)
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+    else()
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static -lgcc_eh -lstdc++ -lm -latomic -lresolv -lrt")
+    endif()
   endif()
 
 #  if(CMAKE_BUILD_TYPE STREQUAL "Release" AND NOT APPLE)
@@ -1081,7 +1073,7 @@ option(BUILD_GUI_DEPS "Build GUI dependencies." OFF)
 
 # This is not nice, distribution packagers should not enable this, but depend
 # on libunbound shipped with their distribution instead
-option(INSTALL_VENDORED_LIBUNBOUND "Install libunbound binary built from source vendored with this repo." ON)
+option(INSTALL_VENDORED_LIBUNBOUND "Install libunbound binary built from source vendored with this repo." OFF)
 
 find_package(PythonInterp)
 find_program(iwyu_tool_path NAMES iwyu_tool.py iwyu_tool)
