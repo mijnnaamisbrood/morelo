@@ -19,11 +19,12 @@ Network properties:
 - Ticker: MRL
 - Max supply: 75 ml
 - Pre: 3.5 ml
-- Block time: 120 seconds
+- Block time: 120 seconds after v16: 60 seconds
 - Decimals: 9
 - Algorithm: RandomARQ
 - Consensus: PoW
 - Anonymity: BulletProof RingCT
+- Governance Fee: 10%
 
 ## Morelo resources
 
@@ -168,7 +169,7 @@ Clone recursively to pull-in needed submodule(s):
 
 If you already have a repo cloned, initialize and update:
 
-`$ cd morelo && git checkout release-v0.4.0.3`    
+`$ cd morelo && git checkout release-v0.5.0.0`    
 `$ git submodule init && git submodule update`    
 
 ### Build instructions
