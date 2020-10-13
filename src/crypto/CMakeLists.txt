@@ -51,7 +51,7 @@ set(crypto_sources
   rx-slow-hash.c
   tree-hash.c)
 
-include_directories(${RANDOMX_INCLUDE})
+include_directories(${RANDOMARQ_INCLUDE})
 
 set(crypto_headers)
 
@@ -85,7 +85,7 @@ target_link_libraries(cncrypto
     epee
     randomx
     ${Boost_SYSTEM_LIBRARY}
-    ${SODIUM_LIBRARY}
+    sodium
   PRIVATE
     ${EXTRA_LIBRARIES})
 

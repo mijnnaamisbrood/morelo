@@ -63,7 +63,7 @@ target_link_libraries(wallet
     cryptonote_core
     mnemonics
     net
-    ${LMDB_LIBRARY}
+    lmdb
     ${Boost_CHRONO_LIBRARY}
     ${Boost_SERIALIZATION_LIBRARY}
     ${Boost_FILESYSTEM_LIBRARY}
@@ -99,7 +99,7 @@ if(NOT IOS)
       common
       version
       daemonizer
-      ${EPEE_READLINE}
+      epee
       ${Boost_CHRONO_LIBRARY}
       ${Boost_PROGRAM_OPTIONS_LIBRARY}
       ${Boost_FILESYSTEM_LIBRARY}

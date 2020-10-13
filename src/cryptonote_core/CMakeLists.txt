@@ -59,8 +59,8 @@ target_link_libraries(cryptonote_core
     multisig
     ringct
     device
-	morelo_mq
-		daemonizer
+    morelo_mq
+    daemonizer
     ${Boost_DATE_TIME_LIBRARY}
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${Boost_SERIALIZATION_LIBRARY}
@@ -68,5 +68,5 @@ target_link_libraries(cryptonote_core
     ${Boost_SYSTEM_LIBRARY}
     ${Boost_THREAD_LIBRARY}
   PRIVATE
-    ${ZMQ_LIB}
+    libzmq
     ${EXTRA_LIBRARIES})

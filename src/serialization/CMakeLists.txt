@@ -42,7 +42,7 @@ morelo_add_library(serialization
   ${serialization_headers}
   ${serialization_private_headers})
 target_link_libraries(serialization
-  LINK_PRIVATE
+  PRIVATE
     cryptonote_core
     cryptonote_protocol
     ${Boost_CHRONO_LIBRARY}

@@ -19,11 +19,12 @@ Network properties:
 - Ticker: MRL
 - Max supply: 75 ml
 - Pre: 3.5 ml
-- Block time: 120 seconds
+- Block time: 120 seconds after v16: 60 seconds
 - Decimals: 9
 - Algorithm: RandomARQ
 - Consensus: PoW
 - Anonymity: BulletProof RingCT
+- Governance Fee: 10%
 
 ## Morelo resources
 
@@ -109,6 +110,14 @@ That build is from the master branch, which is used for active development and c
 
 ### Dependencies
 
+#### We are strongly suggest to update cmake and boost to the latest available release.
+
+##### [Cmake v3.17.3](https://github.com/Kitware/CMake/releases/download/v3.17.3/cmake-3.17.3.tar.gz)
+
+##### [Boost](https://dl.bintray.com/boostorg/release/1.73.0/source/boost_1_73_0.tar.gz)
+
+##### Arqma build been tested on Ubuntu Server 20.04 Focal Fosa with above releases as long with [gcc9.3](https://gcc.gnu.org/gcc-9/)
+
 The following table summarizes the tools and libraries required to build. A
 few of the libraries are also included in this repository (marked as
 "Vendored"). By default, the build uses the library installed on the system,
@@ -121,15 +130,11 @@ library archives (`.a`).
 | Dep          | Min. version  | Vendored | Debian/Ubuntu pkg  | Arch pkg     | Fedora            | Optional | Purpose        |
 | ------------ | ------------- | -------- | ------------------ | ------------ | ----------------- | -------- | -------------- |
 | GCC          | 7.3.0         | NO       | `build-essential`  | `base-devel` | `gcc`             | NO       |                |
-| CMake        | 3.6.3         | NO       | `cmake`            | `cmake`      | `cmake`           | NO       |                |
+| CMake        | 3.12.0        | NO       | `cmake`            | `cmake`      | `cmake`           | NO       |                |
 | pkg-config   | any           | NO       | `pkg-config`       | `base-devel` | `pkgconf`         | NO       |                |
 | Boost        | 1.62          | NO       | `libboost-all-dev` | `boost`      | `boost-devel`     | NO       | C++ libraries  |
-| OpenSSL      | basically any | NO       | `libssl-dev`       | `openssl`    | `openssl-devel`   | NO       | sha256 sum     |
-| libzmq       | 3.0.0         | NO       | `libzmq3-dev`      | `zeromq`     | `zeromq-devel`    | NO       | ZeroMQ library |
-| OpenPGM      | ????          | NO       | `libpgm-dev`       | `libpgm`     | `openpgm-devel`   | NO       | For ZeroMQ     |
-| libnorm[2]   | ?             | NO       | `libnorm-dev`      |              |               `   | YES      | For ZeroMQ     |
-| libunbound   | 1.4.16        | YES      | `libunbound-dev`   | `unbound`    | `unbound-devel`   | NO       | DNS resolver   |
-| libsodium    | ?             | NO       | `libsodium-dev`    | ?            | `libsodium-devel` | NO       | Cryptography   |
+| OpenSSL      | 1.1.1g        | NO       | `libssl-dev`       | `openssl`    | `openssl-devel`   | NO       | sha256 sum     |
+| libsodium    | 1.0.16        | NO       | `libsodium-dev`    | ?            | `libsodium-devel` | NO       | Cryptography   |
 | libunwind    | any           | NO       | `libunwind8-dev`   | `libunwind`  | `libunwind-devel` | YES      | Stack traces   |
 | liblzma      | any           | NO       | `liblzma-dev`      | `xz`         | `xz-devel`        | YES      | For libunwind  |
 | libreadline  | 6.3.0         | NO       | `libreadline6-dev` | `readline`   | `readline-devel`  | YES      | Input editing  |
@@ -141,8 +146,6 @@ library archives (`.a`).
 | HIDAPI       | ?             | NO       | `libhidapi-dev`    | ``           | ``                | NO       | for Device     |
 | libusb-1.0   | 1.0           | NO       | `libusb-1.0-0-dev` | ``           | ``                | NO       |                |
 | libudev      | ?             | NO       | `libudev-dev`      | ``           | ``                | NO       |                |
-| protobuf     | ?             | NO       | `protobuf-compiler`| ``           | ``                | NO       | serializing    |
-|              |               |          | `libprotobuf-dev`  | ``           | ``                |          | structured data|
 -------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -152,7 +155,7 @@ build the library binary manually. This can be done with the following command `
 
 Debian / Ubuntu one liner for all dependencies
 
-``` sudo apt update && sudo apt install build-essential curl cmake pkg-config libboost-all-dev libssl-dev libzmq3-dev libunbound-dev libsodium-dev libunwind8-dev liblzma-dev libreadline6-dev libldns-dev libexpat1-dev doxygen graphviz libpgm-dev libudev-dev libusb-1.0-0-dev libhidapi-dev protobuf-compiler libprotobuf-dev xsltproc gperf autoconf automake libtool-bin libprotobuf-c-dev ```
+``` sudo apt update && sudo apt install build-essential curl cmake pkg-config libboost-all-dev libssl-dev libsodium-dev libunwind-dev liblzma-dev libreadline-dev libldns-dev libexpat1-dev doxygen graphviz libudev-dev libusb-1.0-0-dev libhidapi-dev xsltproc gperf autoconf automake libtool-bin ```
 
 Install all dependencies at once on OSX:
 
@@ -166,7 +169,7 @@ Clone recursively to pull-in needed submodule(s):
 
 If you already have a repo cloned, initialize and update:
 
-`$ cd morelo && git checkout release-v0.4.0.3`    
+`$ cd morelo && git checkout release-v0.5.0.0`    
 `$ git submodule init && git submodule update`    
 
 ### Build instructions
@@ -187,8 +190,6 @@ invokes cmake commands as needed.
     this to be worthwhile, the machine should have one core and about 2GB of RAM
     available per thread.
 
-    *Note*: If cmake can not find zmq.hpp file on OS X, installing `zmq.hpp` from
-    https://github.com/zeromq/cppzmq to `/usr/local/include` should fix that error.
 
 * The resulting executables can be found in `build/release/bin`
 
@@ -313,7 +314,7 @@ application.
 
     To build for 64-bit Windows:
 
-        pacman -S git mingw-w64-x86_64-toolchain make mingw-w64-x86_64-cmake mingw-w64-x86_64-boost mingw-w64-x86_64-openssl mingw-w64-x86_64-zeromq mingw-w64-x86_64-libsodium mingw-w64-x86_64-hidapi protobuf-devel mingw-w64-x86_64-protobuf-c mingw-w64-x86_64-protobuf
+        pacman -S git mingw-w64-x86_64-toolchain make mingw-w64-x86_64-cmake mingw-w64-x86_64-boost mingw-w64-x86_64-openssl mingw-w64-x86_64-libsodium mingw-w64-x86_64-hidapi automake autoconf binutils patch
 
 **Building**
 
@@ -417,26 +418,6 @@ Build the cppzmq bindings.
 
 We assume you are compiling with a non-root user and you have `doas` enabled.
 
-```
-# Create cppzmq building directory
-mkdir ~/cppzmq
-cd ~/cppzmq
-
-# Fetch cppzmq source
-ftp -o cppzmq-4.2.3.tar.gz https://github.com/zeromq/cppzmq/archive/v4.2.3.tar.gz
-
-# MUST output: (SHA256) cppzmq-4.2.3.tar.gz: OK
-echo "3e6b57bf49115f4ae893b1ff7848ead7267013087dc7be1ab27636a97144d373 cppzmq-4.2.3.tar.gz" | sha256 -c
-tar xfz cppzmq-4.2.3.tar.gz
-
-# Start building cppzmq
-cd cppzmq-4.2.3
-mkdir build
-cd build
-cmake ..
-doas make install
-```
-
 Build Morelo: `env DEVELOPER_LOCAL_TOOLS=1 BOOST_ROOT=/usr/local make release-static`
 
 ### On Solaris:
@@ -467,23 +448,19 @@ By default, in either dynamically or statically linked builds, binaries target t
 * ```make release-static-linux-armv8``` builds binaries on Linux portable across POSIX systems on armv8 processors
 * ```make release-static-linux-armv7``` builds binaries on Linux portable across POSIX systems on armv7 processors
 * ```make release-static-linux-armv6``` builds binaries on Linux portable across POSIX systems on armv6 processors
-* ```make release-static-win64``` builds binaries on 64-bit Windows portable across 64-bit Windows systems
+* ```make release-static-win``` builds binaries on 64-bit Windows portable across 64-bit Windows systems
 
 ### Cross Compiling
 
 You can also cross-compile Morelo static binaries on Linux for Windows and macOS with the `depends` system.
 
 * ```make depends target=x86_64-linux-gnu``` for 64-bit linux binaries.
-* ```make depends target=x86_64-w64-mingw32``` for 64-bit windows binaries. Requires: python3 g++-mingw-w64-x86-64 wine1.6 bc
-* ```make depends target=x86_64-apple-darwin14``` for macOS binaries. Requires: cmake imagemagick libcap-dev librsvg2-bin libz-dev libbz2-dev libtiff-tools python3-dev curl libtiff-tools bsdmainutils libbz2-dev python3-setuptools
+* ```make depends target=x86_64-w64-mingw32``` for 64-bit windows binaries. Requires: python3 g++-mingw-w64-x86-64 wine64 bc
+* ```make depends target=x86_64-apple-darwin19.2.0``` for macOS binaries. Requires: curl librsvg2-bin libtiff-tools bsdmainutils cmake imagemagick libcap-dev libz-dev libbz2-dev python3-setuptools libtinfo5
 * ```make depends target=arm-linux-gnueabihf``` for armv7 binaries. Requires: g++-arm-linux-gnueabihf
 * ```make depends target=aarch64-linux-gnu``` for armv8 binaries. Requires: g++-aarch64-linux-gnu
 
-*** For `x86_64-apple-darwin14` you need to download SDK first ***    
-
-* ```git clone -b arqma https://github.com/malbit/MacOSX-SDKs.git contrib/depends/SDKs ```    
-
-You can download SDK at https://github.com/malbit/MacOSX-SDKs/releases/download/MacOSX10.11.sdk.arqma/MacOSX10.11.sdk.tar.gz and unpack it and put to contrib/depends/SDKs    
+*** For `x86_64-apple-darwin19.2.0` you need to download SDK first ***    
 
 The required packages are the names for each toolchain on apt. Depending on your OS Distribution, they may have different names.
 
