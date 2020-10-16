@@ -477,9 +477,10 @@ namespace nodetool
     }
     else
     {
-      full_addrs.insert("5.172.219.174:38411"); //nl
-      full_addrs.insert("164.68.123.118:38411"); //eu
-      full_addrs.insert("188.68.232.9:38411"); //global
+      full_addrs.insert("5.172.219.174:38411"); //nl sniper
+      full_addrs.insert("164.68.123.118:38411"); //eu a
+      full_addrs.insert("188.68.232.9:38411"); //global kris
+      full_addrs.insert("84.1.59.84:38411"); //cryptosyphon
     }
     return full_addrs;
   }
