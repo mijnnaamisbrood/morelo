@@ -44,7 +44,7 @@ namespace
 {
   // This number was picked by taking the leading 4 bytes from this output:
   // echo Morelo bootstrap file | sha1sum
-  const uint32_t blockchain_raw_magic = 0x28721586;
+  const uint32_t blockchain_raw_magic = 0x9c2925fa;
   const uint32_t header_size = 1024;
 
   std::string refresh_string = "\r                                    \r";
