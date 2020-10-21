@@ -359,7 +359,7 @@ namespace cryptonote
 
     // *** (uint64_t)-1 *** <- Need to be fill in when we will know correct fork values
     uint64_t last_block_v10 = m_core.get_nettype() == TESTNET ? 1 : m_core.get_nettype() == MAINNET ? 1 : 1;
-    uint64_t last_block_v15 = m_core.get_nettype() == TESTNET ? (uint64_t)-1 : m_core.get_nettype() == MAINNET ? 156699 : (uint64_t)-1;
+    uint64_t last_block_v15 = m_core.get_nettype() == TESTNET ? (uint64_t)-1 : m_core.get_nettype() == MAINNET ? (uint64_t)-1 : (uint64_t)-1;
     uint64_t diff_v11 = max_block_height > last_block_v10 ? std::min(abs_diff, max_block_height - last_block_v10) : 0;
     uint64_t diff_v16 = max_block_height > last_block_v15 ? std::min(abs_diff, max_block_height - last_block_v15) : 0;
 

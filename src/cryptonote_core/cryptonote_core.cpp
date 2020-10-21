@@ -1195,12 +1195,12 @@ namespace cryptonote
   //-----------------------------------------------------------------------------------------------
   size_t core::get_block_sync_size(uint64_t height) const
   {
-    static const uint64_t quick_height = m_nettype == TESTNET ? 0 : m_nettype == MAINNET ? 215000 : 0;
     if(block_sync_size > 0)
       return block_sync_size;
-    if(height >= quick_height)
+    if(get_current_blockchain_height() <= config::sync::SYNC_HEIGHT)
+      return config::sync::RAPID_SYNC;
+    else
       return config::sync::NORMAL_SYNC;
-    return config::sync::RAPID_SYNC;
   }
   //-----------------------------------------------------------------------------------------------
   bool core::are_key_images_spent_in_pool(const std::vector<crypto::key_image>& key_im, std::vector<bool> &spent) const

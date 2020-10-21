@@ -262,8 +262,9 @@ namespace config
 
    namespace sync
    {
+     const uint64_t SYNC_HEIGHT = 60000; // Blockchain height up to Rapid_Sync is ON.
      const size_t NORMAL_SYNC = 20; // Amount of Blocks to download and Validate at ones while Synchronizung with Morelo Network.
-     const size_t RAPID_SYNC = 250; // Amount of Blocks to download at ones from already known by Morelo Daemon and Checkpoint are hardcoded into codebase
+     const size_t RAPID_SYNC = 100; // Amount of Blocks to download at ones from already known by Morelo Daemon and Checkpoint are hardcoded into codebase
    }
 
    namespace governance
