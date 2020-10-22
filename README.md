@@ -169,7 +169,7 @@ Clone recursively to pull-in needed submodule(s):
 
 If you already have a repo cloned, initialize and update:
 
-`$ cd morelo && git checkout release-v0.5.0`    
+`$ cd morelo && git checkout release-v0.5.1.0`    
 `$ git submodule init && git submodule update`    
 
 ### Build instructions
