@@ -91,8 +91,7 @@ static const struct {
 } mainnet_hard_forks[] = {
  // version 1 from the start of the blockchain
  { 1, 0, 0, 1581800400 },
- { 15, 1, 0, 1581806100 },
- { 16, 156700, 0, 1603132800 },
+ { 16, 1, 0, 1603132800 },
 };
 
 static const struct {
@@ -103,7 +102,7 @@ static const struct {
 } testnet_hard_forks[] = {
  // version 1 from the start of the blockchain
  { 1, 0, 0, 1581800400 },
- { 15, 1, 0, 1581806100 },
+ { 16, 1, 0, 1581806100 },
 };
 
 static const struct {
@@ -114,7 +113,6 @@ static const struct {
 } stagenet_hard_forks[] = {
  // version 1 from the start of the blockchain
  { 1, 0, 0, 1581800400 },
- { 15, 1, 0, 1581806100 },
  { 16, 50, 0, 1601146980 },
 };
 

@@ -1,2 +1,2 @@
-.git* export-ignore
-version.cmake export-subst
+# Auto detect text files and perform LF normalization
+* text=auto

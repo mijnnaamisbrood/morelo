@@ -51,8 +51,8 @@
 #define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V9            BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V2
 
 // MONEY_SUPPLY - total number coins to be generated
-#define MONEY_SUPPLY                                    ((uint64_t)75000000000000000)
-#define EMISSION_SPEED_FACTOR_PER_MINUTE                (21)
+#define MONEY_SUPPLY                                    ((uint64_t)100000000000000000)
+#define EMISSION_SPEED_FACTOR_PER_MINUTE                (20)
 #define EMISSION_SPEED_FACTOR_V16                       (20)
 #define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)300000000)
 
@@ -129,7 +129,7 @@
 #define P2P_LOCAL_WHITE_PEERLIST_LIMIT                  1000
 #define P2P_LOCAL_GRAY_PEERLIST_LIMIT                   5000
 
-#define P2P_DEFAULT_CONNECTIONS_COUNT                   6
+#define P2P_DEFAULT_CONNECTIONS_COUNT                   12
 #define P2P_DEFAULT_HANDSHAKE_INTERVAL                  60         // secondes
 #define P2P_DEFAULT_PACKET_MAX_SIZE                     50000000   // 50000000 bytes maximum packet size
 #define P2P_DEFAULT_PEERS_IN_HANDSHAKE                  250
@@ -155,7 +155,7 @@
 
 #define ALLOW_DEBUG_COMMANDS
 
-#define CRYPTONOTE_NAME                                 "morelo"
+#define CRYPTONOTE_NAME                                 "wallstreetbets"
 #define CRYPTONOTE_POOLDATA_FILENAME                    "poolstate.bin"
 #define CRYPTONOTE_BLOCKCHAINDATA_FILENAME              "data.mdb"
 #define CRYPTONOTE_BLOCKCHAINDATA_LOCK_FILENAME         "lock.mdb"
@@ -203,47 +203,47 @@ namespace config
    uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)100000);
    std::string const P2P_REMOTE_DEBUG_TRUSTED_PUB_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
 
-   uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x1a29e1; // Wallet prefix: emo MainNet
-   uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x8a8e1; // Wallet prefix: emi MainNet
-   uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0xeaae1; // Wallet prefix: ems MainNet
-   uint16_t const P2P_DEFAULT_PORT = 38411;
-   uint16_t const RPC_DEFAULT_PORT = 38422;
-   uint16_t const ZMQ_DEFAULT_PORT = 38433;
+   uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x233caf; // Wallet prefix: WSBC MainNet
+   uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0xda2bcaf; // Wallet prefix: WSBC2 MainNet
+   uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0xec2bcaf; // Wallet prefix: WSBC3 MainNet
+   uint16_t const P2P_DEFAULT_PORT = 17761;
+   uint16_t const RPC_DEFAULT_PORT = 17762;
+   uint16_t const ZMQ_DEFAULT_PORT = 18891;
    boost::uuids::uuid const NETWORK_ID = { {
-       0x11, 0x11, 0x11, 0x11, 0xFF, 0xFF, 0xFF, 0x11, 0x44, 0x11, 0xFF, 0xFF, 0xFF, 0x55, 0x11, 0x1B
-     } }; // 
+       0x21, 0x18, 0x66, 0x85, 0xa3, 0xF5, 0x11, 0x78, 0x82, 0x83, 0xFF, 0xFF, 0xFF, 0x33, 0x73, 0x2B
+     } }; //
    std::string const GENESIS_TX = "011201ff00011e026bc5c7db8a664f652d78adb587ac4d759c6757258b64ef9cba3c0354e64fb2e42101abca6a39c561d0897be183eb0143990eba201aa7d2c652ab0555d28bb4b70728";
    uint32_t const GENESIS_NONCE = 38411;
 
    namespace testnet
    {
-     uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x80662; // Wallet prefix: eto... // decimal prefix: 21450
-     uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x4562; // Wallet prefix: eti... // decimal prefix: 20554
-     uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x4762; // Wallet prefix: ets... // decimal prefix: 21066
-     uint16_t const P2P_DEFAULT_PORT = 47461;
-     uint16_t const RPC_DEFAULT_PORT = 47462;
-     uint16_t const ZMQ_DEFAULT_PORT = 47463;
+     uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0xfe2bcaf; // Wallet prefix: WSBC4... // decimal prefix: 21450
+     uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x1202bcaf; // Wallet prefix: WSBC5... // decimal prefix: 20554
+     uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x1322bcaf; // Wallet prefix: WSBC6... // decimal prefix: 21066
+     uint16_t const P2P_DEFAULT_PORT = 16671;
+     uint16_t const RPC_DEFAULT_PORT = 16672;
+     uint16_t const ZMQ_DEFAULT_PORT = 19981;
      boost::uuids::uuid const NETWORK_ID = { {
-         0x11, 0x11, 0x11, 0x11, 0xFF, 0xFF, 0xFF, 0x11, 0x11, 0x66, 0xFF, 0xFF, 0xFF, 0x66, 0x11, 0x1B
+         0x25, 0x83, 0x15, 0x85, 0xFF, 0xFF, 0xFF, 0x73, 0x35, 0x85, 0xFF, 0xFF, 0xFF, 0x71, 0x02, 0x2B
        } }; // TEST
    }
 
    namespace stagenet
    {
-     uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x7b62; // Wallet prefix: exo... // decimal prefix: 14794
-     uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x19f9e2; // Wallet prefix: exi... // decimal prefix: 1524426
-     uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x1ffbe2; // Wallet prefix: exs... // decimal prefix: 1934538
-     uint16_t const P2P_DEFAULT_PORT = 46461;
-     uint16_t const RPC_DEFAULT_PORT = 46462;
-     uint16_t const ZMQ_DEFAULT_PORT = 46463;
+     uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x1422bcaf; // Wallet prefix: WSBC7... // decimal prefix: 14794
+     uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x1542bcaf; // Wallet prefix: WSBC8... // decimal prefix: 1524426
+     uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 0x1662bcaf; // Wallet prefix: WSBC9... // decimal prefix: 1934538
+     uint16_t const P2P_DEFAULT_PORT = 15561;
+     uint16_t const RPC_DEFAULT_PORT = 15562;
+     uint16_t const ZMQ_DEFAULT_PORT = 13341;
      boost::uuids::uuid const NETWORK_ID = { {
-         0x11, 0x11, 0x11, 0x11, 0xFF, 0xFF, 0xFF, 0x11, 0x11, 0x77, 0xFF, 0xFF, 0xFF, 0x77, 0x11, 0x1C
+         0x78, 0x85, 0x78, 0x25, 0xFF, 0xFF, 0xFF, 0x33, 0x38, 0x53, 0xFF, 0xFF, 0xFF, 0x58, 0x82, 0x4C
        } }; // STAGE
    }
 
    namespace blockchain_settings
    {
-     const uint64_t MORELO_PREMINE = 3500000000000000;
+     const uint64_t MORELO_PREMINE = 14000000000000000;
      const uint64_t PREMINE_BURN = 0; // Will need to be set after knowing exact amount.
      const uint64_t MAXIMUM_BLOCK_SIZE_LIMIT = 2 * 1024 * 1024; // It is set to 2048kB (2MB)
      const uint64_t MINIMUM_BLOCK_SIZE_LIMIT = 1 * 1024 * 1024; // It is set to 1024kB (1MB)
@@ -269,9 +269,9 @@ namespace config
 
    namespace governance
    {
-     static constexpr const char* MAINNET_WALLET_ADDRESS = "emo1hsdY9BLhGUUZqFqNUgGowHwEcW9LzQ9kjN8GJrqbBhXe6L37gZ5Y2pa8eNRiyzabyP8ScDyi2hcbzH4akSvE8SuYr1dFeX";
-     static constexpr const char* TESTNET_WALLET_ADDRESS = "eto1UJjpbxTgM2kzrQNgrkazZLCyhGvcHaoFvsHypZ8JdvsXFQ9kb6zEMAxxJrkzBWKx1ZgxArfgiTudcrUvFBya7EwgQiftGn";
-     static constexpr const char* STAGENET_WALLET_ADDRESS = "exoiwUAF2AEDC8oniRiMXKEkmsLEtw7XNVm2Lc2NJsejU4nN2zWrCF9cjrPgEgUeiHLQ8gNkwyoHVRmkGpS87Eqh4G1yAjseHF";
+     static constexpr const char* MAINNET_WALLET_ADDRESS = "";
+     static constexpr const char* TESTNET_WALLET_ADDRESS = "";
+     static constexpr const char* STAGENET_WALLET_ADDRESS = "";
    }
 }
 

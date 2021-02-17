@@ -1,5 +1,6 @@
 # Copyright (c) 2018-2019, The Arqma Network
 # Copyright (c) 2014-2018, The Monero Project
+# Copyright (c) 2021-2021, WallStreetBets Coin - WSBC
 #
 # All rights reserved.
 #
@@ -108,7 +109,7 @@ if(NOT IOS)
       ${EXTRA_LIBRARIES})
   set_property(TARGET wallet_rpc_server
     PROPERTY
-      OUTPUT_NAME "morelo-wallet-rpc")
+      OUTPUT_NAME "wallstreetbets-wallet-rpc")
   install(TARGETS wallet_rpc_server DESTINATION bin)
 endif()
 

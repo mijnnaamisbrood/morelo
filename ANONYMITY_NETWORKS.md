@@ -1,4 +1,4 @@
-# Anonymity Networks with Morelo
+# Anonymity Networks with WallStreetBets Coin
 
 Currently only Tor and I2P have been integrated into Morelo. The usage of
 these networks is still considered experimental - there are a few pessimistic
