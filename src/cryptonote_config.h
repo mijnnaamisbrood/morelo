@@ -213,8 +213,8 @@ namespace config
    boost::uuids::uuid const NETWORK_ID = { {
        0x21, 0x18, 0x66, 0x85, 0xa3, 0xF5, 0x11, 0x78, 0x82, 0x83, 0xFF, 0xFF, 0xFF, 0x33, 0x73, 0x2B
      } }; //
-   std::string const GENESIS_TX = "";
-   uint32_t const GENESIS_NONCE = 38411;
+   std::string const GENESIS_TX = "011201ff00011e026bc5c7db8a664f652d78adb587ac4d759c6757258b64ef9cba3c0354e64fb2e42101abca6a39c561d0897be183eb0143990eba201aa7d2c652ab0555d28bb4b70728";
+   uint32_t const GENESIS_NONCE = 17761;
 
    namespace testnet
    {
@@ -270,7 +270,7 @@ namespace config
 
    namespace governance
    {
-     static constexpr const char* MAINNET_WALLET_ADDRESS = "";
+     static constexpr const char* MAINNET_WALLET_ADDRESS = "WSBCohCnLZ62ad7RsqxhZnUfebr1Nj1AMNNJBXwp2fNGUp9KSp96f5j9bYZBzeEJc3iNh5TtuX1L3CSGAu18C1pxGQe6PB5Z8BN";
      static constexpr const char* TESTNET_WALLET_ADDRESS = "";
      static constexpr const char* STAGENET_WALLET_ADDRESS = "";
    }
