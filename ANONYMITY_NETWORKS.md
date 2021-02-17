@@ -16,11 +16,11 @@ will only be sent to peers on anonymity networks. If an anonymity network is
 enabled but no peers over an anonymity network are available, an error is
 logged and the transaction is kept for future broadcasting over an anonymity
 network. The transaction will not be broadcast unless an anonymity connection
-is made or until `morelod` is shutdown and restarted with only public
+is made or until `wallstreetbetsd` is shutdown and restarted with only public
 connections enabled.
 
-Anonymity networks can also be used with `morelo-wallet-cli` and
-`morelo-wallet-rpc` - the wallets will connect to a daemon through a proxy. The
+Anonymity networks can also be used with `wsbc-wallet-cli` and
+`wsbc-wallet-rpc` - the wallets will connect to a daemon through a proxy. The
 daemon must provide a hidden service for the RPC itself, which is separate from
 the hidden service for P2P connections.
 
@@ -42,13 +42,13 @@ additional peers can be found through typical p2p peerlist sharing.
 ### Outbound Connections
 
 Connecting to an anonymous address requires the command line option
-`--proxy` which tells `morelod` the ip/port of a socks proxy provided by a
+`--proxy` which tells `wallstreetbetsd` the ip/port of a socks proxy provided by a
 separate process. On most systems the configuration will look like:
 
 > `--proxy tor,127.0.0.1:9050,10`
 > `--proxy i2p,127.0.0.1:9000`
 
-which tells `morelod` that ".onion" p2p addresses can be forwarded to a socks
+which tells `wallstreetbetsd` that ".onion" p2p addresses can be forwarded to a socks
 proxy at IP 127.0.0.1 port 9050 with a max of 10 outgoing connections and
 ".b32.i2p" p2p addresses can be forwarded to a socks proxy at IP 127.0.0.1 port
 9000 with the default max outgoing connections. Since there are no seed nodes
@@ -64,24 +64,24 @@ seed nodes on ALL networks, which will typically be undesireable.
 ### Inbound Connections
 
 Receiving anonymity connections is done through the option
-`--anonymous-inbound`. This option tells `morelod` the inbound address, network
+`--anonymous-inbound`. This option tells `wallstreetbetsd` the inbound address, network
 type, and max connections:
 
 > `--anonymous-inbound rveahdfho7wo4b2m.onion:29996,127.0.0.1:29996,25`
 > `--anonymous-inbound cmeua5767mz2q5jsaelk2rxhf67agrwuetaso5dzbenyzwlbkg2q.b32.i2p:5000,127.0.0.1:30000`
 
-which tells `morelod` that a max of 25 inbound Tor connections are being
-received at address "rveahdfho7wo4b2m.onion:29996" and forwarded to `morelod`
+which tells `wallstreetbetsd` that a max of 25 inbound Tor connections are being
+received at address "rveahdfho7wo4b2m.onion:29996" and forwarded to `wallstreetbetsd`
 localhost port 29996, and a default max I2P connections are being received at
 address "cmeua5767mz2q5jsaelk2rxhf67agrwuetaso5dzbenyzwlbkg2q.b32.i2p:5000" and
-forwarded to `morelod` localhost port 30000.
+forwarded to `wallstreetbetsd` localhost port 30000.
 These addresses will be shared with outgoing peers, over the same network type,
 otherwise the peer will not be notified of the peer address by the proxy.
 
 ### Wallet RPC
 
 An anonymity network can be configured to forward incoming connections to a
-`morelod` RPC port - which is independent from the configuration for incoming
+`wallstreetbetsd` RPC port - which is independent from the configuration for incoming
 P2P anonymity connections. The anonymity network (Tor/i2p) is
 [configured in the same manner](#configuration), except the localhost port
 must be the RPC port (typically 42462 for mainnet) instead of the p2p port:
@@ -159,7 +159,7 @@ more difficult.
 
 ### Bandwidth Usage
 
-An ISP can passively monitor `morelod` connections from a node and observe when
+An ISP can passively monitor `wallstreetbetsd` connections from a node and observe when
 a transaction is sent over a Tor/I2P connection via timing analysis + size of
 data sent during that timeframe. I2P should provide better protection against
 this attack - its connections are not circuit based. However, if a node is
@@ -178,12 +178,12 @@ broadcast indistinguishable from a peer timed sync command.
 
 ### Intermittent Morelo Syncing
 
-If a user only runs `morelod` to send a transaction then quit, this can also
+If a user only runs `wallstreetbetsd` to send a transaction then quit, this can also
 be used by an ISP to link a user to a transaction.
 
 #### Mitigation
 
-Run `morelod` as often as possible to conceal when transactions are being sent.
+Run `wallstreetbetsd` as often as possible to conceal when transactions are being sent.
 Future versions will also have peers that first receive a transaction over an
 anonymity network delay the broadcast to public peers by a randomized amount.
 This will not completetely mitigate a user who syncs up sends then quits, in

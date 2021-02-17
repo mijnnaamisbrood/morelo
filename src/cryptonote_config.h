@@ -1,3 +1,4 @@
+// Copyright (c) 2021-2021, WallStreetBets Coin - WSBC
 // Copyright (c) 2019-2020, The Morelo Network
 // Copyright (c) 2018-2020, The Arqma Network
 // Copyright (c) 2014-2020, The Monero Project
@@ -212,7 +213,7 @@ namespace config
    boost::uuids::uuid const NETWORK_ID = { {
        0x21, 0x18, 0x66, 0x85, 0xa3, 0xF5, 0x11, 0x78, 0x82, 0x83, 0xFF, 0xFF, 0xFF, 0x33, 0x73, 0x2B
      } }; //
-   std::string const GENESIS_TX = "011201ff00011e026bc5c7db8a664f652d78adb587ac4d759c6757258b64ef9cba3c0354e64fb2e42101abca6a39c561d0897be183eb0143990eba201aa7d2c652ab0555d28bb4b70728";
+   std::string const GENESIS_TX = "";
    uint32_t const GENESIS_NONCE = 38411;
 
    namespace testnet

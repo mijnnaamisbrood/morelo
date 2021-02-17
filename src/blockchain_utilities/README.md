@@ -13,16 +13,16 @@ See also each utility's "--help" option.
 
 ### Export an existing blockchain database
 
-`$ morelo-blockchain-export`
+`$ wsbc-blockchain-export`
 
 This loads the existing blockchain and exports it to `$MORELO_DATA_DIR/export/blockchain.raw`
 
 ### Import the exported file
 
-`$ morelo-blockchain-import`
+`$ wsbc-blockchain-import`
 
 This imports blocks from `$MORELO_DATA_DIR/export/blockchain.raw` (exported using the
-`morelo-blockchain-export` tool as described above) into the current database.
+`wsbc-blockchain-export` tool as described above) into the current database.
 
 Defaults: `--batch on`, `--batch size 20000`, `--verify on`
 
@@ -31,14 +31,14 @@ Batch size refers to number of blocks and can be adjusted for performance based 
 Verification should only be turned off if importing from a trusted blockchain.
 
 If you encounter an error like "resizing not supported in batch mode", you can just re-run
-the `morelo-blockchain-import` command again, and it will restart from where it left off.
+the `wsbc-blockchain-import` command again, and it will restart from where it left off.
 
 ```bash
 ## use default settings to import blockchain.raw into database
-$ morelo-blockchain-import
+$ wsbc-blockchain-import
 
 ## fast import with large batch size, database mode "fastest", verification off
-$ morelo-blockchain-import --batch-size 20000 --database lmdb#fastest --verify off
+$ wsbc-blockchain-import --batch-size 20000 --database lmdb#fastest --verify off
 
 ```
 
@@ -81,9 +81,9 @@ LMDB flags (more than one may be specified):
 ## Examples:
 
 ```
-$ morelo-blockchain-import --database lmdb#fastest
+$ wsbc-blockchain-import --database lmdb#fastest
 
-$ morelo-blockchain-import --database lmdb#nosync
+$ wsbc-blockchain-import --database lmdb#nosync
 
-$ morelo-blockchain-import --database lmdb#nosync,nometasync
+$ wsbc-blockchain-import --database lmdb#nosync,nometasync
 ```

@@ -199,7 +199,7 @@ VOLUME /home/morelo/.morelo
 
 # Generate your wallet via accessing the container and run:
 # cd /wallet
-# morelo-wallet-cli
+# wsbc-wallet-cli
 VOLUME /wallet
 
 EXPOSE 42461
@@ -208,4 +208,4 @@ EXPOSE 42462
 # switch to user morelo
 USER morelo
 
-ENTRYPOINT ["morelod", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=42461", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=42462", "--non-interactive", "--confirm-external-bind"]
+ENTRYPOINT ["wallstreetbetsd", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=42461", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=42462", "--non-interactive", "--confirm-external-bind"]

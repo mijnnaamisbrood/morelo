@@ -11,9 +11,9 @@ RuntimeDirectory=morelo
 # Clearnet config
 #
 Type=forking
-PIDFile=/run/morelo/morelod.pid
-ExecStart=/usr/bin/morelod --config-file /etc/morelod.conf \
-    --detach --pidfile /run/morelo/morelod.pid
+PIDFile=/run/morelo/wallstreetbetsd.pid
+ExecStart=/usr/bin/wallstreetbetsd --config-file /etc/wallstreetbetsd.conf \
+    --detach --pidfile /run/morelo/wallstreetbetsd.pid
 
 # Tor config
 #
@@ -27,7 +27,7 @@ ExecStart=/usr/bin/morelod --config-file /etc/morelod.conf \
 ## host in the LAN, VPN, etc, the RPC must bind to 0.0.0.0, but
 ## by default torsocks only allows binding to localhost.
 #Environment=TORSOCKS_ALLOW_INBOUND=1
-#ExecStart=/usr/bin/torsocks /usr/bin/morelod --config-file /etc/morelod.conf \
+#ExecStart=/usr/bin/torsocks /usr/bin/wallstreetbetsd --config-file /etc/wallstreetbetsd.conf \
 #    --non-interactive
 
 Restart=always

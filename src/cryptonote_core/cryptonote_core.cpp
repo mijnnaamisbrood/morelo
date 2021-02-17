@@ -470,7 +470,7 @@ namespace cryptonote
       {
         MWARNING("Found old-style blockchain.bin in " << old_files.string());
         MWARNING("Morelo now uses a new format. You can either remove blockchain.bin to start syncing");
-        MWARNING("the blockchain anew, or use morelo-blockchain-export and morelo-blockchain-import to");
+        MWARNING("the blockchain anew, or use wsbc-blockchain-export and wsbc-blockchain-import to");
         MWARNING("convert your existing blockchain.bin to the new format. See README.md for instructions.");
         return false;
       }
@@ -1650,26 +1650,17 @@ namespace cryptonote
      {
        std::string main_message;
        if (m_offline)
-        main_message = "The daemon is running offline and will not attempt to sync to the ArQ-Net.";
+        main_message = "The daemon is running offline and will not attempt to sync to the WallStreetBets Network.";
       else
         main_message = "The daemon will start synchronizing with the network. This may take a long time to complete.";
       MGINFO_CYAN(ENDL <<
       "\n \n"
-"      o***o o\n"
-"      O *oO O ooo\n"
-"     o****oOO* o *o\n"
-"    O    O   *O * O\n"
-"   O    O      *O*\n"
-"   O   O        O\n"
-"   O   O        O\n"
-"   O  O         O\n"
-"    O O        o*\n"
-"     *O      o*\n"
-"       ******\n\n"
-"  _____ _____ __\n"
-" |     | __  |  |\n"
-" | | | |    -|  |__\n"
-" |_|_|_|__|__|_____|\n" << ENDL);
+"  	 ██╗    ██╗███████╗██████╗  ██████╗\n"
+"    ██║    ██║██╔════╝██╔══██╗██╔════╝\n"
+"    ██║ █╗ ██║███████╗██████╔╝██║\n"     
+"    ██║███╗██║╚════██║██╔══██╗██║\n"     
+"    ╚███╔███╔╝███████║██████╔╝╚██████╗\n"
+"     ╚══╝╚══╝ ╚══════╝╚═════╝  ╚═════╝\n" << ENDL);
       MGINFO_YELLOW(ENDL << "**********************************************************************" << ENDL
         << main_message << ENDL
         << ENDL

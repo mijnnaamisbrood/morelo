@@ -149,7 +149,7 @@ endif()
 
 set_property(TARGET blockchain_import
 	PROPERTY
-	OUTPUT_NAME "morelo-blockchain-import")
+	OUTPUT_NAME "wsbc-blockchain-import")
 install(TARGETS blockchain_import DESTINATION bin)
 
 morelo_add_executable(blockchain_export
@@ -170,7 +170,7 @@ target_link_libraries(blockchain_export
 
 set_property(TARGET blockchain_export
 	PROPERTY
-	OUTPUT_NAME "morelo-blockchain-export")
+	OUTPUT_NAME "wsbc-blockchain-export")
 install(TARGETS blockchain_export DESTINATION bin)
 
 morelo_add_executable(blockchain_blackball
@@ -192,7 +192,7 @@ target_link_libraries(blockchain_blackball
 
 set_property(TARGET blockchain_blackball
 	PROPERTY
-	OUTPUT_NAME "morelo-blockchain-mark-spent-outputs")
+	OUTPUT_NAME "wsbc-blockchain-mark-spent-outputs")
 install(TARGETS blockchain_blackball DESTINATION bin)
 
 
@@ -214,7 +214,7 @@ target_link_libraries(blockchain_usage
 
 set_property(TARGET blockchain_usage
 	PROPERTY
-	OUTPUT_NAME "morelo-blockchain-usage")
+	OUTPUT_NAME "wsbc-blockchain-usage")
 install(TARGETS blockchain_usage DESTINATION bin)
 
 morelo_add_executable(blockchain_ancestry
@@ -235,7 +235,7 @@ target_link_libraries(blockchain_ancestry
 
 set_property(TARGET blockchain_ancestry
 	PROPERTY
-	OUTPUT_NAME "morelo-blockchain-ancestry")
+	OUTPUT_NAME "wsbc-blockchain-ancestry")
 install(TARGETS blockchain_ancestry DESTINATION bin)
 
 morelo_add_executable(blockchain_depth
@@ -256,7 +256,7 @@ target_link_libraries(blockchain_depth
 
 set_property(TARGET blockchain_depth
 	PROPERTY
-	OUTPUT_NAME "morelo-blockchain-depth")
+	OUTPUT_NAME "wsbc-blockchain-depth")
 install(TARGETS blockchain_depth DESTINATION bin)
 
 morelo_add_executable(blockchain_prune_known_spent_data
@@ -278,7 +278,7 @@ target_link_libraries(blockchain_prune_known_spent_data
 
 set_property(TARGET blockchain_prune_known_spent_data
 	PROPERTY
-	OUTPUT_NAME "morelo-blockchain-prune-known-spent-data")
+	OUTPUT_NAME "wsbc-blockchain-prune-known-spent-data")
 install(TARGETS blockchain_prune_known_spent_data DESTINATION bin)
 
 morelo_add_executable(blockchain_prune
@@ -287,7 +287,7 @@ morelo_add_executable(blockchain_prune
 
 set_property(TARGET blockchain_prune
 	PROPERTY
-	OUTPUT_NAME "morelo-blockchain-prune")
+	OUTPUT_NAME "wsbc-blockchain-prune")
 install(TARGETS blockchain_prune DESTINATION bin)
 
 target_link_libraries(blockchain_prune

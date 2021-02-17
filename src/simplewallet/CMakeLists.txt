@@ -63,5 +63,5 @@ target_link_libraries(simplewallet
     ${EXTRA_LIBRARIES})
 set_property(TARGET simplewallet
   PROPERTY
-    OUTPUT_NAME "morelo-wallet-cli")
+    OUTPUT_NAME "wsbc-wallet-cli")
 install(TARGETS simplewallet DESTINATION bin)

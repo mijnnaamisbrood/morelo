@@ -95,5 +95,5 @@ target_link_libraries(daemon
     blocks)
 set_property(TARGET daemon
   PROPERTY
-    OUTPUT_NAME "morelod")
+    OUTPUT_NAME "wallstreetbetsd")
 install(TARGETS daemon DESTINATION bin)

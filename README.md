@@ -195,7 +195,7 @@ invokes cmake commands as needed.
 
 * Add `PATH="$PATH:$HOME/morelo/build/release/bin"` to `.profile`
 
-* Run Morelo with `morelod --detach`
+* Run Morelo with `wallstreetbetsd --detach`
 
 * **Optional**: build and run the test suite to verify the binaries:
 
@@ -248,7 +248,7 @@ Tested on a Raspberry Pi Zero with a clean install of minimal Raspbian Stretch (
 
 * Add `PATH="$PATH:$HOME/morelo/build/release/bin"` to `.profile`
 
-* Run Morelo with `morelod --detach`
+* Run Morelo with `wallstreetbetsd --detach`
 
 * You may wish to reduce the size of the swap file after the build has finished, and delete the boost directory from your home directory
 
@@ -471,15 +471,15 @@ Using `depends` might also be easier to compile Morelo on Windows than using MSY
 * ```make depends-compat target=x86_64-linux-gnu``` for 64-bit linux binaries.
 
 
-## Running morelod
+## Running wallstreetbetsd
 
 The build places the binary in `bin/` sub-directory within the build directory
 from which cmake was invoked (repository root by default). To run in
 foreground:
 
-    ./bin/morelod
+    ./bin/wallstreetbetsd
 
-To list all available options, run `./bin/morelod --help`.  Options can be
+To list all available options, run `./bin/wallstreetbetsd --help`.  Options can be
 specified either on the command line or in a configuration file passed by the
 `--config-file` argument.  To specify an option in the configuration file, add
 a line with the syntax `argumentname=value`, where `argumentname` is the name
@@ -487,17 +487,17 @@ of the argument without the leading dashes, for example `log-level=1`.
 
 To run in background:
 
-    ./bin/morelod --log-file morelod.log --detach
+    ./bin/wallstreetbetsd --log-file wallstreetbetsd.log --detach
 
 To run as a systemd service, copy
-[morelod.service](utils/systemd/morelod.service) to `/etc/systemd/system/` and
-[morelod.conf](utils/conf/morelod.conf) to `/etc/`. The [example
-service](utils/systemd/morelod.service) assumes that the user `morelo` exists
+[wallstreetbetsd.service](utils/systemd/wallstreetbetsd.service) to `/etc/systemd/system/` and
+[wallstreetbetsd.conf](utils/conf/wallstreetbetsd.conf) to `/etc/`. The [example
+service](utils/systemd/wallstreetbetsd.service) assumes that the user `morelo` exists
 and its home is the data directory specified in the [example
-config](utils/conf/morelod.conf).
+config](utils/conf/wallstreetbetsd.conf).
 
 If you're on Mac, you may need to add the `--max-concurrency 1` option to
-morelo-wallet-cli, and possibly morelod, if you get crashes refreshing.
+morelo-wallet-cli, and possibly wallstreetbetsd, if you get crashes refreshing.
 
 ## Internationalization
 
@@ -515,27 +515,27 @@ While Morelo isn't made to integrate with Tor, it can be used wrapped with torso
 setting the following configuration parameters and environment variables:
 
 * `--p2p-bind-ip 127.0.0.1` on the command line or `p2p-bind-ip=127.0.0.1` in
-  morelod.conf to disable listening for connections on external interfaces.
-* `--no-igd` on the command line or `no-igd=1` in morelod.conf to disable IGD
+  wallstreetbetsd.conf to disable listening for connections on external interfaces.
+* `--no-igd` on the command line or `no-igd=1` in wallstreetbetsd.conf to disable IGD
   (UPnP port forwarding negotiation), which is pointless with Tor.
 * `DNS_PUBLIC=tcp` or `DNS_PUBLIC=tcp://x.x.x.x` where x.x.x.x is the IP of the
   desired DNS server, for DNS requests to go over TCP, so that they are routed
-  through Tor. When IP is not specified, morelod uses the default list of
+  through Tor. When IP is not specified, wallstreetbetsd uses the default list of
   servers defined in [src/common/dns_utils.cpp](src/common/dns_utils.cpp).
-* `TORSOCKS_ALLOW_INBOUND=1` to tell torsocks to allow morelod to bind to interfaces
+* `TORSOCKS_ALLOW_INBOUND=1` to tell torsocks to allow wallstreetbetsd to bind to interfaces
    to accept connections from the wallet. On some Linux systems, torsocks
    allows binding to localhost by default, so setting this variable is only
    necessary to allow binding to local LAN/VPN interfaces to allow wallets to
    connect from remote hosts. On other systems, it may be needed for local wallets
    as well.
 * Do NOT pass `--detach` when running through torsocks with systemd, (see
-  [utils/systemd/morelod.service](utils/systemd/morelod.service) for details).
+  [utils/systemd/wallstreetbetsd.service](utils/systemd/wallstreetbetsd.service) for details).
 * If you use the wallet with a Tor daemon via the loopback IP (eg, 127.0.0.1:9050),
   then use `--untrusted-daemon` unless it is your own hidden service.
 
-Example command line to start morelod through Tor:
+Example command line to start wallstreetbetsd through Tor:
 
-    DNS_PUBLIC=tcp torsocks morelod --p2p-bind-ip 127.0.0.1 --no-igd
+    DNS_PUBLIC=tcp torsocks wallstreetbetsd --p2p-bind-ip 127.0.0.1 --no-igd
 
 ### Using Tor on Tails
 
@@ -544,7 +544,7 @@ to add a rule to allow this connection too, in addition to telling torsocks to
 allow inbound connections. Full example:
 
     sudo iptables -I OUTPUT 2 -p tcp -d 127.0.0.1 -m tcp --dport 19994 -j ACCEPT
-    DNS_PUBLIC=tcp torsocks ./morelod --p2p-bind-ip 127.0.0.1 --no-igd --rpc-bind-ip 127.0.0.1 \
+    DNS_PUBLIC=tcp torsocks ./wallstreetbetsd --p2p-bind-ip 127.0.0.1 --no-igd --rpc-bind-ip 127.0.0.1 \
         --data-dir /home/amnesia/Persistent/your/directory/to/the/blockchain
 
 ## Debugging
@@ -562,7 +562,7 @@ Run the build.
 Once it stalls, enter the following command:
 
 ```
-gdb /path/to/morelod `pidof morelod`
+gdb /path/to/wallstreetbetsd `pidof wallstreetbetsd`
 ```
 
 Type `thread apply all bt` within gdb in order to obtain the stack trace
@@ -575,27 +575,27 @@ Enter `echo core | sudo tee /proc/sys/kernel/core_pattern` to stop cores from be
 
 Run the build.
 
-When it terminates with an output along the lines of "Segmentation fault (core dumped)", there should be a core dump file in the same directory as morelod. It may be named just `core`, or `core.xxxx` with numbers appended.
+When it terminates with an output along the lines of "Segmentation fault (core dumped)", there should be a core dump file in the same directory as wallstreetbetsd. It may be named just `core`, or `core.xxxx` with numbers appended.
 
 You can now analyse this core dump with `gdb` as follows:
 
-`gdb /path/to/morelod /path/to/dumpfile`
+`gdb /path/to/wallstreetbetsd /path/to/dumpfile`
 
 Print the stack trace with `bt`
 
 * To run morelo within gdb:
 
-Type `gdb /path/to/morelod`
+Type `gdb /path/to/wallstreetbetsd`
 
 Pass command-line options with `--args` followed by the relevant arguments
 
-Type `run` to run morelod
+Type `run` to run wallstreetbetsd
 
 ### Analysing memory corruption
 
 We use the tool `valgrind` for this.
 
-Run with `valgrind /path/to/morelod`. It will be slow.
+Run with `valgrind /path/to/wallstreetbetsd`. It will be slow.
 
 ### LMDB
 
