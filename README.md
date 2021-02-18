@@ -18,12 +18,12 @@ Network properties:
 - Ticker: WSBC
 - Max supply: 100 ml
 - Pre: 14 ml
-- Block time: 120 seconds after v16: 60 seconds
+- Block time: 60 seconds
 - Decimals: 9
 - Algorithm: RandomARQ
 - Consensus: PoW
 - Anonymity: BulletProof RingCT
-- Governance Fee: 1%
+
 
 ## WallStreetBets Coin resources
 
@@ -172,12 +172,12 @@ Install all dependencies at once on OSX:
 
 Clone recursively to pull-in needed submodule(s):
 
-`$ git clone https://github.com/cryptodeveloperbro/wsbc-wallstreetbetscoin`
+$ git clone https://github.com/wsbc-coin/wallstreetbetscoin
 
 If you already have a repo cloned, initialize and update:
 
-`$ cd wsbc-wallstreetbets-coin && git checkout release-v0.5.2.0`    
-`$ git submodule init && git submodule update`    
+$ cd wallstreetbets && git checkout release-v0.5.3.0
+$ git submodule init && git submodule update 
 
 ### Build instructions
 
