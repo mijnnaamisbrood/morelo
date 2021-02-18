@@ -45,8 +45,8 @@
 #include "wallet/api/unsigned_transaction.h"
 #include "wallet/api/pending_transaction.h"
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "debugtools.objectsizes"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "debugtools.objectsizes"
 
 class size_logger
 {

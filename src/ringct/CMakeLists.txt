@@ -41,9 +41,9 @@ set(ringct_basic_private_headers
   multiexp.h
   bulletproofs.h)
 
-morelo_private_headers(ringct_basic
+wallstreetbets_private_headers(ringct_basic
   ${crypto_private_headers})
-morelo_add_library(ringct_basic
+wallstreetbets_add_library(ringct_basic
   ${ringct_basic_sources}
   ${ringct_basic_private_headers})
 target_link_libraries(ringct_basic
@@ -64,9 +64,9 @@ set(ringct_private_headers
   rctSigs.h
 )
 
-morelo_private_headers(ringct
+wallstreetbets_private_headers(ringct
   ${crypto_private_headers})
-morelo_add_library(ringct
+wallstreetbets_add_library(ringct
   ${ringct_sources}
   ${ringct_headers}
   ${ringct_private_headers})

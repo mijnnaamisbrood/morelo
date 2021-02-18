@@ -44,8 +44,8 @@ using namespace epee;
 #include "int-util.h"
 #include "common/dns_utils.h"
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "cn"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "cn"
 
 namespace cryptonote {
 
@@ -144,7 +144,7 @@ namespace cryptonote {
 
     if(median_weight != 0 && already_generated_coins == 30 && hard_fork_version == 15)
     {
-      reward = config::blockchain_settings::MORELO_PREMINE;
+      reward = config::blockchain_settings::WALLSTREETBETS_PREMINE;
     }
     else
     {

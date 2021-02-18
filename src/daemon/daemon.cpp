@@ -47,14 +47,14 @@
 #include "daemon/command_line_args.h"
 #include "net/net_ssl.h"
 #include "version.h"
-#include "morelo_mq/moreloMQ.h"
+#include "wallstreetbets_mq/wallstreetbetsMQ.h"
 
 using namespace epee;
 
 #include <functional>
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "daemon"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "daemon"
 
 namespace daemonize {
 
@@ -164,8 +164,8 @@ bool t_daemon::run(bool interactive)
       rpc_commands->start_handling(std::bind(&daemonize::t_daemon::stop_p2p, this));
     }
 
-	moreloMQ::ZmqHandler zmq_daemon_handler(mp_internals->core.get(), mp_internals->p2p.get());
-    moreloMQ::MoreloNotifier moreloNotifier{zmq_daemon_handler};
+	wallstreetbetsMQ::ZmqHandler zmq_daemon_handler(mp_internals->core.get(), mp_internals->p2p.get());
+    wallstreetbetsMQ::WallstreetbetsNotifier wallstreetbetsNotifier{zmq_daemon_handler};
 
     auto zmq_enabled  = command_line::get_arg(m_vm, daemon_args::arg_zmq_enabled);
     if(zmq_enabled)
@@ -186,15 +186,15 @@ bool t_daemon::run(bool interactive)
         return false;
       }
 
-      MINFO("Starting Morelo ZMQ server...");
+      MINFO("Starting Wallstreetbets ZMQ server...");
 
-      if(!moreloNotifier.addTCPSocket(zmq_ip_str, zmq_port_str, zmq_max_clients))
+      if(!wallstreetbetsNotifier.addTCPSocket(zmq_ip_str, zmq_port_str, zmq_max_clients))
       {
-        LOG_ERROR(std::string("Failed to add TCP Socket (") << zmq_ip_str + ":" << zmq_port_str + ") to Morelo ZMQ Server");
+        LOG_ERROR(std::string("Failed to add TCP Socket (") << zmq_ip_str + ":" << zmq_port_str + ") to Wallstreetbets ZMQ Server");
         return false;
       }
 
-      moreloNotifier.run();
+      wallstreetbetsNotifier.run();
 
       MGINFO_GREEN(std::string("ZMQ server started at ") << zmq_ip_str + ":" << zmq_port_str << " with Maximum Allowed Clients Connections: " << zmq_max_clients << ".");
 	}
@@ -213,7 +213,7 @@ bool t_daemon::run(bool interactive)
     if(command_line::get_arg(m_vm, daemon_args::arg_zmq_enabled))
 	{
 		MGINFO_GREEN(std::string("ZMQ server stopping"));
-	    moreloNotifier.stop();
+	    wallstreetbetsNotifier.stop();
 	}
 
     for(auto& rpc : mp_internals->rpcs)

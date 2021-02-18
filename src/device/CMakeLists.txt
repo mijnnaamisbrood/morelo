@@ -58,10 +58,10 @@ set(device_headers
 
 set(device_private_headers)
 
-morelo_private_headers(device
+wallstreetbets_private_headers(device
   ${device_private_headers})
 
-morelo_add_library(device
+wallstreetbets_add_library(device
   ${device_sources}
   ${device_headers}
   ${device_private_headers})

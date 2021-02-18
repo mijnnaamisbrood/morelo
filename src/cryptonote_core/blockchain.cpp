@@ -1,4 +1,4 @@
-// Copyright (c) 2020 The Morelo Project
+// Copyright (c) 2020 The Wallstreetbets Project
 // Copyright (c) 2018-2019, The Arqma Network
 // Copyright (c) 2014-2018, The Monero Project
 //
@@ -58,8 +58,8 @@
 #include "common/varint.h"
 #include "common/pruning.h"
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "blockchain"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "blockchain"
 
 #define FIND_BLOCKCHAIN_SUPPLEMENT_MAX_SIZE (100*1024*1024) // 100 MB
 
@@ -481,7 +481,7 @@ bool Blockchain::init(BlockchainDB* db, const network_type nettype, bool offline
     }
     catch(const std::exception& e)
     {
-      MERROR(std::string("Failed to construct morelo notifier ") + e.what());
+      MERROR(std::string("Failed to construct wallstreetbets notifier ") + e.what());
     }
  }
   return true;
@@ -628,7 +628,7 @@ block Blockchain::pop_block_from_blockchain()
   block popped_block;
   std::vector<transaction> popped_txs;
 
-  CHECK_AND_ASSERT_THROW_MES(m_db->height() > 1, "It is forbidden to remove Morelo Genesis Block.");
+  CHECK_AND_ASSERT_THROW_MES(m_db->height() > 1, "It is forbidden to remove Wallstreetbets Genesis Block.");
 
   try
   {
@@ -1303,7 +1303,7 @@ bool Blockchain::prevalidate_miner_transaction(const block& b, uint64_t height)
     return false;
   }
   MDEBUG("Miner tx hash: " << get_transaction_hash(b.miner_tx));
-  CHECK_AND_ASSERT_MES(b.miner_tx.unlock_time == height + config::blockchain_settings::MORELO_BLOCK_UNLOCK_CONFIRMATIONS, false, "coinbase transaction transaction has the wrong unlock time=" << b.miner_tx.unlock_time << ", expected " << height + config::blockchain_settings::MORELO_BLOCK_UNLOCK_CONFIRMATIONS);
+  CHECK_AND_ASSERT_MES(b.miner_tx.unlock_time == height + config::blockchain_settings::WALLSTREETBETS_BLOCK_UNLOCK_CONFIRMATIONS, false, "coinbase transaction transaction has the wrong unlock time=" << b.miner_tx.unlock_time << ", expected " << height + config::blockchain_settings::WALLSTREETBETS_BLOCK_UNLOCK_CONFIRMATIONS);
 
   //check outs overflow
   //NOTE: not entirely sure this is necessary, given that this function is
@@ -1372,7 +1372,7 @@ bool Blockchain::validate_miner_transaction(const block& b, size_t cumulative_bl
 
   if(height == 1)
   {
-    base_reward = config::blockchain_settings::MORELO_PREMINE;
+    base_reward = config::blockchain_settings::WALLSTREETBETS_PREMINE;
   }
 
   if(height > 1 && base_reward + fee < money_in_use)
@@ -2087,7 +2087,7 @@ uint64_t Blockchain::get_num_mature_outputs(uint64_t amount) const
   {
     const tx_out_index toi = m_db->get_output_tx_and_index(amount, num_outs - 1);
     const uint64_t height = m_db->get_tx_block_height(toi.first);
-    if (height + config::tx_settings::MORELO_TX_CONFIRMATIONS_REQUIRED <= blockchain_height)
+    if (height + config::tx_settings::WALLSTREETBETS_TX_CONFIRMATIONS_REQUIRED <= blockchain_height)
       break;
     --num_outs;
   }
@@ -2158,7 +2158,7 @@ void Blockchain::get_output_key_mask_unlocked(const uint64_t& amount, const uint
 bool Blockchain::get_output_distribution(uint64_t amount, uint64_t from_height, uint64_t to_height, uint64_t &start_height, std::vector<uint64_t> &distribution, uint64_t &base) const
 {
   // rct outputs don't exist before v4
-  // Morelo did start from v7 at blockheight 1 so our start is always 0
+  // Wallstreetbets did start from v7 at blockheight 1 so our start is always 0
 
   start_height = 0;
   base = 0;
@@ -3708,7 +3708,7 @@ leave:
     const el::Level level = el::Level::Warning;
     MCLOG_RED(level, "global", "**********************************************************************");
     MCLOG_RED(level, "global", "A block was seen on the network with a version higher than the last");
-    MCLOG_RED(level, "global", "known one. This may be an old version of the Morelo daemon, and a software");
+    MCLOG_RED(level, "global", "known one. This may be an old version of the Wallstreetbets daemon, and a software");
     MCLOG_RED(level, "global", "update may be required to sync further. ");
     MCLOG_RED(level, "global", "**********************************************************************");
   }
@@ -4060,7 +4060,7 @@ leave:
     }
     catch( const std::exception &e)
     {
-      MERROR(std::string("Failed to construct morelo block producer") + e.what());
+      MERROR(std::string("Failed to construct wallstreetbets block producer") + e.what());
     }
   }
 

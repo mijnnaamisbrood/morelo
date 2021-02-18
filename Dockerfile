@@ -188,14 +188,14 @@ RUN set -ex && \
     rm -rf /var/lib/apt
 COPY --from=builder /src/build/release/bin /usr/local/bin/
 
-# Below command is creating Morelo user to do not run daemon as a root
-RUN adduser --system --group --disabled-password morelo && \
-	mkdir -p /wallet /home/morelo/.morelo && \
-	chown -R morelo:morelo /home/morelo/.morelo && \
-	chown -R morelo:morelo /wallet
+# Below command is creating Wallstreetbets user to do not run daemon as a root
+RUN adduser --system --group --disabled-password wallstreetbets && \
+	mkdir -p /wallet /home/wallstreetbets/.wallstreetbets && \
+	chown -R wallstreetbets:wallstreetbets /home/wallstreetbets/.wallstreetbets && \
+	chown -R wallstreetbets:wallstreetbets /wallet
 
 # Contains the blockchain
-VOLUME /home/morelo/.morelo
+VOLUME /home/wallstreetbets/.wallstreetbets
 
 # Generate your wallet via accessing the container and run:
 # cd /wallet
@@ -205,7 +205,7 @@ VOLUME /wallet
 EXPOSE 42461
 EXPOSE 42462
 
-# switch to user morelo
-USER morelo
+# switch to user wallstreetbets
+USER wallstreetbets
 
 ENTRYPOINT ["wallstreetbetsd", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=42461", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=42462", "--non-interactive", "--confirm-external-bind"]

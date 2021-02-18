@@ -35,9 +35,9 @@ set(serialization_headers)
 set(serialization_private_headers
   json_object.h)
 
-morelo_private_headers(serialization
+wallstreetbets_private_headers(serialization
   ${serialization_private_headers})
-morelo_add_library(serialization
+wallstreetbets_add_library(serialization
   ${serialization_sources}
   ${serialization_headers}
   ${serialization_private_headers})

@@ -62,7 +62,7 @@ extern "C" {
 #define DP(x)
 #endif
 
-//atomic units of Morelo
+//atomic units of Wallstreetbets
 #define ATOMS 64
 
 //for printing large ints
@@ -131,7 +131,7 @@ namespace rct {
         BEGIN_SERIALIZE_OBJECT()
           FIELD(mask)
           FIELD(amount)
-          // FIELD(senderPk) // not serialized, as we do not use it in Morelo currently
+          // FIELD(senderPk) // not serialized, as we do not use it in Wallstreetbets currently
         END_SERIALIZE()
     };
 

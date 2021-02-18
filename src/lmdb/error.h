@@ -31,7 +31,7 @@
 #include <type_traits>
 
 //! Executes a LMDB command, and returns errors via `lmdb::error` enum.
-#define MORELO_LMDB_CHECK(...)          \
+#define WALLSTREETBETS_LMDB_CHECK(...)          \
     do                                 \
     {                                  \
         const int err = __VA_ARGS__ ;  \

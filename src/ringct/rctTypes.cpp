@@ -35,8 +35,8 @@
 using namespace crypto;
 using namespace std;
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "ringct"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "ringct"
 
 namespace rct {
 

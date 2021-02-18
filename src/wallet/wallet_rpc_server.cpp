@@ -56,8 +56,8 @@ using namespace epee;
 #include "rpc/core_rpc_server_commands_defs.h"
 #include "daemonizer/daemonizer.h"
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "wallet.rpc"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "wallet.rpc"
 
 #define DEFAULT_AUTO_REFRESH_PERIOD 20 // seconds
 
@@ -69,7 +69,7 @@ namespace
   const command_line::arg_descriptor<std::string> arg_wallet_dir = {"wallet-dir", "Directory for newly created wallets"};
   const command_line::arg_descriptor<bool> arg_prompt_for_password = {"prompt-for-password", "Prompts for password when not provided", false};
 
-  constexpr const char default_rpc_username[] = "morelo";
+  constexpr const char default_rpc_username[] = "wallstreetbets";
 
   boost::optional<tools::password_container> password_prompter(const char *prompt, bool verify)
   {
@@ -666,7 +666,7 @@ namespace tools
           }
           if (addresses.empty())
           {
-            er.message = std::string("No Morelo address found at ") + url;
+            er.message = std::string("No Wallstreetbets address found at ") + url;
             return {};
           }
           return addresses[0];
@@ -1932,7 +1932,7 @@ namespace tools
         }
         if (addresses.empty())
         {
-          er.message = std::string("No Morelo address found at ") + url;
+          er.message = std::string("No Wallstreetbets address found at ") + url;
           return {};
         }
         return addresses[0];
@@ -2723,7 +2723,7 @@ namespace tools
         }
         if (addresses.empty())
         {
-          er.message = std::string("No Morelo address found at ") + url;
+          er.message = std::string("No Wallstreetbets address found at ") + url;
           return {};
         }
         return addresses[0];
@@ -4021,7 +4021,7 @@ namespace tools
             }
             if (addresses.empty())
             {
-              er.message = std::string("No Morelo Wallet Address found at: ") + url;
+              er.message = std::string("No Wallstreetbets Wallet Address found at: ") + url;
               return {};
             }
             address = addresses[0];
@@ -4140,7 +4140,7 @@ namespace tools
   bool wallet_rpc_server::on_get_version(const wallet_rpc::COMMAND_RPC_GET_VERSION::request& req, wallet_rpc::COMMAND_RPC_GET_VERSION::response& res, epee::json_rpc::error& er, const connection_context *ctx)
   {
     res.version = WALLET_RPC_VERSION;
-    res.release = MORELO_VERSION_IS_RELEASE;
+    res.release = WALLSTREETBETS_VERSION_IS_RELEASE;
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------------
@@ -4324,7 +4324,7 @@ public:
   }
 };
 
-std::string const t_executor::NAME = "Morelo Wallet RPC Daemon";
+std::string const t_executor::NAME = "Wallstreetbets Wallet RPC Daemon";
 
 int main(int argc, char** argv) {
 
@@ -4357,7 +4357,7 @@ int main(int argc, char** argv) {
   std::tie(vm, should_terminate) = wallet_args::main(
     argc, argv,
     "wsbc-wallet-rpc [--wallet-file=<file>|--generate-from-json=<file>|--wallet-dir=<directory>] [--rpc-bind-port=<port>]",
-    tools::wallet_rpc_server::tr("This is the RPC Morelo wallet. It needs to connect to a Morelo\ndaemon to work correctly."),
+    tools::wallet_rpc_server::tr("This is the RPC Wallstreetbets wallet. It needs to connect to a Wallstreetbets\ndaemon to work correctly."),
     desc_params,
     po::positional_options_description(),
     [](const std::string &s, bool emphasis){ epee::set_console_color(emphasis ? epee::console_color_white : epee::console_color_default, true); std::cout << s << std::endl; if (emphasis) epee::reset_console_color(); },

@@ -48,7 +48,7 @@ namespace
 }  // anonymous namespace
 
 
-namespace moreloMQ
+namespace wallstreetbetsMQ
 {
 
 class ZmqHandler : public cryptonote::rpc::RpcHandler
@@ -156,4 +156,4 @@ class ZmqHandler : public cryptonote::rpc::RpcHandler
 
 };
 
-}  // namespace moreloMQ
+}  // namespace wallstreetbetsMQ

@@ -40,8 +40,8 @@
 
 using namespace epee;
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "checkpoints"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "checkpoints"
 
 namespace cryptonote
 {

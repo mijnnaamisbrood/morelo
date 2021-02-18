@@ -1,4 +1,4 @@
-// Copyright (c) 2020, The Morelo Network
+// Copyright (c) 2020, The Wallstreetbets Network
 // Copyright (c) 2018-2019, The Arqma Network
 // Copyright (c) 2014-2018, The Monero Project
 //
@@ -29,8 +29,8 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #include <boost/program_options.hpp>
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "daemon"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "daemon"
 namespace daemonize {
 struct t_internals;
 class t_daemon final {

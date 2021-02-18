@@ -54,9 +54,9 @@ if (BERKELEY_DB)
   )
 endif()
 
-morelo_private_headers(blockchain_db
+wallstreetbets_private_headers(blockchain_db
   ${crypto_private_headers})
-morelo_add_library(blockchain_db
+wallstreetbets_add_library(blockchain_db
   ${blockchain_db_sources}
   ${blockchain_db_headers}
   ${blockchain_db_private_headers})

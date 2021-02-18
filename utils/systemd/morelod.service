@@ -1,19 +1,19 @@
 [Unit]
-Description=Morelo Full Node
+Description=Wallstreetbets Full Node
 After=network.target
 
 [Service]
-User=morelo
-Group=morelo
+User=wallstreetbets
+Group=wallstreetbets
 WorkingDirectory=~
-RuntimeDirectory=morelo
+RuntimeDirectory=wallstreetbets
 
 # Clearnet config
 #
 Type=forking
-PIDFile=/run/morelo/wallstreetbetsd.pid
+PIDFile=/run/wallstreetbets/wallstreetbetsd.pid
 ExecStart=/usr/bin/wallstreetbetsd --config-file /etc/wallstreetbetsd.conf \
-    --detach --pidfile /run/morelo/wallstreetbetsd.pid
+    --detach --pidfile /run/wallstreetbets/wallstreetbetsd.pid
 
 # Tor config
 #

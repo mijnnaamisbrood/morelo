@@ -101,7 +101,7 @@ namespace daemonizer
     }
     else
     {
-      //LOG_PRINT_L0("Morelo '" << MORELO_RELEASE_NAME << "' (v" << MORELO_VERSION_FULL);
+      //LOG_PRINT_L0("Wallstreetbets '" << WALLSTREETBETS_RELEASE_NAME << "' (v" << WALLSTREETBETS_VERSION_FULL);
       return executor.run_interactive(vm);
     }
   }

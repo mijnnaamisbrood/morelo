@@ -45,7 +45,7 @@ set(net_headers
   tor_address.h
   zmq.h)
 
-morelo_add_library(net
+wallstreetbets_add_library(net
   ${net_sources}
   ${net_headers})
 

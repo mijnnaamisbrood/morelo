@@ -56,4 +56,4 @@ jobs:
       with:
         name: ${{ matrix.toolchain.name }}
         path: |
-          /home/runner/work/morelo/morelo/build/${{ matrix.toolchain.host }}/release/bin/w*
+          /home/runner/work/wallstreetbets/wallstreetbets/build/${{ matrix.toolchain.host }}/release/bin/w*

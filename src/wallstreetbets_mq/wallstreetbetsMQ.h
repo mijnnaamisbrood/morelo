@@ -72,7 +72,7 @@ using namespace cryptonote;
 using namespace rpc;
 
 
-namespace moreloMQ {
+namespace wallstreetbetsMQ {
 
     constexpr auto QUIT = "QUIT";
     constexpr auto EVICT = "EVICT";
@@ -124,14 +124,14 @@ namespace moreloMQ {
     };
 
 
-    class MoreloNotifier: public INotifier {
+    class WallstreetbetsNotifier: public INotifier {
         public:
-            MoreloNotifier(ZmqHandler& h);
-            ~MoreloNotifier();
-            MoreloNotifier(const MoreloNotifier&) = delete;
-            MoreloNotifier& operator=(const MoreloNotifier&) = delete;
-            MoreloNotifier(MoreloNotifier&&) = delete;
-            MoreloNotifier& operator=(MoreloNotifier&&) = delete;
+            WallstreetbetsNotifier(ZmqHandler& h);
+            ~WallstreetbetsNotifier();
+            WallstreetbetsNotifier(const WallstreetbetsNotifier&) = delete;
+            WallstreetbetsNotifier& operator=(const WallstreetbetsNotifier&) = delete;
+            WallstreetbetsNotifier(WallstreetbetsNotifier&&) = delete;
+            WallstreetbetsNotifier& operator=(WallstreetbetsNotifier&&) = delete;
             bool addTCPSocket(boost::string_ref address, boost::string_ref port, uint16_t max_clients);
             void run();
 			void stop();

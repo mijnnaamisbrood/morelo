@@ -47,8 +47,8 @@
 #include "net/net_fwd.h"
 #include "rpc/core_rpc_server.h"
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "daemon"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "daemon"
 
 namespace daemonize {
 

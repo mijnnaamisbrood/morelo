@@ -42,8 +42,8 @@
 #include "profile_tools.h"
 #include "ringct/rctOps.h"
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "blockchain.db.lmdb"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "blockchain.db.lmdb"
 
 
 #if defined(__i386) || defined(__x86_64)
@@ -3959,7 +3959,7 @@ std::map<uint64_t, std::tuple<uint64_t, uint64_t, uint64_t>> BlockchainLMDB::get
       while (num_elems > 0) {
         const tx_out_index toi = get_output_tx_and_index(amount, num_elems - 1);
         const uint64_t height = get_tx_block_height(toi.first);
-        if (height + config::tx_settings::MORELO_TX_CONFIRMATIONS_REQUIRED <= blockchain_height)
+        if (height + config::tx_settings::WALLSTREETBETS_TX_CONFIRMATIONS_REQUIRED <= blockchain_height)
           break;
         --num_elems;
       }

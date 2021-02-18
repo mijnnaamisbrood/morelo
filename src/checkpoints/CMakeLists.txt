@@ -46,9 +46,9 @@ set(checkpoints_headers)
 set(checkpoints_private_headers
   checkpoints.h)
 
-morelo_private_headers(checkpoints
+wallstreetbets_private_headers(checkpoints
   ${checkpoints_private_headers})
-morelo_add_library(checkpoints
+wallstreetbets_add_library(checkpoints
   ${checkpoints_sources}
   ${checkpoints_headers}
   ${checkpoints_private_headers})

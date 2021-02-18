@@ -35,10 +35,10 @@ set(multisig_headers)
 set(multisig_private_headers
   multisig.h)
 
-morelo_private_headers(multisig
+wallstreetbets_private_headers(multisig
   ${multisig_private_headers})
 
-morelo_add_library(multisig
+wallstreetbets_add_library(multisig
   ${multisig_sources}
   ${multisig_headers}
   ${multisig_private_headers})

@@ -50,9 +50,9 @@ set(mnemonics_private_headers
   esperanto.h
   lojban.h)
 
-morelo_private_headers(mnemonics
+wallstreetbets_private_headers(mnemonics
   ${mnemonics_private_headers})
-morelo_add_library(mnemonics
+wallstreetbets_add_library(mnemonics
   ${mnemonics_sources}
   ${mnemonics_headers}
   ${mnemonics_private_headers})

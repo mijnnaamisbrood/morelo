@@ -28,8 +28,8 @@
 
 #include "blocksdat_file.h"
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "bcutil"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "bcutil"
 
 namespace po = boost::program_options;
 

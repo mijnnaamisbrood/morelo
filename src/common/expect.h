@@ -37,7 +37,7 @@
 #include "common/error.h"
 
 //! If precondition fails, return `::error::kInvalidArgument` in current scope.
-#define MORELO_PRECOND(...)                            \
+#define WALLSTREETBETS_PRECOND(...)                            \
     do                                                 \
     {                                                  \
         if (!( __VA_ARGS__ ))                          \
@@ -45,7 +45,7 @@
     } while (0)
 
 //! Check `expect<void>` and return errors in current scope.
-#define MORELO_CHECK(...)                           \
+#define WALLSTREETBETS_CHECK(...)                           \
     do                                              \
     {                                               \
         const ::expect<void> result = __VA_ARGS__ ; \
@@ -58,13 +58,13 @@
 
     \throw std::system_error with `expect<T>::error()`, filename and line
         number when `expect<T>::has_error() == true`.*/
-#define MORELO_UNWRAP(...)                                        \
+#define WALLSTREETBETS_UNWRAP(...)                                        \
     ::detail::expect::unwrap( __VA_ARGS__ , nullptr, __FILE__ , __LINE__ )
 
 /* \throw std::system_error with `code` and `msg` as part of the details. The
 filename and line number will automatically be injected into the explanation
 string. `code` can be any enum convertible to `std::error_code`. */
-#define MORELO_THROW(code, msg) \
+#define WALLSTREETBETS_THROW(code, msg) \
     ::detail::expect::throw_( code , msg , __FILE__ , __LINE__ )
 
 

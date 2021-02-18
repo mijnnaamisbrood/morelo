@@ -43,7 +43,7 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#include "moreloMQ.h"
+#include "wallstreetbetsMQ.h"
 #include <cstdint>
 #include <system_error>
 
@@ -60,29 +60,29 @@ using namespace epee;
 #include "p2p/net_node.h"
 #include "version.h"
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "daemon.zmq"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "daemon.zmq"
 
-namespace moreloMQ
+namespace wallstreetbetsMQ
 {
 
 	 extern "C" void message_buffer_destroy(void*, void* hint) {
  		delete reinterpret_cast<std::string*>(hint);
 	}
 
-	zmq::message_t MoreloNotifier::create_message(std::string &&data)
+	zmq::message_t WallstreetbetsNotifier::create_message(std::string &&data)
 	{
 		auto *buffer = new std::string(std::move(data));
 		return zmq::message_t(&(*buffer)[0], buffer->size(), message_buffer_destroy, buffer);
 	}
 
-    MoreloNotifier::MoreloNotifier(ZmqHandler& h): handler(h)
+    WallstreetbetsNotifier::WallstreetbetsNotifier(ZmqHandler& h): handler(h)
     {}
 
-    MoreloNotifier::~MoreloNotifier()
+    WallstreetbetsNotifier::~WallstreetbetsNotifier()
     {}
 
-	void MoreloNotifier::stop()
+	void WallstreetbetsNotifier::stop()
 	{
 		producer.send(create_message(std::move("QUIT")), 0);
 		proxy_thread.join();
@@ -91,13 +91,13 @@ namespace moreloMQ
         zmq_term(&context);
 	}
 
-    void MoreloNotifier::run()
+    void WallstreetbetsNotifier::run()
     {
         producer.bind("inproc://backend");
-        proxy_thread = std::thread{&MoreloNotifier::proxy_loop, this};
+        proxy_thread = std::thread{&WallstreetbetsNotifier::proxy_loop, this};
     }
 
-    bool MoreloNotifier::addTCPSocket(boost::string_ref address, boost::string_ref port, uint16_t clients)
+    bool WallstreetbetsNotifier::addTCPSocket(boost::string_ref address, boost::string_ref port, uint16_t clients)
     {
         if(address.empty())
             address = "*";
@@ -112,7 +112,7 @@ namespace moreloMQ
 		remotes.max_size = clients;
         return true;
     }
-    void MoreloNotifier::proxy_loop()
+    void WallstreetbetsNotifier::proxy_loop()
     {
         subscriber.connect("inproc://backend");
         listener.setsockopt<int>(ZMQ_ROUTER_HANDOVER, 1);
@@ -127,7 +127,7 @@ namespace moreloMQ
         items[1].events = ZMQ_POLLIN;
 
 
-        while (true) 
+        while (true)
         {
 			std::string  block_hash;
             int rc = zmq::poll(items, 2, 1);
@@ -164,7 +164,7 @@ namespace moreloMQ
 						}
                     }
 				}
-				else 
+				else
 				{
                		listener.recv(&envelope1);
                		listener.recv(&envelope1);
@@ -196,7 +196,7 @@ namespace moreloMQ
                 zmq::message_t envelope;
                 subscriber.recv(&envelope);
                 std::string stop = std::string(static_cast<char*>(envelope.data()), envelope.size());
-                if (stop == QUIT) 
+                if (stop == QUIT)
                 {
                     LOG_PRINT_L1("closing thread");
                     break;
@@ -205,4 +205,4 @@ namespace moreloMQ
         }
         zmq_close(&listener);
     }
-} 
+}

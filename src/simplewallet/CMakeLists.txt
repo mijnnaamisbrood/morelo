@@ -35,9 +35,9 @@ set(simplewallet_headers)
 set(simplewallet_private_headers
   simplewallet.h)
 
-morelo_private_headers(simplewallet
+wallstreetbets_private_headers(simplewallet
   ${simplewallet_private_headers})
-morelo_add_executable(simplewallet
+wallstreetbets_add_executable(simplewallet
   ${simplewallet_sources}
   ${simplewallet_headers}
   ${simplewallet_private_headers})

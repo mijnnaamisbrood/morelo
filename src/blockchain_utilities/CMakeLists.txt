@@ -39,7 +39,7 @@ set(blockchain_import_private_headers
   bootstrap_serialization.h
   )
 
-morelo_private_headers(blockchain_import
+wallstreetbets_private_headers(blockchain_import
 	  ${blockchain_import_private_headers})
 
 set(blockchain_export_sources
@@ -54,7 +54,7 @@ set(blockchain_export_private_headers
   bootstrap_serialization.h
   )
 
-morelo_private_headers(blockchain_export
+wallstreetbets_private_headers(blockchain_export
 	  ${blockchain_export_private_headers})
 
 
@@ -68,7 +68,7 @@ set(blockchain_blackball_private_headers
   bootstrap_serialization.h
   )
 
-morelo_private_headers(blockchain_blackball
+wallstreetbets_private_headers(blockchain_blackball
 	  ${blockchain_blackball_private_headers})
 
 set(blockchain_usage_sources
@@ -77,7 +77,7 @@ set(blockchain_usage_sources
 
 set(blockchain_usage_private_headers)
 
-morelo_private_headers(blockchain_usage
+wallstreetbets_private_headers(blockchain_usage
 	  ${blockchain_usage_private_headers})
 
 
@@ -87,7 +87,7 @@ set(blockchain_prune_known_spent_data_sources
 
 set(blockchain_prune_known_spent_data_private_headers)
 
-morelo_private_headers(blockchain_prune_known_spent_data
+wallstreetbets_private_headers(blockchain_prune_known_spent_data
          ${blockchain_prune_known_spent_data_private_headers})
 
 
@@ -97,7 +97,7 @@ set(blockchain_prune_sources
 
 set(blockchain_prune_private_headers)
 
-morelo_private_headers(blockchain_prune
+wallstreetbets_private_headers(blockchain_prune
          ${blockchain_prune_private_headers})
 
 
@@ -109,7 +109,7 @@ set(blockchain_ancestry_sources
 
 set(blockchain_ancestry_private_headers)
 
-morelo_private_headers(blockchain_ancestry
+wallstreetbets_private_headers(blockchain_ancestry
 	  ${blockchain_ancestry_private_headers})
 
 
@@ -120,12 +120,12 @@ set(blockchain_depth_sources
 
 set(blockchain_depth_private_headers)
 
-morelo_private_headers(blockchain_depth
+wallstreetbets_private_headers(blockchain_depth
 	  ${blockchain_depth_private_headers})
 
 
 
-morelo_add_executable(blockchain_import
+wallstreetbets_add_executable(blockchain_import
   ${blockchain_import_sources}
   ${blockchain_import_private_headers})
 
@@ -152,7 +152,7 @@ set_property(TARGET blockchain_import
 	OUTPUT_NAME "wsbc-blockchain-import")
 install(TARGETS blockchain_import DESTINATION bin)
 
-morelo_add_executable(blockchain_export
+wallstreetbets_add_executable(blockchain_export
   ${blockchain_export_sources}
   ${blockchain_export_private_headers})
 
@@ -173,7 +173,7 @@ set_property(TARGET blockchain_export
 	OUTPUT_NAME "wsbc-blockchain-export")
 install(TARGETS blockchain_export DESTINATION bin)
 
-morelo_add_executable(blockchain_blackball
+wallstreetbets_add_executable(blockchain_blackball
   ${blockchain_blackball_sources}
   ${blockchain_blackball_private_headers})
 
@@ -196,7 +196,7 @@ set_property(TARGET blockchain_blackball
 install(TARGETS blockchain_blackball DESTINATION bin)
 
 
-morelo_add_executable(blockchain_usage
+wallstreetbets_add_executable(blockchain_usage
   ${blockchain_usage_sources}
   ${blockchain_usage_private_headers})
 
@@ -217,7 +217,7 @@ set_property(TARGET blockchain_usage
 	OUTPUT_NAME "wsbc-blockchain-usage")
 install(TARGETS blockchain_usage DESTINATION bin)
 
-morelo_add_executable(blockchain_ancestry
+wallstreetbets_add_executable(blockchain_ancestry
   ${blockchain_ancestry_sources}
   ${blockchain_ancestry_private_headers})
 
@@ -238,7 +238,7 @@ set_property(TARGET blockchain_ancestry
 	OUTPUT_NAME "wsbc-blockchain-ancestry")
 install(TARGETS blockchain_ancestry DESTINATION bin)
 
-morelo_add_executable(blockchain_depth
+wallstreetbets_add_executable(blockchain_depth
   ${blockchain_depth_sources}
   ${blockchain_depth_private_headers})
 
@@ -259,7 +259,7 @@ set_property(TARGET blockchain_depth
 	OUTPUT_NAME "wsbc-blockchain-depth")
 install(TARGETS blockchain_depth DESTINATION bin)
 
-morelo_add_executable(blockchain_prune_known_spent_data
+wallstreetbets_add_executable(blockchain_prune_known_spent_data
   ${blockchain_prune_known_spent_data_sources}
   ${blockchain_prune_known_spent_data_private_headers})
 
@@ -281,7 +281,7 @@ set_property(TARGET blockchain_prune_known_spent_data
 	OUTPUT_NAME "wsbc-blockchain-prune-known-spent-data")
 install(TARGETS blockchain_prune_known_spent_data DESTINATION bin)
 
-morelo_add_executable(blockchain_prune
+wallstreetbets_add_executable(blockchain_prune
   ${blockchain_prune_sources}
   ${blockchain_prune_private_headers})
 

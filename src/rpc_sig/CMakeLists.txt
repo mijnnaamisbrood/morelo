@@ -34,9 +34,9 @@ set(rpc_sig_headers
 
 set(rpc_sig_private_headers)
 
-morelo_private_headers(rpc_sig
+wallstreetbets_private_headers(rpc_sig
   ${rpc_sig_private_headers})
-morelo_add_library(rpc_sig
+wallstreetbets_add_library(rpc_sig
   ${rpc_sig_sources}
   ${rpc_sig_headers}
   ${rpc_sig_private_headers})

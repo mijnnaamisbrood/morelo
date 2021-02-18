@@ -1,6 +1,6 @@
 # Anonymity Networks with WallStreetBets Coin
 
-Currently only Tor and I2P have been integrated into Morelo. The usage of
+Currently only Tor and I2P have been integrated into Wallstreetbets. The usage of
 these networks is still considered experimental - there are a few pessimistic
 cases where privacy is leaked. The design is intended to maximize privacy of
 the source of a transaction by broadcasting it over an anonymity network, while
@@ -86,7 +86,7 @@ P2P anonymity connections. The anonymity network (Tor/i2p) is
 [configured in the same manner](#configuration), except the localhost port
 must be the RPC port (typically 42462 for mainnet) instead of the p2p port:
 
-> HiddenServiceDir /var/lib/tor/data/morelo
+> HiddenServiceDir /var/lib/tor/data/wallstreetbets
 > HiddenServicePort 42462 127.0.0.1:42462
 Then the wallet will be configured to use a Tor/i2p address:
 > `--proxy 127.0.0.1:9050`
@@ -121,12 +121,12 @@ distribute the address to its other peers.
 Tor must be configured for hidden services. An example configuration ("torrc")
 might look like:
 
-> HiddenServiceDir /var/lib/tor/data/morelo
+> HiddenServiceDir /var/lib/tor/data/wallstreetbets
 > HiddenServicePort 29996 127.0.0.1:29996
 
-This will store key information in `/var/lib/tor/data/morelo` and will forward
+This will store key information in `/var/lib/tor/data/wallstreetbets` and will forward
 "Tor port" 29996 to port 29996 of ip 127.0.0.1. The file
-`/usr/lib/tor/data/morelo/hostname` will contain the ".onion" address for use
+`/usr/lib/tor/data/wallstreetbets/hostname` will contain the ".onion" address for use
 with `--anonymous-inbound`.
 
 I2P must be configured with a standard server tunnel. Configuration differs by
@@ -146,7 +146,7 @@ sees a transaction over Tor, it could _assume_ (possibly incorrectly) that the
 transaction originated from the peer. If both the Tor connection and an
 IPv4/IPv6 connection have timestamps that are approximately close in value they
 could be used to link the two connections. This is less likely to happen if the
-system clock is fairly accurate - many peers on the Morelo-Network should have
+system clock is fairly accurate - many peers on the Wallstreetbets-Network should have
 similar timestamps.
 
 #### Mitigation
@@ -163,20 +163,20 @@ An ISP can passively monitor `wallstreetbetsd` connections from a node and obser
 a transaction is sent over a Tor/I2P connection via timing analysis + size of
 data sent during that timeframe. I2P should provide better protection against
 this attack - its connections are not circuit based. However, if a node is
-only using I2P for broadcasting Morelo transactions, the total aggregate of
+only using I2P for broadcasting Wallstreetbets transactions, the total aggregate of
 I2P data would also leak information.
 
 #### Mitigation
 
 There is no current mitigation for the user right now. This attack is fairly
-sophisticated, and likely requires support from the internet host of an Morelo
+sophisticated, and likely requires support from the internet host of an Wallstreetbets
 user.
 
 In the near future, "whitening" the amount of data sent over anonymity network
 connections will be performed. An attempt will be made to make a transaction
 broadcast indistinguishable from a peer timed sync command.
 
-### Intermittent Morelo Syncing
+### Intermittent Wallstreetbets Syncing
 
 If a user only runs `wallstreetbetsd` to send a transaction then quit, this can also
 be used by an ISP to link a user to a transaction.

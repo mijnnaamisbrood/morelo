@@ -63,9 +63,9 @@ set(daemon_private_headers
   ../p2p/p2p_protocol_defs.h
   ../p2p/stdafx.h)
 
-morelo_private_headers(daemon
+wallstreetbets_private_headers(daemon
   ${daemon_private_headers})
-morelo_add_executable(daemon
+wallstreetbets_add_executable(daemon
   ${daemon_sources}
   ${daemon_headers}
   ${daemon_private_headers})

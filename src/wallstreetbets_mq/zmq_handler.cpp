@@ -37,7 +37,7 @@
 #include "cryptonote_basic/blobdatatype.h"
 #include "ringct/rctSigs.h"
 
-namespace moreloMQ
+namespace wallstreetbetsMQ
 {
 
   void ZmqHandler::handle(const cryptonote::rpc::GetHeight::Request& req, cryptonote::rpc::GetHeight::Response& res)
@@ -1023,4 +1023,4 @@ namespace moreloMQ
     }
   }
 
-}  // namespace moreloMQ 
+}  // namespace wallstreetbetsMQ 

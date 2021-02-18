@@ -34,8 +34,8 @@
 #include "blockchain.h"
 #include "tx_sanity_check.h"
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "verify"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "verify"
 
 namespace cryptonote
 {

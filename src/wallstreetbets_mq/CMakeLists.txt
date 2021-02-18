@@ -42,26 +42,26 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-set(morelo_mq_sources
-  moreloMQ.cpp
+set(wallstreetbets_mq_sources
+  wallstreetbetsMQ.cpp
   zmq_handler.cpp)
 
-set(morelo_mq_headers)
+set(wallstreetbets_mq_headers)
 
-set(morelo_mq_private_headers
-    moreloMQ.h
+set(wallstreetbets_mq_private_headers
+    wallstreetbetsMQ.h
     INotifier.h
 	zmq_handler.h)
 
-morelo_private_headers(morelo_mq
-  ${morelo_mq_private_headers})
+wallstreetbets_private_headers(wallstreetbets_mq
+  ${wallstreetbets_mq_private_headers})
 
-morelo_add_library(morelo_mq
-  ${morelo_mq_sources}
-  ${morelo_mq_headers}
-  ${morelo_mq_private_headers})
+wallstreetbets_add_library(wallstreetbets_mq
+  ${wallstreetbets_mq_sources}
+  ${wallstreetbets_mq_headers}
+  ${wallstreetbets_mq_private_headers})
 
-target_link_libraries(morelo_mq
+target_link_libraries(wallstreetbets_mq
   LINK_PRIVATE
     common
     epee
@@ -74,5 +74,5 @@ target_link_libraries(morelo_mq
     libzmq
     ${EXTRA_LIBRARIES})
 
-add_dependencies(morelo_mq
+add_dependencies(wallstreetbets_mq
   version)

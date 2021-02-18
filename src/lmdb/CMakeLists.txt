@@ -42,7 +42,7 @@ set(lmdb_headers
   util.h
   value_stream.h)
 
-morelo_add_library(lmdb_lib
+wallstreetbets_add_library(lmdb_lib
   ${lmdb_sources}
   ${lmdb_headers})
 

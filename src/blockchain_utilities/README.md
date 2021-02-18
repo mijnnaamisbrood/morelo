@@ -1,4 +1,4 @@
-# Morelo Blockchain Utilities
+# Wallstreetbets Blockchain Utilities
 
 Copyright (c) 2018-2019, The Arqma Project
 Copyright (c) 2014-2018, The Monero Project
@@ -15,13 +15,13 @@ See also each utility's "--help" option.
 
 `$ wsbc-blockchain-export`
 
-This loads the existing blockchain and exports it to `$MORELO_DATA_DIR/export/blockchain.raw`
+This loads the existing blockchain and exports it to `$WALLSTREETBETS_DATA_DIR/export/blockchain.raw`
 
 ### Import the exported file
 
 `$ wsbc-blockchain-import`
 
-This imports blocks from `$MORELO_DATA_DIR/export/blockchain.raw` (exported using the
+This imports blocks from `$WALLSTREETBETS_DATA_DIR/export/blockchain.raw` (exported using the
 `wsbc-blockchain-export` tool as described above) into the current database.
 
 Defaults: `--batch on`, `--batch size 20000`, `--verify on`

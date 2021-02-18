@@ -35,8 +35,8 @@
 #include "net/http_client.h"
 #include "download.h"
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "net.dl"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "net.dl"
 
 namespace tools
 {

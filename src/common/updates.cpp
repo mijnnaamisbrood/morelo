@@ -33,8 +33,8 @@
 #include "dns_utils.h"
 #include "updates.h"
 
-#undef MORELO_DEFAULT_LOG_CATEGORY
-#define MORELO_DEFAULT_LOG_CATEGORY "updates"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "updates"
 
 namespace tools
 {
@@ -97,7 +97,7 @@ namespace tools
 
   std::string get_update_url(const std::string &software, const std::string &buildtag, const std::string &version, bool user)
   {
-    const char *base = user ? "https://downloads.morelo-project.rf.gd" : "https://get.morelo-project.rf.gd";
+    const char *base = user ? "https://downloads.wallstreetbets-project.rf.gd" : "https://get.wallstreetbets-project.rf.gd";
 #ifdef _WIN32
     static const char *extension = strncmp(buildtag.c_str(), "install-", 8) ? ".zip" : ".exe";
 #else
