@@ -5,7 +5,7 @@
 
 # WallStreetBets Coin (WSBC)
 
-Copyright (c) 2021-2021 WallStreetBets Coin - WSBC 
+Copyright (c) 2021-2021 WallStreetBets Coin - WSBC
 Copyright (c) 2019-2020 The WallStreetBets Network.    
 Copyright (c) 2018-2020 The Arqma Network.    
 Copyright (c) 2014-2020 The Monero Project.  
@@ -30,9 +30,9 @@ Network properties:
 - Website: https://wallstreetbetsbros.com/
 - Block Explorer: http://explorer.wallstreetbetsbros.com/
 - Source: https://github.com/cryptodeveloperbro/WallStreetBetsCoin
-- Software: 
+- Software:
 - Discord: https://discord.gg/S4qFHwfhHt
-- Telegram: 
+- Telegram:
 - BitcoinTalk: https://bitcointalk.org/index.php?topic=5313507.0
 - Twitter: https://twitter.com/wsbcryptocoin
 
@@ -41,7 +41,7 @@ Network properties:
 - TXBOT.io: https://txbit.io/Trade/WSBC/BTC
 
             https://txbit.io/Trade/WSBC/ETH
-			
+
 			https://txbit.io/Trade/WSBC/USDT
 
 
@@ -50,19 +50,19 @@ Network properties:
 - Miner's Galaxy: http://minergalaxy.com/WSB/
 - Let's Hash It:  https://letshash.it/wsbc
 
-  Walemo Chinese: 
-  
+  Walemo Chinese:
+
   Pool Stats:     https://miningpoolstats.stream/wallstreetbets
 
 ## Community Links
 
 - CoinMarketCap:
-- CoinGecko: 
+- CoinGecko:
 - Cryptunit: https://www.cryptunit.com/coin/WSBC
-- Coinstat.app: 
-- CMC.io: 
-- Walemo: 
-- Niubiquan: 
+- Coinstat.app:
+- CMC.io:
+- Walemo:
+- Niubiquan:
 
 ## WALLSTREETBETS Introduction
 
@@ -176,9 +176,9 @@ $ git clone https://github.com/wsbc-coin/wallstreetbets
 
 If you already have a repo cloned, initialize and update:
 
-$ cd wallstreetbets && git checkout release-v0.5.3.0
+$ cd wallstreetbets && git checkout release-v0.5.4.0
 
-$ git submodule init && git submodule update 
+$ git submodule init && git submodule update
 
 ### Build instructions
 
