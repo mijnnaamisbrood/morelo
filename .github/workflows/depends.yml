@@ -12,9 +12,6 @@ jobs:
       fail-fast: false
       matrix:
         toolchain:
-          - name: "build-depends-armv7"
-            host: "arm-linux-gnueabihf"
-            packages: "python3 gperf g++-arm-linux-gnueabihf"
           - name: "build-depends-armv8"
             host: "aarch64-linux-gnu"
             packages: "python3 gperf g++-aarch64-linux-gnu"
