@@ -1,13 +1,12 @@
-<p align="center">
-  <a href="http://morelo.is-great.net/">
-    <img src="https://i.imgur.com/piFNWIo.png" alt="Logo" align="center" width="25%">
-  </a>
-</p>
+![Logo](https://github.com/cryptodeveloperbro/WallStreetBetsCoin/blob/master/src/config/wallstreetbets-coin-logo.png)
 
 
-# MORELO (MRL)
 
-Copyright (c) 2019-2020 The Morelo Network.    
+
+# WallStreetBets Coin (WSBC)
+
+Copyright (c) 2021-2021 WallStreetBets Coin - WSBC 
+Copyright (c) 2019-2020 The WallStreetBets Network.    
 Copyright (c) 2018-2020 The Arqma Network.    
 Copyright (c) 2014-2020 The Monero Project.  
 Portions Copyright (c) 2012-2013 The Cryptonote developers.
@@ -15,65 +14,73 @@ Portions Copyright (c) 2012-2013 The Cryptonote developers.
 ## BlockChain Specifications
 
 Network properties:
-- Name: MORELO
-- Ticker: MRL
-- Max supply: 75 ml
-- Pre: 3.5 ml
+- Name: WallStreetBets Coin
+- Ticker: WSBC
+- Max supply: 100 ml
+- Pre: 14 ml
 - Block time: 120 seconds after v16: 60 seconds
 - Decimals: 9
 - Algorithm: RandomARQ
 - Consensus: PoW
 - Anonymity: BulletProof RingCT
-- Governance Fee: 10%
+- Governance Fee: 1%
 
-## Morelo resources
+## WallStreetBets Coin resources
 
-- Website: http://morelo-network.com/
-- Block Explorer: https://mrl.supportcryptonight.com/
-- Source: https://github.com/morelo-network/morelo
-- Software: https://github.com/morelo-network/morelo/releases
-- Discord: https://discord.gg/eRZUjdG
-- Telegram: https://t.me/morelomrl
-- BitcoinTalk: https://bitcointalk.org/index.php?topic=5233023
-- Twitter: https://twitter.com/MoreloMrl
+- Website: https://wallstreetbetsbros.com/
+- Block Explorer: http://explorer.wallstreetbetsbros.com/
+- Source: https://github.com/cryptodeveloperbro/WallStreetBetsCoin
+- Software: 
+- Discord: https://discord.gg/S4qFHwfhHt
+- Telegram: 
+- BitcoinTalk: https://bitcointalk.org/index.php?topic=5313507.0
+- Twitter: https://twitter.com/wsbcryptocoin
 
 ## EXCHANGE & TRADE
 
-- BKEX.Com: https://www.bkex.com/trade/MRL_USDT
-- Coinbig.com: https://www.coinbig.com/pl/trade/MRL_USDT
+- TXBOT.io: https://txbit.io/Trade/WSBC/BTC
+
+            https://txbit.io/Trade/WSBC/ETH
+			
+			https://txbit.io/Trade/WSBC/USDT
+
 
 ## Mining MRL
 
-- Dev's pool: http://pool.morelo-network.com/
-- Pool's Stats: https://miningpoolstats.stream/morelo
+- Miner's Galaxy: http://minergalaxy.com/WSB/
+- Let's Hash It:  https://letshash.it/wsbc
+
+  Walemo Chinese: 
+  
+  Pool Stats:     https://miningpoolstats.stream/wallstreetbets
 
 ## Community Links
 
-- CoinMarketCap: https://coinmarketcap.com/currencies/morelo/
-- CoinGecko: https://www.coingecko.com/en/coins/morelo
-- Cryptunit: https://www.cryptunit.com/coin/MRL
-- Coinstat.app: https://coinstats.app/en/coins/morelo
-- CMC.io: https://cmc.io/coins/morelo
-- Walemo: http://www.walemo.com/1582.html
-- Niubiquan: http://niubiquan.com/article/2895
+- CoinMarketCap:
+- CoinGecko: 
+- Cryptunit: https://www.cryptunit.com/coin/WSBC
+- Coinstat.app: 
+- CMC.io: 
+- Walemo: 
+- Niubiquan: 
 
-## MORELO Introduction
+## WALLSTREETBETS Introduction
 
-Morelo is a private, secure, untraceable, decentralised digital currency. You are your bank, you control your funds, and nobody can trace your transfers unless you allow them to do so.
+WallStreetBets is a private, secure, untraceable, decentralised digital currency. You are your bank, you control your funds, and nobody can trace your transfers unless you allow them to do so.
 
-**Privacy:** Morelo uses a cryptographically sound system to allow you to send and receive funds without your transactions being easily revealed on the blockchain (the ledger of transactions that everyone has). This ensures that your purchases, receipts, and all transfers remain absolutely private by default.
+**Privacy:** WallStreetBets uses a cryptographically sound system to allow you to send and receive funds without your transactions being easily revealed on the blockchain (the ledger of transactions that everyone has). This ensures that your purchases, receipts, and all transfers remain absolutely private by default.
 
 **Security:** Using the power of a distributed peer-to-peer consensus network, every transaction on the network is cryptographically secured. Individual wallets have a 25 word mnemonic seed that is only displayed once, and can be written down to backup the wallet. Wallet files are encrypted with a passphrase to ensure they are useless if stolen.
 
-**Untraceability:** By taking advantage of ring signatures, a special property of a certain type of cryptography, Morelo is able to ensure that transactions are not only untraceable, but have an optional measure of ambiguity that ensures that transactions cannot easily be tied back to an individual user or computer.
+**Untraceability:** By taking advantage of ring signatures, a special property of a certain type of cryptography, WallStreetBets is able to ensure that transactions are not only untraceable, but have an optional measure of ambiguity that ensures that transactions cannot easily be tied back to an individual user or computer.
 
 ## SSL
 
-As a network, Morelo supports complete, cryptographically secured connections at all levels. This includes, but is not limited to Morelo Network Nodes (Full nodes), Remote Nodes and all wallets - CLI and GUI for desktop, and Android and iOS [ iOS is under development].    
+As a network, WallStreetBets supports complete, cryptographically secured connections at all levels. This includes, but is not limited to WallStreetBets Network Nodes (Full nodes), Remote Nodes and all wallets - CLI and GUI for desktop, and Android and iOS [ iOS is under development].    
 
-Morelo Network will be consistently implementing the highest security protocols to achieve the greatest privacy for all transactions, as well as all communications made over the Morelo Network.
+WallStreetBets Network will be consistently implementing the highest security protocols to achieve the greatest privacy for all transactions, as well as all communications made over the WallStreetBets Network.
 
-The use of SSL connections means that there will not be any possibility to use the Morelo Network with unsecured or tampered connections (daemons), and that your privacy will remain a feature built in a protocol level.
+The use of SSL connections means that there will not be any possibility to use the WallStreetBets Network with unsecured or tampered connections (daemons), and that your privacy will remain a feature built in a protocol level.
 
  * Below is an example how to generate SSL Keys with openssl
 
@@ -86,11 +93,11 @@ The use of SSL connections means that there will not be any possibility to use t
 
 ## About this project
 
-This is the core implementation of Morelo. It is open source and completely free to use without restrictions, except for those specified in the license agreement below. There are no restrictions on anyone creating an alternative implementation of Morelo that uses the protocol and network in a compatible manner.
+This is the core implementation of WallStreetBets. It is open source and completely free to use without restrictions, except for those specified in the license agreement below. There are no restrictions on anyone creating an alternative implementation of WallStreetBets that uses the protocol and network in a compatible manner.
 
 As with many development projects, the repository on Github is considered to be the "staging" area for the latest changes. Before changes are merged into that branch on the main repository, they are tested by individual developers in their own branches, submitted as a pull request, and then subsequently tested by contributors who focus on testing and code reviews. That having been said, the repository should be carefully considered before using it in a production environment, unless there is a patch in the repository for a particular show-stopping issue you are experiencing. It is generally a better idea to use a tagged release for stability.
 
-**Anyone is welcome to contribute to Morelo's codebase!** If you have a fix or code change, feel free to submit it as a pull request directly to the "master" branch. In cases where the change is relatively small or does not affect other parts of the codebase it may be merged in immediately by any one of the collaborators. On the other hand, if the change is particularly large or complex, it is expected that it will be discussed at length either well in advance of the pull request being submitted, or even directly on the pull request.
+**Anyone is welcome to contribute to WallStreetBets's codebase!** If you have a fix or code change, feel free to submit it as a pull request directly to the "master" branch. In cases where the change is relatively small or does not affect other parts of the codebase it may be merged in immediately by any one of the collaborators. On the other hand, if the change is particularly large or complex, it is expected that it will be discussed at length either well in advance of the pull request being submitted, or even directly on the pull request.
 
 ## License
 
@@ -100,7 +107,7 @@ See [LICENSE](LICENSE).
 
 If you want to help out, see [CONTRIBUTING](CONTRIBUTING.md) for a set of guidelines.
 
-## Compiling Morelo from source
+## Compiling WallStreetBets from source
 
 ## Build
 
@@ -165,16 +172,16 @@ Install all dependencies at once on OSX:
 
 Clone recursively to pull-in needed submodule(s):
 
-`$ git clone https://github.com/morelo-network/morelo`
+`$ git clone https://github.com/cryptodeveloperbro/wsbc-wallstreetbetscoin`
 
 If you already have a repo cloned, initialize and update:
 
-`$ cd morelo && git checkout release-v0.5.3.0`    
+`$ cd wsbc-wallstreetbets-coin && git checkout release-v0.5.2.0`    
 `$ git submodule init && git submodule update`    
 
 ### Build instructions
 
-Morelo uses the CMake build system and a top-level [Makefile](Makefile) that
+WallStreetBets uses the CMake build system and a top-level [Makefile](Makefile) that
 invokes cmake commands as needed.
 
 #### On Linux and OS X
@@ -182,7 +189,7 @@ invokes cmake commands as needed.
 * Install the dependencies
 * Change to the root of the source code directory and build:
 
-        `$ cd morelo && make`
+        `$ cd wsbc-wallstreetbetscoin && make`
 
 
     *Optional*: If your machine has several cores and enough memory, enable
@@ -193,9 +200,9 @@ invokes cmake commands as needed.
 
 * The resulting executables can be found in `build/release/bin`
 
-* Add `PATH="$PATH:$HOME/morelo/build/release/bin"` to `.profile`
+* Add `PATH="$PATH:$HOME/wallstreetbets/build/release/bin"` to `.profile`
 
-* Run Morelo with `wallstreetbetsd --detach`
+* Run WallStreetBets with `wallstreetbetsd --detach`
 
 * **Optional**: build and run the test suite to verify the binaries:
 
@@ -223,7 +230,7 @@ Tested on a Raspberry Pi Zero with a clean install of minimal Raspbian Stretch (
 
 * `apt-get update && apt-get upgrade` to install all of the latest software
 
-* Install the dependencies for Morelo from the 'Debian' column in the table above.
+* Install the dependencies for WallStreetBets from the 'Debian' column in the table above.
 
 * Increase the system swap size:
 ```
@@ -232,10 +239,10 @@ Tested on a Raspberry Pi Zero with a clean install of minimal Raspbian Stretch (
 	CONF_SWAPSIZE=1024  
 	sudo /etc/init.d/dphys-swapfile start  
 ```
-* Clone morelo and checkout most recent release version:
+* Clone wallstreetbets and checkout most recent release version:
 ```
-  git clone https://github.com/morelo-network/morelo.git
-	cd morelo
+  git clone https://github.com/cryptodeveloperbro/wsbc-wallstreetbetscoin
+	cd wallstreetbets
 
 ```
 * Build:
@@ -246,15 +253,15 @@ Tested on a Raspberry Pi Zero with a clean install of minimal Raspbian Stretch (
 
 * The resulting executables can be found in `build/release/bin`
 
-* Add `PATH="$PATH:$HOME/morelo/build/release/bin"` to `.profile`
+* Add `PATH="$PATH:$HOME/wallstreetbets/build/release/bin"` to `.profile`
 
-* Run Morelo with `wallstreetbetsd --detach`
+* Run WallStreetBets with `wallstreetbetsd --detach`
 
 * You may wish to reduce the size of the swap file after the build has finished, and delete the boost directory from your home directory
 
 #### *Note for Raspbian Jessie users:*
 
-If you are using the older Raspbian Jessie image, compiling Morelo is a bit more complicated. The version of Boost available in the Debian Jessie repositories is too old to use with Morelo, and thus you must compile a newer version yourself. The following explains the extra steps, and has been tested on a Raspberry Pi 2 with a clean install of minimal Raspbian Jessie.
+If you are using the older Raspbian Jessie image, compiling WallStreetBets is a bit more complicated. The version of Boost available in the Debian Jessie repositories is too old to use with WallStreetBets, and thus you must compile a newer version yourself. The following explains the extra steps, and has been tested on a Raspberry Pi 2 with a clean install of minimal Raspbian Jessie.
 
 * As before, `apt-get update && apt-get upgrade` to install all of the latest software, and increase the system swap size
 
@@ -265,7 +272,7 @@ If you are using the older Raspbian Jessie image, compiling Morelo is a bit more
 	sudo /etc/init.d/dphys-swapfile start  
 ```
 
-* Then, install the dependencies for morelo except `libunwind` and `libboost-all-dev`
+* Then, install the dependencies for wallstreetbets except `libunwind` and `libboost-all-dev`
 
 * Install the latest version of boost (this may first require invoking `apt-get remove --purge libboost*` to remove a previous version if you're not using a clean install):
 ```
@@ -282,7 +289,7 @@ If you are using the older Raspbian Jessie image, compiling Morelo is a bit more
 ```
 * Wait ~4 hours
 
-* From here, follow the [general Raspberry Pi instructions](#on-the-raspberry-pi) from the "Clone morelo and checkout most recent release version" step.
+* From here, follow the [general Raspberry Pi instructions](#on-the-raspberry-pi) from the "Clone wallstreetbets and checkout most recent release version" step.
 
 #### On Windows:
 
@@ -318,13 +325,13 @@ application.
 
 **Building**
 
-* Download Morelo with command:
+* Download WallStreetBets with command:
 
-	`git clone https://github.com/morelo-network/morelo
+	`git clone https://github.com/cryptodeveloperbro/wsbc-wallstreetbetscoin
 
 * Change branch to last Release:
 
-	`cd morelo
+	`cd wsbc-wallstreetbets-coin
 
 * Activate and update submodules:
 
@@ -342,13 +349,13 @@ application.
 
 * The resulting executables can be found in `build/debug/bin`
 
-*** Morelo does Not support 32-bit Windows anymore ***
+*** WallStreetBets does Not support 32-bit Windows anymore ***
 
 ### On FreeBSD:
 
-The project can be built from scratch by following instructions for Linux above. If you are running morelo in a jail you need to add the flag: `allow.sysvipc=1` to your jail configuration, otherwise lmdb will throw the error message: `Failed to open lmdb environment: Function not implemented`.
+The project can be built from scratch by following instructions for Linux above. If you are running wallstreetbets in a jail you need to add the flag: `allow.sysvipc=1` to your jail configuration, otherwise lmdb will throw the error message: `Failed to open lmdb environment: Function not implemented`.
 
-We expect to add Morelo into the ports tree in the near future, which will aid in managing installations using ports or packages.
+We expect to add WallStreetBets into the ports tree in the near future, which will aid in managing installations using ports or packages.
 
 ### On OpenBSD:
 
@@ -363,7 +370,7 @@ The doxygen and graphviz packages are optional and require the xbase set.
 The Boost package has a bug that will prevent librpc.a from building correctly. In order to fix this, you will have to Build boost yourself from scratch. Follow the directions here (under "Building Boost"):
 https://github.com/bitcoin/bitcoin/blob/master/doc/build-openbsd.md
 
-You will have to add the serialization, date_time, and regex modules to Boost when building as they are needed by Morelo.
+You will have to add the serialization, date_time, and regex modules to Boost when building as they are needed by WallStreetBets.
 
 To build: `env CC=egcc CXX=eg++ CPP=ecpp DEVELOPER_LOCAL_TOOLS=1 BOOST_ROOT=/path/to/the/boost/you/built make release-static-64`
 
@@ -418,7 +425,7 @@ Build the cppzmq bindings.
 
 We assume you are compiling with a non-root user and you have `doas` enabled.
 
-Build Morelo: `env DEVELOPER_LOCAL_TOOLS=1 BOOST_ROOT=/usr/local make release-static`
+Build WallStreetBets: `env DEVELOPER_LOCAL_TOOLS=1 BOOST_ROOT=/usr/local make release-static`
 
 ### On Solaris:
 
@@ -434,11 +441,11 @@ Then you can run make as usual.
 ### On Linux for Android (using docker):
 
         # Build image
-        docker build -f utils/build_scripts/android32.Dockerfile -t morelo-android .
+        docker build -f utils/build_scripts/android32.Dockerfile -t wallstreetbets-android .
         # Create container
-        docker create -it --name morelo-android morelo-android bash
+        docker create -it --name wallstreetbets-android wallstreetbets-android bash
         # Get binaries
-        docker cp morelo-android:/opt/android/morelo/build/release/bin .
+        docker cp wallstreetbets-android:/opt/android/wallstreetbets/build/release/bin .
 
 ### Building portable statically linked binaries
 
@@ -452,7 +459,7 @@ By default, in either dynamically or statically linked builds, binaries target t
 
 ### Cross Compiling
 
-You can also cross-compile Morelo static binaries on Linux for Windows and macOS with the `depends` system.
+You can also cross-compile WallStreetBets static binaries on Linux for Windows and macOS with the `depends` system.
 
 * ```make depends target=x86_64-linux-gnu``` for 64-bit linux binaries.
 * ```make depends target=x86_64-w64-mingw32``` for 64-bit windows binaries. Requires: python3 g++-mingw-w64-x86-64 wine64 bc
@@ -464,7 +471,7 @@ You can also cross-compile Morelo static binaries on Linux for Windows and macOS
 
 The required packages are the names for each toolchain on apt. Depending on your OS Distribution, they may have different names.
 
-Using `depends` might also be easier to compile Morelo on Windows than using MSYS. Activate Windows Subsystem for Linux (WSL) with a distribution (for example Ubuntu), install the apt build-essentials and follow the `depends` steps as stated above.
+Using `depends` might also be easier to compile WallStreetBets on Windows than using MSYS. Activate Windows Subsystem for Linux (WSL) with a distribution (for example Ubuntu), install the apt build-essentials and follow the `depends` steps as stated above.
 
 ### Compability with older Linux Versions < GLIBC_2.25
 
@@ -492,12 +499,12 @@ To run in background:
 To run as a systemd service, copy
 [wallstreetbetsd.service](utils/systemd/wallstreetbetsd.service) to `/etc/systemd/system/` and
 [wallstreetbetsd.conf](utils/conf/wallstreetbetsd.conf) to `/etc/`. The [example
-service](utils/systemd/wallstreetbetsd.service) assumes that the user `morelo` exists
+service](utils/systemd/wallstreetbetsd.service) assumes that the user `wallstreetbets` exists
 and its home is the data directory specified in the [example
 config](utils/conf/wallstreetbetsd.conf).
 
 If you're on Mac, you may need to add the `--max-concurrency 1` option to
-morelo-wallet-cli, and possibly wallstreetbetsd, if you get crashes refreshing.
+wallstreetbets-wallet-cli, and possibly wallstreetbetsd, if you get crashes refreshing.
 
 ## Internationalization
 
@@ -511,7 +518,7 @@ See [README.i18n.md](README.i18n.md).
 > used solely for relaying transactions received over local RPC. This provides
 > privacy and better protection against surrounding node (sybil) attacks.
 
-While Morelo isn't made to integrate with Tor, it can be used wrapped with torsocks, by
+While WallStreetBets isn't made to integrate with Tor, it can be used wrapped with torsocks, by
 setting the following configuration parameters and environment variables:
 
 * `--p2p-bind-ip 127.0.0.1` on the command line or `p2p-bind-ip=127.0.0.1` in
@@ -549,7 +556,7 @@ allow inbound connections. Full example:
 
 ## Debugging
 
-This section contains general instructions for debugging failed installs or problems encountered with Morelo. First ensure you are running the latest version built from the Github repository.
+This section contains general instructions for debugging failed installs or problems encountered with WallStreetBets. First ensure you are running the latest version built from the Github repository.
 
 ### Obtaining stack traces and core dumps on Unix systems
 
@@ -583,7 +590,7 @@ You can now analyse this core dump with `gdb` as follows:
 
 Print the stack trace with `bt`
 
-* To run morelo within gdb:
+* To run wallstreetbets within gdb:
 
 Type `gdb /path/to/wallstreetbetsd`
 
@@ -603,7 +610,7 @@ Instructions for debugging suspected blockchain corruption as per @HYC
 
 There is an `mdb_stat` command in the LMDB source that can print statistics about the database but it's not routinely built. This can be built with the following command:
 
-`cd ~/morelo/external/db_drivers/liblmdb && make`
+`cd ~/wallstreetbets/external/db_drivers/liblmdb && make`
 
 The output of `mdb_stat -ea <path to blockchain dir>` will indicate inconsistencies in the blocks, block_heights and block_info table.
 
