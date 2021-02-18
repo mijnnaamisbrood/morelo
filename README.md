@@ -172,7 +172,7 @@ Install all dependencies at once on OSX:
 
 Clone recursively to pull-in needed submodule(s):
 
-$ git clone https://github.com/wsbc-coin/wallstreetbetscoin
+$ git clone https://github.com/wsbc-coin/wallstreetbets
 
 If you already have a repo cloned, initialize and update:
 
