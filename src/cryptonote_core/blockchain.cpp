@@ -81,7 +81,7 @@ DISABLE_VS_WARNINGS(4267)
 #define MERROR_VER(x) MCERROR("verify", x)
 
 // used to overestimate the block reward when estimating a per kB to use
-#define BLOCK_REWARD_OVERESTIMATE (10 * 1000000000000)
+#define BLOCK_REWARD_OVERESTIMATE (1 * 1000000000000)
 
 static const struct {
  uint8_t version;
@@ -90,8 +90,9 @@ static const struct {
  time_t time;
 } mainnet_hard_forks[] = {
  // version 1 from the start of the blockchain
- { 1, 0, 0, 1581800400 },
- { 16, 1, 0, 1603132800 },
+ { 1, 0, 0, 1613599975 },
+ { 15, 1, 0, 1613600045 },
+
 };
 
 static const struct {
@@ -101,8 +102,10 @@ static const struct {
  time_t time;
 } testnet_hard_forks[] = {
  // version 1 from the start of the blockchain
- { 1, 0, 0, 1581800400 },
- { 16, 1, 0, 1581806100 },
+ { 1, 0, 0, 1613599975 },
+ { 15, 1, 0, 1613600045 },
+
+
 };
 
 static const struct {
@@ -112,8 +115,9 @@ static const struct {
  time_t time;
 } stagenet_hard_forks[] = {
  // version 1 from the start of the blockchain
- { 1, 0, 0, 1581800400 },
- { 16, 50, 0, 1601146980 },
+ { 1, 0, 0, 1613599975 },
+ { 15, 1, 0, 1613600045 },
+
 };
 
 //------------------------------------------------------------------
