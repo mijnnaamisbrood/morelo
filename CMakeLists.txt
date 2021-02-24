@@ -125,7 +125,7 @@ if(IOS)
     include(CMakeLists_IOS.txt)
 endif()
 
-project(wallstreetbets
+project(morelo
   VERSION 5.1.0
   LANGUAGES CXX C)
 
