@@ -176,7 +176,7 @@ $ git clone https://github.com/wsbc-coin/wallstreetbets
 
 If you already have a repo cloned, initialize and update:
 
-$ cd wallstreetbets && git checkout release-v0.5.4.0
+$ cd wallstreetbets && git checkout release-v0.5.5.0
 
 $ git submodule init && git submodule update
 
