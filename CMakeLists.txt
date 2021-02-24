@@ -89,7 +89,7 @@ message(STATUS "${Green}Total available virtual memory:${ColourReset}${BoldBlue}
 math(EXPR totalmemavail "${freememsys} + ${freememvirt}")
 message(STATUS "${Green}Total available memory:${ColourReset}${BoldBlue} ${totalmemavail} Mib ${ColourReset}")
 if(totalmemavail LESS 3500)
-  die("Arqma needs at least 3.5 Gb of available memory (physical+virtual) to compile!")
+  die("WSBC needs at least 3.5 Gb of available memory (physical+virtual) to compile!")
 endif()
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -125,8 +125,8 @@ if(IOS)
     include(CMakeLists_IOS.txt)
 endif()
 
-project(morelo
-  VERSION 5.1.0
+project(wallstreetbets
+  VERSION 5.4.0
   LANGUAGES CXX C)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.3.0)
