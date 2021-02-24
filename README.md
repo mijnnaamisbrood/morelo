@@ -45,7 +45,7 @@ Network properties:
 			https://txbit.io/Trade/WSBC/USDT
 
 
-## Mining MRL
+## Mining WSBC
 
 - Miner's Galaxy: http://minergalaxy.com/WSB/
 - Let's Hash It:  https://letshash.it/wsbc
@@ -551,7 +551,7 @@ TAILS ships with a very restrictive set of firewall rules. Therefore, you need
 to add a rule to allow this connection too, in addition to telling torsocks to
 allow inbound connections. Full example:
 
-    sudo iptables -I OUTPUT 2 -p tcp -d 127.0.0.1 -m tcp --dport 19994 -j ACCEPT
+    sudo iptables -I OUTPUT 2 -p tcp -d 127.0.0.1 -m tcp --dport 17762 -j ACCEPT
     DNS_PUBLIC=tcp torsocks ./wallstreetbetsd --p2p-bind-ip 127.0.0.1 --no-igd --rpc-bind-ip 127.0.0.1 \
         --data-dir /home/amnesia/Persistent/your/directory/to/the/blockchain
 

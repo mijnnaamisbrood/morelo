@@ -196,10 +196,10 @@ VOLUME /home/arqma/.arqma
 # arqma-wallet-cli
 VOLUME /wallet
 
-EXPOSE 19993
-EXPOSE 19994
+EXPOSE 17761
+EXPOSE 17762
 
 # switch to user arqma
 USER arqma
 
-ENTRYPOINT ["arqmad", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=19993", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=19994", "--non-interactive", "--confirm-external-bind"]
+ENTRYPOINT ["arqmad", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=17761", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=17762", "--non-interactive", "--confirm-external-bind"]

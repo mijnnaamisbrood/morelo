@@ -1,21 +1,21 @@
 // Copyright (c) 2014-2018, The Monero Project
-// 
+//
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without modification, are
 // permitted provided that the following conditions are met:
-// 
+//
 // 1. Redistributions of source code must retain the above copyright notice, this list of
 //    conditions and the following disclaimer.
-// 
+//
 // 2. Redistributions in binary form must reproduce the above copyright notice, this list
 //    of conditions and the following disclaimer in the documentation and/or other
 //    materials provided with the distribution.
-// 
+//
 // 3. Neither the name of the copyright holder nor the names of its contributors may be
 //    used to endorse or promote products derived from this software without specific
 //    prior written permission.
-// 
+//
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
 // EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
 // MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
@@ -25,7 +25,7 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-// 
+//
 // Parts of this file are originally copyright (c) 2012-2013 The Cryptonote developers
 
 #include "gtest/gtest.h"
@@ -81,9 +81,9 @@ const char * TESTNET_WALLET_PASS = "";
 std::string CURRENT_SRC_WALLET;
 std::string CURRENT_DST_WALLET;
 
-const uint64_t AMOUNT_10MRL =  10000000000000L;
-const uint64_t AMOUNT_5MRL  =  5000000000000L;
-const uint64_t AMOUNT_1MRL  =  1000000000000L;
+const uint64_t AMOUNT_10WSBC =  10000000000000L;
+const uint64_t AMOUNT_5WSBC  =  5000000000000L;
+const uint64_t AMOUNT_1WSBC  =  1000000000000L;
 
 const std::string PAYMENT_ID_EMPTY = "";
 
@@ -552,12 +552,12 @@ TEST_F(WalletTest1, WalletRefresh)
 
 TEST_F(WalletTest1, WalletConvertsToString)
 {
-    std::string strAmount = Monero::Wallet::displayAmount(AMOUNT_5MRL);
-    ASSERT_TRUE(AMOUNT_5MRL == Monero::Wallet::amountFromString(strAmount));
+    std::string strAmount = Monero::Wallet::displayAmount(AMOUNT_5WSBC);
+    ASSERT_TRUE(AMOUNT_5WSBC == Monero::Wallet::amountFromString(strAmount));
 
-    ASSERT_TRUE(AMOUNT_5MRL == Monero::Wallet::amountFromDouble(5.0));
-    ASSERT_TRUE(AMOUNT_10MRL == Monero::Wallet::amountFromDouble(10.0));
-    ASSERT_TRUE(AMOUNT_1MRL == Monero::Wallet::amountFromDouble(1.0));
+    ASSERT_TRUE(AMOUNT_5WSBC == Monero::Wallet::amountFromDouble(5.0));
+    ASSERT_TRUE(AMOUNT_10WSBC == Monero::Wallet::amountFromDouble(10.0));
+    ASSERT_TRUE(AMOUNT_1WSBC == Monero::Wallet::amountFromDouble(1.0));
 
 }
 
@@ -579,7 +579,7 @@ TEST_F(WalletTest1, WalletTransaction)
 
     Monero::PendingTransaction * transaction = wallet1->createTransaction(recepient_address,
                                                                              PAYMENT_ID_EMPTY,
-                                                                             AMOUNT_10MRL,
+                                                                             AMOUNT_10WSBC,
                                                                              MIXIN_COUNT,
                                                                              Monero::PendingTransaction::Priority_Medium,
                                                                              0,
@@ -588,7 +588,7 @@ TEST_F(WalletTest1, WalletTransaction)
     wallet1->refresh();
 
     ASSERT_TRUE(wallet1->balance(0) == balance);
-    ASSERT_TRUE(transaction->amount() == AMOUNT_10MRL);
+    ASSERT_TRUE(transaction->amount() == AMOUNT_10WSBC);
     ASSERT_TRUE(transaction->commit());
     ASSERT_FALSE(wallet1->balance(0) == balance);
     ASSERT_TRUE(wmgr->closeWallet(wallet1));
@@ -620,9 +620,9 @@ TEST_F(WalletTest1, WalletTransactionWithMixin)
     std::string recepient_address = Utils::get_wallet_address(CURRENT_DST_WALLET, TESTNET_WALLET_PASS);
     for (auto mixin : mixins) {
         std::cerr << "Transaction mixin count: " << mixin << std::endl;
-	
+
         Monero::PendingTransaction * transaction = wallet1->createTransaction(
-                    recepient_address, payment_id, AMOUNT_5MRL, mixin, Monero::PendingTransaction::Priority_Medium, 0, std::set<uint32_t>{});
+                    recepient_address, payment_id, AMOUNT_5WSBC, mixin, Monero::PendingTransaction::Priority_Medium, 0, std::set<uint32_t>{});
 
         std::cerr << "Transaction status: " << transaction->status() << std::endl;
         std::cerr << "Transaction fee: " << Monero::Wallet::displayAmount(transaction->fee()) << std::endl;
@@ -662,9 +662,9 @@ TEST_F(WalletTest1, WalletTransactionWithPriority)
 
     for (auto it = priorities.begin(); it != priorities.end(); ++it) {
         std::cerr << "Transaction priority: " << *it << std::endl;
-	
+
         Monero::PendingTransaction * transaction = wallet1->createTransaction(
-                    recepient_address, payment_id, AMOUNT_5MRL, mixin, *it, 0, std::set<uint32_t>{});
+                    recepient_address, payment_id, AMOUNT_5WSBC, mixin, *it, 0, std::set<uint32_t>{});
         std::cerr << "Transaction status: " << transaction->status() << std::endl;
         std::cerr << "Transaction fee: " << Monero::Wallet::displayAmount(transaction->fee()) << std::endl;
         std::cerr << "Transaction error: " << transaction->errorString() << std::endl;
@@ -720,7 +720,7 @@ TEST_F(WalletTest1, WalletTransactionAndHistory)
 
     Monero::PendingTransaction * tx = wallet_src->createTransaction(wallet4_addr,
                                                                        PAYMENT_ID_EMPTY,
-                                                                       AMOUNT_10MRL * 5, 1, Monero::PendingTransaction::Priority_Medium, 0, std::set<uint32_t>{});
+                                                                       AMOUNT_10WSBC * 5, 1, Monero::PendingTransaction::Priority_Medium, 0, std::set<uint32_t>{});
 
     ASSERT_TRUE(tx->status() == Monero::PendingTransaction::Status_Ok);
     ASSERT_TRUE(tx->commit());
@@ -762,7 +762,7 @@ TEST_F(WalletTest1, WalletTransactionWithPaymentId)
 
     Monero::PendingTransaction * tx = wallet_src->createTransaction(wallet4_addr,
                                                                        payment_id,
-                                                                       AMOUNT_1MRL, 1, Monero::PendingTransaction::Priority_Medium, 0, std::set<uint32_t>{});
+                                                                       AMOUNT_1WSBC, 1, Monero::PendingTransaction::Priority_Medium, 0, std::set<uint32_t>{});
 
     ASSERT_TRUE(tx->status() == Monero::PendingTransaction::Status_Ok);
     ASSERT_TRUE(tx->commit());
@@ -929,7 +929,7 @@ TEST_F(WalletTest2, WalletCallbackSent)
     std::cout << "** Balance: " << wallet_src->displayAmount(wallet_src->balance(0)) <<  std::endl;
     Monero::Wallet * wallet_dst = wmgr->openWallet(CURRENT_DST_WALLET, TESTNET_WALLET_PASS, Monero::NetworkType::TESTNET);
 
-    uint64_t amount = AMOUNT_1MRL * 5;
+    uint64_t amount = AMOUNT_1WSBC * 5;
     std::cout << "** Sending " << Monero::Wallet::displayAmount(amount) << " to " << wallet_dst->mainAddress();
 
 
@@ -972,7 +972,7 @@ TEST_F(WalletTest2, WalletCallbackReceived)
     std::cout << "** Balance dst1: " << wallet_dst->displayAmount(wallet_dst->balance(0)) <<  std::endl;
     std::unique_ptr<MyWalletListener> wallet_dst_listener (new MyWalletListener(wallet_dst));
 
-    uint64_t amount = AMOUNT_1MRL * 5;
+    uint64_t amount = AMOUNT_1WSBC * 5;
     std::cout << "** Sending " << Monero::Wallet::displayAmount(amount) << " to " << wallet_dst->mainAddress();
     Monero::PendingTransaction * tx = wallet_src->createTransaction(wallet_dst->mainAddress(),
                                                                        PAYMENT_ID_EMPTY,
