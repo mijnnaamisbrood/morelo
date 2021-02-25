@@ -123,6 +123,9 @@ include(CheckFunctionExists)
 
 if(IOS)
     include(CMakeLists_IOS.txt)
+	include_directories(/usr/local/include)
+	include_directories("${CMAKE_SOURCE_DIR}/external/ios-headers")
+	include_directories(${SODIUM_INCLUDE_DIRS})
 endif()
 
 project(wallstreetbets
