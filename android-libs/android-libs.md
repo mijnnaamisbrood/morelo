@@ -10,7 +10,7 @@ Create container to copy libs:
 ```Shell
 docker create --name arqma-android arqma-android-image
 ```
- 
+
 Launch collecting script from `android-libs` directory:
 ```Shell
 ./collect.sh arqma-android 
