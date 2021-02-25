@@ -7,7 +7,7 @@
 
  build_type=release # or debug
 
- android_api=$ANDROID_API
+ android_api=21
  archs=(arm arm64 x86 x86_64)
  #archs=(arm64)
 
@@ -84,7 +84,7 @@
       -D CMAKE_BUILD_TYPE=$build_type \
       -D CMAKE_CXX_FLAGS="-D__ANDROID_API__=$android_api -isystem /opt/android/build/libsodium/$arch/include/" \
       -D ANDROID=true \
-      -D BUILD_TAG="master" \
+      -D BUILD_TAG="android" \
       -D BOOST_ROOT=/opt/android/build/boost/$arch \
       -D OPENSSL_INCLUDE_DIR=/opt/android/build/include \
       -D OPENSSL_CRYPTO_LIBRARY=/opt/android/build/openssl/$arch/lib/libcrypto.so \
@@ -94,12 +94,12 @@
 
     make -j$(nproc) wallet_api VERBOSE=1
 
-    TARGET_LIB_DIR=/opt/android/build/wallstreetbets/$arch/lib
+    TARGET_LIB_DIR=/opt/android/build/arqma/$arch/lib
     rm -rf $TARGET_LIB_DIR
     mkdir -p $TARGET_LIB_DIR
     find $OUTPUT_DIR -name '*.a' -exec cp '{}' $TARGET_LIB_DIR \;
 
-    TARGET_INC_DIR=/opt/android/build/wallstreetbets/include
+    TARGET_INC_DIR=/opt/android/build/arqma/include
     rm -rf $TARGET_INC_DIR
     mkdir -p $TARGET_INC_DIR
     cp -a ../../src/wallet/api/wallet2_api.h $TARGET_INC_DIR
