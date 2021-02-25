@@ -34,6 +34,10 @@ SET(ZMQ_INCLUDE_DIRS @prefix@/include)
 SET(ZMQ_LIBRARIES @prefix@/lib/libzmq.a)
 SET(ZMQ_LIBRARY_DIR @prefix@/lib)
 
+SET(ZMQ_INCLUDE_DIRS @prefix@/include)
+SET(ZMQ_LIBRARIES @prefix@/lib/libzmq.a)
+SET(ZMQ_LIBRARY_DIRS @prefix@/lib)
+
 SET(SODIUM_INCLUDE_DIRS @prefix@/include)
 SET(SODIUM_LIBRARIES @prefix@/lib/libsodium.a)
 SET(SODIUM_LIBRARY_DIRS @prefix@/lib)
