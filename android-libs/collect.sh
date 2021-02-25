@@ -51,4 +51,3 @@ rm -rf $build_dir
 docker container rm arqma-android
 
 exit 0
-
