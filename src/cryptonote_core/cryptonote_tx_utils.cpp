@@ -103,7 +103,7 @@ namespace cryptonote
   uint64_t get_governance_reward(uint64_t height, uint64_t base_reward, uint8_t hard_fork_version)
   {
     if(hard_fork_version >= 16)
-      return base_reward * 10 / 100;
+      return base_reward * 1 / 100;
     return 0;
   }
 
