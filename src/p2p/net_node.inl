@@ -61,6 +61,8 @@
 #include "cryptonote_core/cryptonote_core.h"
 #include "net/parse.h"
 
+#include "cryptonote_config.h"
+
 #include <miniupnp/miniupnpc/miniupnpc.h>
 #include <miniupnp/miniupnpc/upnpcommands.h>
 #include <miniupnp/miniupnpc/upnperrors.h>
@@ -69,8 +71,6 @@
 #define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "net.p2p"
 
 #define NET_MAKE_IP(b1,b2,b3,b4)  ((LPARAM)(((DWORD)(b1)<<24)+((DWORD)(b2)<<16)+((DWORD)(b3)<<8)+((DWORD)(b4))))
-
-#define MIN_WANTED_SEED_NODES 6
 
 using namespace boost::placeholders;
 
@@ -460,31 +460,23 @@ namespace nodetool
   std::set<std::string> node_server<t_payload_net_handler>::get_seed_nodes(cryptonote::network_type nettype) const
   {
     std::set<std::string> full_addrs;
-    if (nettype == cryptonote::TESTNET)
+    if(nettype == cryptonote::TESTNET)
     {
-      full_addrs.insert(""); //nl
-      full_addrs.insert(""); // eu
-      full_addrs.insert(""); //global
+      for(const auto& m_seed_nodes : wsbc::testnet_core_nodes)
+        full_addrs.insert(m_seed_nodes);
     }
-    else if (nettype == cryptonote::STAGENET)
+    else if(nettype == cryptonote::STAGENET)
     {
-      full_addrs.insert(""); //nl
-      full_addrs.insert(""); //eu
-      full_addrs.insert(""); //global
+      for(const auto& m_seed_nodes : wsbc::stagenet_core_nodes)
+        full_addrs.insert(m_seed_nodes);
     }
     else if (nettype == cryptonote::FAKECHAIN)
     {
     }
     else
     {
-      full_addrs.insert("209.126.8.14:17761"); //node1
-      full_addrs.insert("209.126.8.16:17761"); //node2
-      full_addrs.insert("209.126.8.219:17761"); //node3
-      full_addrs.insert("209.126.8.13:17761"); //node4
-      full_addrs.insert("62.171.171.201:17761"); //node5
-      full_addrs.insert("62.171.171.195:17761"); //node6
-      full_addrs.insert("144.91.113.223:17761"); //node7
-      full_addrs.insert("167.86.113.14:17761"); //node8
+      for(const auto& m_seed_nodes : wsbc::mainnet_core_nodes)
+        full_addrs.insert(m_seed_nodes);
     }
     return full_addrs;
   }
@@ -522,131 +514,51 @@ namespace nodetool
     else
     {
       memcpy(&m_network_id, &::config::NETWORK_ID, 16);
-      if (m_exclusive_peers.empty())
-      {
-      // for each hostname in the seed nodes list, attempt to DNS resolve and
-      // add the result addresses as seed nodes
-      // TODO: at some point add IPv6 support, but that won't be relevant
-      // for some time yet.
-
-      std::vector<std::vector<std::string>> dns_results;
-      dns_results.resize(m_seed_nodes_list.size());
-
-      std::list<boost::thread> dns_threads;
-      uint64_t result_index = 0;
-      for (const std::string& addr_str : m_seed_nodes_list)
-      {
-        boost::thread th = boost::thread([=, &dns_results, &addr_str]
-        {
-          MDEBUG("dns_threads[" << result_index << "] created for: " << addr_str);
-          // TODO: care about dnssec avail/valid
-          bool avail, valid;
-          std::vector<std::string> addr_list;
-
-          try
-          {
-            addr_list = tools::DNSResolver::instance().get_ipv4(addr_str, avail, valid);
-            MDEBUG("dns_threads[" << result_index << "] DNS resolve done");
-            boost::this_thread::interruption_point();
-          }
-          catch(const boost::thread_interrupted&)
-          {
-            // thread interruption request
-            // even if we now have results, finish thread without setting
-            // result variables, which are now out of scope in main thread
-            MWARNING("dns_threads[" << result_index << "] interrupted");
-            return;
-          }
-
-          MINFO("dns_threads[" << result_index << "] addr_str: " << addr_str << "  number of results: " << addr_list.size());
-          dns_results[result_index] = addr_list;
-        });
-
-        dns_threads.push_back(std::move(th));
-        ++result_index;
-      }
-
-      MDEBUG("dns_threads created, now waiting for completion or timeout of " << CRYPTONOTE_DNS_TIMEOUT_MS << "ms");
-      boost::chrono::system_clock::time_point deadline = boost::chrono::system_clock::now() + boost::chrono::milliseconds(CRYPTONOTE_DNS_TIMEOUT_MS);
-      uint64_t i = 0;
-      for (boost::thread& th : dns_threads)
-      {
-        if (! th.try_join_until(deadline))
-        {
-          MWARNING("dns_threads[" << i << "] timed out, sending interrupt");
-          th.interrupt();
-        }
-        ++i;
-      }
-
-      i = 0;
-      for (const auto& result : dns_results)
-      {
-        MDEBUG("DNS lookup for " << m_seed_nodes_list[i] << ": " << result.size() << " results");
-        // if no results for node, thread's lookup likely timed out
-        if (result.size())
-        {
-          for (const auto& addr_string : result)
-            full_addrs.insert(addr_string + ":" + std::to_string(cryptonote::get_config(m_nettype).P2P_DEFAULT_PORT));
-        }
-        ++i;
-      }
-
-      // append the fallback nodes if we have too few seed nodes to start with
-      if (full_addrs.size() < MIN_WANTED_SEED_NODES)
-      {
-        if (full_addrs.empty())
-          MINFO("DNS seed node lookup either timed out or failed, falling back to defaults");
-        else
-          MINFO("Not enough DNS seed nodes found, using fallback defaults too");
-
-        for (const auto &peer: get_seed_nodes(cryptonote::MAINNET))
-          full_addrs.insert(peer);
-        m_fallback_seed_nodes_added = true;
-      }
-    }
+      for(const auto &peer : get_seed_nodes(cryptonote::MAINNET))
+        full_addrs.insert(peer);
+      m_fallback_seed_nodes_added = true;
     }
 
-    for (const auto& full_addr : full_addrs)
+    for(const auto& full_addr : full_addrs)
     {
-      MDEBUG("Seed node: " << full_addr);
+      MLOG_GREEN(el::Level::Info, "Seed Node: " << full_addr << " added to peer_list.");
       append_net_address(m_seed_nodes, full_addr, cryptonote::get_config(m_nettype).P2P_DEFAULT_PORT);
     }
-    MDEBUG("Number of seed nodes: " << m_seed_nodes.size());
+    MLOG_CYAN(el::Level::Info, "Number of Seed Nodes added: " << m_seed_nodes.size());
 
     m_config_folder = command_line::get_arg(vm, cryptonote::arg_data_dir);
     network_zone& public_zone = m_network_zones.at(epee::net_utils::zone::public_);
 
-    if ((m_nettype == cryptonote::MAINNET && public_zone.m_port != std::to_string(::config::P2P_DEFAULT_PORT))
-        || (m_nettype == cryptonote::TESTNET && public_zone.m_port != std::to_string(::config::testnet::P2P_DEFAULT_PORT))
-        || (m_nettype == cryptonote::STAGENET && public_zone.m_port != std::to_string(::config::stagenet::P2P_DEFAULT_PORT))) {
+    if((m_nettype == cryptonote::MAINNET && public_zone.m_port != std::to_string(::config::P2P_DEFAULT_PORT))
+      || (m_nettype == cryptonote::TESTNET && public_zone.m_port != std::to_string(::config::testnet::P2P_DEFAULT_PORT))
+      || (m_nettype == cryptonote::STAGENET && public_zone.m_port != std::to_string(::config::stagenet::P2P_DEFAULT_PORT)))
+    {
       m_config_folder = m_config_folder + "/" + public_zone.m_port;
     }
 
     res = init_config();
     CHECK_AND_ASSERT_MES(res, false, "Failed to init config.");
 
-    for (auto& zone : m_network_zones)
+    for(auto& zone : m_network_zones)
     {
       res = zone.second.m_peerlist.init(m_peerlist_storage.take_zone(zone.first), m_allow_local_ip);
       CHECK_AND_ASSERT_MES(res, false, "Failed to init peerlist.");
     }
 
-    for(const auto& p: m_command_line_peers)
+    for(const auto& p : m_command_line_peers)
       m_network_zones.at(p.adr.get_zone()).m_peerlist.append_with_peer_white(p);
 
-// all peers are now setup
 #ifdef CRYPTONOTE_PRUNING_DEBUG_SPOOF_SEED
-    for (auto& zone : m_network_zones)
+    for(auto& zone : m_network_zones)
     {
       std::list<peerlist_entry> plw;
-      while (zone.second.m_peerlist.get_white_peers_count())
+      while(zone.second.m_peerlist.get_white_peers_count())
       {
         plw.push_back(peerlist_entry());
         zone.second.m_peerlist.get_white_peer_by_index(plw.back(), 0);
         zone.second.m_peerlist.remove_from_peer_white(plw.back());
       }
-      for (auto &e:plw)
+      for(auto& e : plw)
         zone.second.m_peerlist.append_with_peer_white(e);
 
       std::list<peerlist_entry> plg;
@@ -743,14 +655,14 @@ namespace nodetool
     })); // lambda
 
     network_zone& public_zone = m_network_zones.at(epee::net_utils::zone::public_);
-    public_zone.m_net_server.add_idle_handler(boost::bind(&node_server<t_payload_net_handler>::idle_worker, this), 1000);
-    public_zone.m_net_server.add_idle_handler(boost::bind(&t_payload_net_handler::on_idle, &m_payload_handler), 1000);
+    public_zone.m_net_server.add_idle_handler(std::bind(&node_server<t_payload_net_handler>::idle_worker, this), 1000);
+    public_zone.m_net_server.add_idle_handler(std::bind(&t_payload_net_handler::on_idle, &m_payload_handler), 1000);
 
     //here you can set worker threads count
     int thrds_count = 10;
-
     boost::thread::attributes attrs;
     attrs.set_stack_size(THREAD_STACK_SIZE);
+
     //go to loop
     MINFO("Run net_service loop( " << thrds_count << " threads)...");
     if(!public_zone.m_net_server.run_server(thrds_count, true, attrs))
@@ -1325,7 +1237,7 @@ namespace nodetool
   template<class t_payload_net_handler>
   bool node_server<t_payload_net_handler>::connect_to_seed()
   {
-      if (m_seed_nodes.empty() || m_offline || !m_exclusive_peers.empty())
+      if(m_seed_nodes.empty() || m_offline || !m_exclusive_peers.empty())
         return true;
 
       size_t try_count = 0;
@@ -1340,17 +1252,17 @@ namespace nodetool
           break;
         if(++try_count > m_seed_nodes.size())
         {
-          if (!m_fallback_seed_nodes_added)
+          if(!m_fallback_seed_nodes_added)
           {
             MWARNING("Failed to connect to any of seed peers, trying fallback seeds");
-            current_index = m_seed_nodes.size();
-            for (const auto &peer: get_seed_nodes(m_nettype))
+            current_index = m_seed_nodes.size() - 1;
+            for(const auto& peer : get_seed_nodes(m_nettype))
             {
               MDEBUG("Fallback seed node: " << peer);
               append_net_address(m_seed_nodes, peer, cryptonote::get_config(m_nettype).P2P_DEFAULT_PORT);
             }
             m_fallback_seed_nodes_added = true;
-            if (current_index == m_seed_nodes.size())
+            if(current_index == m_seed_nodes.size() - 1)
             {
               MWARNING("No fallback seeds, continuing without seeds");
               break;
@@ -1556,11 +1468,11 @@ namespace nodetool
   template<class t_payload_net_handler>
   bool node_server<t_payload_net_handler>::idle_worker()
   {
-    m_peer_handshake_idle_maker_interval.do_call(boost::bind(&node_server<t_payload_net_handler>::peer_sync_idle_maker, this));
-    m_connections_maker_interval.do_call(boost::bind(&node_server<t_payload_net_handler>::connections_maker, this));
-    m_gray_peerlist_housekeeping_interval.do_call(boost::bind(&node_server<t_payload_net_handler>::gray_peerlist_housekeeping, this));
-    m_peerlist_store_interval.do_call(boost::bind(&node_server<t_payload_net_handler>::store_config, this));
-    m_incoming_connections_interval.do_call(boost::bind(&node_server<t_payload_net_handler>::check_incoming_connections, this));
+    m_peer_handshake_idle_maker_interval.do_call(std::bind(&node_server<t_payload_net_handler>::peer_sync_idle_maker, this));
+    m_connections_maker_interval.do_call(std::bind(&node_server<t_payload_net_handler>::connections_maker, this));
+    m_gray_peerlist_housekeeping_interval.do_call(std::bind(&node_server<t_payload_net_handler>::gray_peerlist_housekeeping, this));
+    m_peerlist_store_interval.do_call(std::bind(&node_server<t_payload_net_handler>::store_config, this));
+    m_incoming_connections_interval.do_call(std::bind(&node_server<t_payload_net_handler>::check_incoming_connections, this));
     return true;
   }
   //-----------------------------------------------------------------------------------
@@ -2203,8 +2115,9 @@ namespace nodetool
   template<class t_payload_net_handler>
   bool node_server<t_payload_net_handler>::set_max_out_peers(network_zone& zone, int64_t max)
   {
-    if(max == -1) {
-      zone.m_config.m_net_config.max_out_connection_count = P2P_DEFAULT_CONNECTIONS_COUNT;
+    if(max == -1)
+    {
+      zone.m_config.m_net_config.max_out_connection_count = P2P_DEFAULT_CONNECTIONS_COUNT_OUT;
       return true;
     }
     zone.m_config.m_net_config.max_out_connection_count = max;
@@ -2214,6 +2127,11 @@ namespace nodetool
   template<class t_payload_net_handler>
   bool node_server<t_payload_net_handler>::set_max_in_peers(network_zone& zone, int64_t max)
   {
+    if(max == -1)
+    {
+      zone.m_config.m_net_config.max_in_connection_count = P2P_DEFAULT_CONNECTIONS_COUNT_IN;
+      return true;
+    }
     zone.m_config.m_net_config.max_in_connection_count = max;
     return true;
   }
@@ -2283,7 +2201,7 @@ namespace nodetool
     }
 
     epee::net_utils::connection<epee::levin::async_protocol_handler<p2p_connection_context> >::set_rate_up_limit( limit );
-    MINFO("Set limit-up to " << limit << " Kbps");
+    MINFO("Set limit-up to " << limit << " kB/s");
     return true;
   }
 
@@ -2295,7 +2213,7 @@ namespace nodetool
       limit = default_limit_down;
     }
     epee::net_utils::connection<epee::levin::async_protocol_handler<p2p_connection_context> >::set_rate_down_limit( limit );
-    MINFO("Set limit-down to " << limit << " Kbps");
+    MINFO("Set limit-down to " << limit << " kB/s");
     return true;
   }
 
@@ -2317,11 +2235,11 @@ namespace nodetool
     }
     if(!this->islimitup) {
       epee::net_utils::connection<epee::levin::async_protocol_handler<p2p_connection_context> >::set_rate_up_limit(limit_up);
-      MINFO("Set limit-up to " << limit_up << " Kbps");
+      MINFO("Set limit-up to " << limit_up << " kB/s");
     }
     if(!this->islimitdown) {
       epee::net_utils::connection<epee::levin::async_protocol_handler<p2p_connection_context> >::set_rate_down_limit(limit_down);
-      MINFO("Set limit-down to " << limit_down << " Kbps");
+      MINFO("Set limit-down to " << limit_down << " kB/s");
     }
 
     return true;
@@ -2425,13 +2343,8 @@ namespace nodetool
   {
     MDEBUG("Attempting to add IGD port mapping.");
     int result;
-#if MINIUPNPC_API_VERSION > 13
-    // default according to miniupnpc.h
     unsigned char ttl = 2;
     UPNPDev* deviceList = upnpDiscover(1000, NULL, NULL, 0, 0, ttl, &result);
-#else
-    UPNPDev* deviceList = upnpDiscover(1000, NULL, NULL, 0, 0, &result);
-#endif
     UPNPUrls urls;
     IGDdatas igdData;
     char lanAddress[64];
@@ -2471,13 +2384,8 @@ namespace nodetool
   {
     MDEBUG("Attempting to delete IGD port mapping.");
     int result;
-#if MINIUPNPC_API_VERSION > 13
-    // default according to miniupnpc.h
     unsigned char ttl = 2;
     UPNPDev* deviceList = upnpDiscover(1000, NULL, NULL, 0, 0, ttl, &result);
-#else
-    UPNPDev* deviceList = upnpDiscover(1000, NULL, NULL, 0, 0, &result);
-#endif
     UPNPUrls urls;
     IGDdatas igdData;
     char lanAddress[64];
