@@ -62,7 +62,7 @@ wallstreetbets_add_library(wallstreetbets_mq
   ${wallstreetbets_mq_private_headers})
 
 target_link_libraries(wallstreetbets_mq
-  LINK_PRIVATE
+  PUBLIC
     common
     epee
     net
@@ -72,6 +72,7 @@ target_link_libraries(wallstreetbets_mq
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
     libzmq
+  PRIVATE
     ${EXTRA_LIBRARIES})
 
 add_dependencies(wallstreetbets_mq

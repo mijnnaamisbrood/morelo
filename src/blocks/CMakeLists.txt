@@ -27,7 +27,6 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-add_library(blocks blocks.cpp)
 
 add_custom_command(OUTPUT checkpoints.c MAIN_DEPENDENCY checkpoints.dat
     COMMAND
@@ -38,4 +37,4 @@ add_custom_command(OUTPUT checkpoints.c MAIN_DEPENDENCY checkpoints.dat
       echo "'};'" >> checkpoints.c &&
       echo "'const\tsize_t\tcheckpoints_len\t=\tsizeof(checkpoints);'" >> checkpoints.c)
 
-target_sources(blocks PRIVATE checkpoints.c)
+add_library(blocks STATIC blocks.cpp checkpoints.c)

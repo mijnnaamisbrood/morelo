@@ -868,6 +868,13 @@ namespace tools
       return false;
     }
 
+    if(m_wallet->use_fork_rules(HF_FORBID_BORROMEAN) && dsts.size() >= BULLETPROOF_MAX_OUTPUTS)
+    {
+      er.code = WALLET_RPC_ERROR_CODE_TX_TOO_LARGE;
+      er.message = "Transaction is too large. Try /transfer_split.";
+      return false;
+    }
+
     try
     {
       uint64_t mixin;

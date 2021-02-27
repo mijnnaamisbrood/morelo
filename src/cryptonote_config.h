@@ -130,13 +130,14 @@
 #define P2P_LOCAL_WHITE_PEERLIST_LIMIT                  1000
 #define P2P_LOCAL_GRAY_PEERLIST_LIMIT                   5000
 
-#define P2P_DEFAULT_CONNECTIONS_COUNT                   32
+#define P2P_DEFAULT_CONNECTIONS_COUNT_OUT               6
+#define P2P_DEFAULT_CONNECTIONS_COUNT_IN                18
 #define P2P_DEFAULT_HANDSHAKE_INTERVAL                  60         // secondes
 #define P2P_DEFAULT_PACKET_MAX_SIZE                     50000000   // 50000000 bytes maximum packet size
 #define P2P_DEFAULT_PEERS_IN_HANDSHAKE                  250
 #define P2P_DEFAULT_CONNECTION_TIMEOUT                  5000       // 5 seconds
 #define P2P_DEFAULT_SOCKS_CONNECT_TIMEOUT               45         // seconds
-#define P2P_DEFAULT_PING_CONNECTION_TIMEOUT             2000       // 2 seconds
+#define P2P_DEFAULT_PING_CONNECTION_TIMEOUT             3500       // 3.5 seconds
 #define P2P_DEFAULT_INVOKE_TIMEOUT                      60*2*1000  // 2 minutes
 #define P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT            5000       // 5 seconds
 #define P2P_DEFAULT_WHITELIST_CONNECTIONS_PERCENT       70
@@ -146,10 +147,10 @@
 #define P2P_DEFAULT_LIMIT_RATE_UP                       4096       // Kbps
 #define P2P_DEFAULT_LIMIT_RATE_DOWN                     16384      // Kbps
 
-#define P2P_FAILED_ADDR_FORGET_SECONDS                  (60*60)    // 1 hour
-#define P2P_IP_BLOCKTIME                                (60*60*24) // 24 hour
-#define P2P_IP_FAILS_BEFORE_BLOCK                       10
-#define P2P_IDLE_CONNECTION_KILL_INTERVAL               (5*60)     // 5 minutes
+#define P2P_FAILED_ADDR_FORGET_SECONDS                  86400      // 1 day
+#define P2P_IP_BLOCKTIME                                172800     // 48 hours
+#define P2P_IP_FAILS_BEFORE_BLOCK                       5
+#define P2P_IDLE_CONNECTION_KILL_INTERVAL               (30)       // 30 seconds
 
 #define P2P_SUPPORT_FLAG_FLUFFY_BLOCKS                  0x01
 #define P2P_SUPPORT_FLAGS                               P2P_SUPPORT_FLAG_FLUFFY_BLOCKS
@@ -263,7 +264,7 @@ namespace config
 
    namespace sync
    {
-     const uint64_t SYNC_HEIGHT = 60000; // Blockchain height up to Rapid_Sync is ON.
+     const uint64_t SYNC_HEIGHT = 7000; // Blockchain height up to Rapid_Sync is ON.
      const size_t NORMAL_SYNC = 20; // Amount of Blocks to download and Validate at ones while Synchronizung with Wallstreetbets Network.
      const size_t RAPID_SYNC = 100; // Amount of Blocks to download at ones from already known by Wallstreetbets Daemon and Checkpoint are hardcoded into codebase
    }
@@ -274,6 +275,29 @@ namespace config
      static constexpr const char* TESTNET_WALLET_ADDRESS = "";
      static constexpr const char* STAGENET_WALLET_ADDRESS = "";
    }
+}
+
+namespace wsbc
+{
+  const char *const mainnet_core_nodes[] =
+  {
+    "209.126.8.14"/* Node_1 */,
+    "209.126.8.16"/* Node_2 */,
+    "209.126.8.219"/* Node_3 */,
+    "209.126.8.13"/* Node_4 */,
+    "62.171.171.201"/* Node_5 */,
+    "62.171.171.195"/* Node_6 */,
+    "144.91.113.223"/* Node_7 */,
+    "167.86.113.14"/* Node_8 */
+  };
+
+  const char *const testnet_core_nodes[] =
+  {
+  };
+
+  const char *const stagenet_core_nodes[] =
+  {
+  };
 }
 
 namespace cryptonote
