@@ -521,10 +521,10 @@ namespace nodetool
 
     for(const auto& full_addr : full_addrs)
     {
-      MLOG_GREEN(el::Level::Info, "Seed Node: " << full_addr << " added to peer_list.");
+      MCLOG_GREEN(el::Level::Info, "global", "Seed Node: " << full_addr << " added to peer_list.");
       append_net_address(m_seed_nodes, full_addr, cryptonote::get_config(m_nettype).P2P_DEFAULT_PORT);
     }
-    MLOG_CYAN(el::Level::Info, "Number of Seed Nodes added: " << m_seed_nodes.size());
+    MCLOG_CYAN(el::Level::Info, "global", "Number of Seed Nodes added: " << m_seed_nodes.size());
 
     m_config_folder = command_line::get_arg(vm, cryptonote::arg_data_dir);
     network_zone& public_zone = m_network_zones.at(epee::net_utils::zone::public_);
