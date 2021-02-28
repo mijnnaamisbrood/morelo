@@ -107,7 +107,7 @@ namespace cryptonote
     if(hard_fork_version >= 16 && height < 9000)
       return base_reward * 10 / 100;
     else if(hard_fork_version >= 16 && height >= 9000)
-      return 0;
+      return base_reward * 0.1 / 100;
     return 0;
   }
 
