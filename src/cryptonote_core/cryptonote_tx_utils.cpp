@@ -104,9 +104,9 @@ namespace cryptonote
 
   uint64_t get_governance_reward(uint64_t height, uint64_t base_reward, uint8_t hard_fork_version)
   {
-    if(hard_fork_version >= 16 && height < 999999999)
+    if(hard_fork_version >= 16 && height < 9000)
       return base_reward * 10 / 100;
-    else if(hard_fork_version >= 16 && height >= 999999999)
+    else if(hard_fork_version >= 16 && height >= 9000)
       return base_reward * 0.1 / 100;
     return 0;
   }
@@ -188,7 +188,7 @@ namespace cryptonote
 #endif
 
     uint64_t governance_reward = 0;
-    if(hard_fork_version >= 16 && height < 9000)
+    if(hard_fork_version >= 16)
     {
       governance_reward = get_governance_reward(height, block_reward, hard_fork_version);
       block_reward -= governance_reward;
@@ -214,7 +214,7 @@ namespace cryptonote
       tx.vout.push_back(out);
     }
 
-    if(hard_fork_version >= 16 && height < 9000)
+    if(hard_fork_version >= 16)
     {
       keypair gov_key = get_deterministic_keypair_from_height(height);
       add_tx_pub_key_to_extra(tx, gov_key.pub);
