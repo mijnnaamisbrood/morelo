@@ -131,7 +131,7 @@ namespace cryptonote
     return true;
   }
 
-  bool rpc_payment::get_info(const crypto::public_key &client, const std::function<bool(const cryptonote::blobdata&, cryptonote::block&, uint64_t &seed_hash, crypto::hash &seed_hash)> &get_block_template, cryptonote::blobdata &hashing_blob, uint64_t &seed_height, crypto::hash &seed_hash, const crypto::hash &top, uint64_t &diff, uint64_t &credits_per_hash_found, uint64_t &credits, uint32_t &cookie)
+  bool rpc_payment::get_info(const crypto::public_key &client, const std::function<bool(const cryptonote::blobdata&, cryptonote::block&, uint64_t &seed_height, crypto::hash &seed_hash)> &get_block_template, cryptonote::blobdata &hashing_blob, uint64_t &seed_height, crypto::hash &seed_hash, const crypto::hash &top, uint64_t &diff, uint64_t &credits_per_hash_found, uint64_t &credits, uint32_t &cookie)
   {
     client_info &info = m_client_info[client]; // creates if not found
     const uint64_t now = time(NULL);

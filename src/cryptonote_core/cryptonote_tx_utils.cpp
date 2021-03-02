@@ -800,7 +800,7 @@ namespace cryptonote
     return true;
   }
 
-  bool get_block_longhash(const Blockchain *pbc, const block& b, crypto::hash& hash, const uint64_t height, const int miners)
+  bool get_block_longhash(const Blockchain *pbc, const block& b, crypto::hash& res, const uint64_t height, const int miners)
   {
     return get_block_longhash(pbc, b, res, height, NULL, miners);
   }

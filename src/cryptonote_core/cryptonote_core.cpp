@@ -607,7 +607,7 @@ namespace cryptonote
 
     try
     {
-      bool zmq_enabled = command_line::get_arg(vm, daemon_args::arg_zmq_enabled))
+      bool zmq_enabled = command_line::get_arg(vm, daemon_args::arg_zmq_enabled);
       std::string zmq_ip_str = command_line::get_arg(vm, daemon_args::arg_zmq_bind_ip);
       std::string zmq_port_str = command_line::get_arg(vm, daemon_args::arg_zmq_bind_port);
       uint16_t zmq_max_clients = command_line::get_arg(vm, daemon_args::arg_zmq_max_clients);
@@ -1178,7 +1178,7 @@ namespace cryptonote
   {
     if(block_sync_size > 0)
       return block_sync_size;
-    if(get_current_blockchain_height() <= config::sync::HIGHEST_CHECPOINT)
+    if(get_current_blockchain_height() <= config::sync::HIGHEST_CHECKPOINT)
       return config::sync::RAPID_SYNC;
     else
       return config::sync::NORMAL_SYNC;

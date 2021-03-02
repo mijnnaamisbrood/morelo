@@ -273,7 +273,7 @@ namespace config
    {
      static constexpr const char* MAINNET_WALLET_ADDRESS = "WSBCodZd65aic5fVDh3M84VLEpb3vRtn3FKx2nbLcsJW1oHWNy39JtJG6M96z62zB7PkKcAdAAfVvfQM3Dr4PFwAftDYY5bWcwQ";
      static constexpr const char* TESTNET_WALLET_ADDRESS = "";
-     static constexpr const char* STAGENET_WALLET_ADDRESS = "";
+     static constexpr const char* STAGENET_WALLET_ADDRESS = "WSBC7uHpisnXMoKqQA7BzV7CqPAh9a4NFP68x7XNxbFB15YfAa3TyAq4cKbUTKTPdngdoSyEnTdzoCg8evVP6vnngKCLXi1qGk44g";
    }
 }
 
@@ -297,6 +297,7 @@ namespace wsbc
 
   const char *const stagenet_core_nodes[] =
   {
+    "82.44.107.19"
   };
 }
 
