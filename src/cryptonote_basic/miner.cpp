@@ -96,13 +96,13 @@ namespace cryptonote
   }
 
 
-  miner::miner(i_miner_handler* phandler, Blockchain* pbc):m_stop(1),
+  miner::miner(i_miner_handler* phandler, const get_block_hash_t &gbh):m_stop(1),
     m_template(boost::value_initialized<block>()),
     m_template_no(0),
     m_diffic(0),
     m_thread_index(0),
     m_phandler(phandler),
-    m_pbc(pbc),
+    m_gbh(gbh),
     m_height(0),
     m_pausers_count(0),
     m_threads_total(0),
@@ -159,7 +159,9 @@ namespace cryptonote
       extra_nonce = m_extra_messages[m_config.current_extra_message_index];
     }
 
-    if(!m_phandler->get_block_template(bl, m_mine_address, di, height, expected_reward, extra_nonce))
+    uint64_t seed_height;
+    crypto::hash seed_hash;
+    if(!m_phandler->get_block_template(bl, m_mine_address, di, height, expected_reward, extra_nonce, seed_height, seed_hash))
     {
       LOG_ERROR("Failed to get_block_template(), stopping mining");
       return false;
@@ -382,12 +384,12 @@ namespace cryptonote
     return true;
   }
   //-----------------------------------------------------------------------------------------------------
-  bool miner::find_nonce_for_given_block(const Blockchain *pbc, block& bl, const difficulty_type& diffic, uint64_t height)
+  bool miner::find_nonce_for_given_block(const get_block_hash_t &gbh, block& bl, const difficulty_type& diffic, uint64_t height, const crypto::hash *seed_hash)
   {
     for(; bl.nonce != std::numeric_limits<uint32_t>::max(); bl.nonce++)
     {
       crypto::hash h;
-      get_block_longhash(pbc, bl, h, height, tools::get_max_concurrency());
+      gbh(bl, height, seed_hash, tools::get_max_concurrency(), h);
 
       if(check_hash(h, diffic))
       {
@@ -484,7 +486,7 @@ namespace cryptonote
 
       b.nonce = nonce;
       crypto::hash h;
-      get_block_longhash(m_pbc, b, h, height, tools::get_max_concurrency());
+      m_gbh(b, height, NULL, tools::get_max_concurrency(), h);
 
       if(check_hash(h, local_diff))
       {

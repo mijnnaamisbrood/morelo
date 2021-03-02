@@ -49,7 +49,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
-#include "zmq_addon.hpp"
+#include "zmq.hpp"
 #include <map>
 #include <iterator>
 #include "INotifier.h"

@@ -209,7 +209,9 @@ namespace cryptonote
   core::core(i_cryptonote_protocol* pprotocol):
               m_mempool(m_blockchain_storage),
               m_blockchain_storage(m_mempool),
-              m_miner(this, &m_blockchain_storage),
+              m_miner(this, [this](const cryptonote::block &b, uint64_t height, const crypto::hash *seed_hash, unsigned int threads, crypto::hash &hash) {
+                return cryptonote::get_block_longhash(&m_blockchain_storage, b, hash, height, seed_hash, threads);
+              }),
               m_miner_address(boost::value_initialized<account_public_address>()),
               m_starter_message_showed(false),
               m_target_blockchain_height(0),
@@ -595,7 +597,7 @@ namespace cryptonote
 
     try
     {
-     if (!command_line::is_arg_defaulted(vm, arg_block_notify))
+     if(!command_line::is_arg_defaulted(vm, arg_block_notify))
        m_blockchain_storage.set_block_notify(std::shared_ptr<tools::Notify>(new tools::Notify(command_line::get_arg(vm, arg_block_notify).c_str())));
     }
     catch (const std::exception &e)
@@ -603,42 +605,21 @@ namespace cryptonote
       MERROR("Failed to parse block notify spec");
     }
 
-	if(auto zmq_enabled = command_line::get_arg(vm, daemon_args::arg_zmq_enabled))
-	{
-      try
-      {
-		auto zmq_ip_str = command_line::get_arg(vm, daemon_args::arg_zmq_bind_ip);
-        auto zmq_port_str = command_line::get_arg(vm, daemon_args::arg_zmq_bind_port);
-        uint32_t zmq_ip;
-        uint16_t zmq_port;
-
-        uint16_t zmq_max_clients = command_line::get_arg(vm, daemon_args::arg_zmq_max_clients);
-        if(!epee::string_tools::get_ip_int32_from_string(zmq_ip, zmq_ip_str))
-        {
-          std::cerr << "Invalid ZMQ IP Address given: " << zmq_ip_str << std::endl;
-          return false;
-        }
-        if(!epee::string_tools::get_xtype_from_string(zmq_port, zmq_port_str))
-        {
-          std::cerr << "Invalid ZMQ Port given: " << zmq_port_str << std::endl;
-          return false;
-        }
-
-        m_blockchain_storage.set_zmq_options(zmq_ip_str,
-                                             zmq_port_str,
-                                             zmq_max_clients,
-                                             zmq_enabled);
-      }
-      catch (const std::exception &e)
-      {
-        MERROR("Failed to parse zmq options to blockchain");
-      }
-	}
+    try
+    {
+      bool zmq_enabled = command_line::get_arg(vm, daemon_args::arg_zmq_enabled))
+      std::string zmq_ip_str = command_line::get_arg(vm, daemon_args::arg_zmq_bind_ip);
+      std::string zmq_port_str = command_line::get_arg(vm, daemon_args::arg_zmq_bind_port);
+      uint16_t zmq_max_clients = command_line::get_arg(vm, daemon_args::arg_zmq_max_clients);
+      if(zmq_enabled)
+        m_blockchain_storage.set_zmq_options(zmq_ip_str, zmq_port_str, zmq_max_clients, zmq_enabled);
+    }
+    catch(...) { }
 
     try
     {
-      if (!command_line::is_arg_defaulted(vm, arg_reorg_notify))
-      m_blockchain_storage.set_reorg_notify(std::shared_ptr<tools::Notify>(new tools::Notify(command_line::get_arg(vm, arg_reorg_notify).c_str())));
+      if(!command_line::is_arg_defaulted(vm, arg_reorg_notify))
+        m_blockchain_storage.set_reorg_notify(std::shared_ptr<tools::Notify>(new tools::Notify(command_line::get_arg(vm, arg_reorg_notify).c_str())));
     }
     catch (const std::exception &e)
     {
@@ -716,7 +697,7 @@ namespace cryptonote
     return true;
   }
   //-----------------------------------------------------------------------------------------------
-    bool core::deinit()
+  bool core::deinit()
   {
     m_miner.stop();
     m_mempool.deinit();
@@ -1197,7 +1178,7 @@ namespace cryptonote
   {
     if(block_sync_size > 0)
       return block_sync_size;
-    if(get_current_blockchain_height() <= config::sync::SYNC_HEIGHT)
+    if(get_current_blockchain_height() <= config::sync::HIGHEST_CHECPOINT)
       return config::sync::RAPID_SYNC;
     else
       return config::sync::NORMAL_SYNC;
@@ -1347,14 +1328,14 @@ namespace cryptonote
     m_mempool.set_relayed(txs);
   }
   //-----------------------------------------------------------------------------------------------
-  bool core::get_block_template(block& b, const account_public_address& adr, difficulty_type& diffic, uint64_t& height, uint64_t& expected_reward, const blobdata& ex_nonce)
+  bool core::get_block_template(block& b, const account_public_address& adr, difficulty_type& diffic, uint64_t& height, uint64_t& expected_reward, const blobdata& ex_nonce, uint64_t &seed_height, crypto::hash &seed_hash)
   {
-    return m_blockchain_storage.create_block_template(b, adr, diffic, height, expected_reward, ex_nonce);
+    return m_blockchain_storage.create_block_template(b, adr, diffic, height, expected_reward, ex_nonce, seed_height, seed_hash);
   }
   //-----------------------------------------------------------------------------------------------
-  bool core::get_block_template(block& b, const crypto::hash *prev_block, const account_public_address& adr, difficulty_type& diffic, uint64_t& height, uint64_t& expected_reward, const blobdata& ex_nonce)
+  bool core::get_block_template(block& b, const crypto::hash *prev_block, const account_public_address& adr, difficulty_type& diffic, uint64_t& height, uint64_t& expected_reward, const blobdata& ex_nonce, uint64_t &seed_height, crypto::hash &seed_hash)
   {
-    return m_blockchain_storage.create_block_template(b, prev_block, adr, diffic, height, expected_reward, ex_nonce);
+    return m_blockchain_storage.create_block_template(b, prev_block, adr, diffic, height, expected_reward, ex_nonce, seed_height, seed_hash);
   }
   //-----------------------------------------------------------------------------------------------
   bool core::find_blockchain_supplement(const std::list<crypto::hash>& qblock_ids, NOTIFY_RESPONSE_CHAIN_ENTRY::request& resp) const

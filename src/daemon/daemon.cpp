@@ -101,7 +101,9 @@ t_daemon::t_daemon(
     boost::program_options::variables_map const & vm, uint16_t public_rpc_port
   )
   : mp_internals{new t_internals{vm}}, public_rpc_port(public_rpc_port), m_vm(vm)
-{}
+{
+  zmq_enabled = command_line::get_arg(m_vm, daemon_args::arg_zmq_enabled);
+}
 
 t_daemon::~t_daemon() = default;
 
@@ -164,10 +166,9 @@ bool t_daemon::run(bool interactive)
       rpc_commands->start_handling(std::bind(&daemonize::t_daemon::stop_p2p, this));
     }
 
-	wallstreetbetsMQ::ZmqHandler zmq_daemon_handler(mp_internals->core.get(), mp_internals->p2p.get());
+    wallstreetbetsMQ::ZmqHandler zmq_daemon_handler(mp_internals->core.get(), mp_internals->p2p.get());
     wallstreetbetsMQ::WallstreetbetsNotifier wallstreetbetsNotifier{zmq_daemon_handler};
 
-    auto zmq_enabled  = command_line::get_arg(m_vm, daemon_args::arg_zmq_enabled);
     if(zmq_enabled)
     {
       auto zmq_ip_str = command_line::get_arg(m_vm, daemon_args::arg_zmq_bind_ip);
@@ -186,17 +187,16 @@ bool t_daemon::run(bool interactive)
         return false;
       }
 
-      MINFO("Starting Wallstreetbets ZMQ server...");
-
       if(!wallstreetbetsNotifier.addTCPSocket(zmq_ip_str, zmq_port_str, zmq_max_clients))
       {
         LOG_ERROR(std::string("Failed to add TCP Socket (") << zmq_ip_str + ":" << zmq_port_str + ") to Wallstreetbets ZMQ Server");
         return false;
       }
 
+      MINFO("Starting Wallstreetbets ZMQ server...");
       wallstreetbetsNotifier.run();
 
-      MGINFO_GREEN(std::string("ZMQ server started at ") << zmq_ip_str + ":" << zmq_port_str << " with Maximum Allowed Clients Connections: " << zmq_max_clients << ".");
+      MGINFO_GREEN(std::string("ZMQ server started at ") << zmq_ip_str + ":" + zmq_port_str << " with Maximum Allowed Clients Connections: " << zmq_max_clients << ".");
 	}
 
     if (public_rpc_port > 0)
