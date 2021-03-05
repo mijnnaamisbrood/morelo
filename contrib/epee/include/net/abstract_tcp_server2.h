@@ -61,7 +61,7 @@
 #undef ARQMA_DEFAULT_LOG_CATEGORY
 #define ARQMA_DEFAULT_LOG_CATEGORY "net"
 
-#define ABSTRACT_SERVER_SEND_QUE_MAX_COUNT 10000
+#define ABSTRACT_SERVER_SEND_QUE_MAX_COUNT 3000
 
 namespace epee
 {
@@ -164,7 +164,7 @@ namespace net_utils
     unsigned int host_count(const std::string &host, int delta = 0);
 
     /// Buffer for incoming data.
-    boost::array<char, 8192> buffer_;
+    boost::array<char, 16384> buffer_;
     size_t buffer_ssl_init_fill;
 
     t_connection_context context;

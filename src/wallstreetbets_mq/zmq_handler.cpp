@@ -336,11 +336,6 @@ namespace wallstreetbetsMQ
         if (!res.error_details.empty()) res.error_details += " and ";
         res.error_details = "fee too low";
       }
-      if (tvc.m_not_rct)
-      {
-        if (!res.error_details.empty()) res.error_details += " and ";
-        res.error_details = "tx is not ringct";
-      }
       if (res.error_details.empty())
       {
         res.error_details = "an unknown issue was found with the transaction";
@@ -551,7 +546,7 @@ namespace wallstreetbetsMQ
   {
     if(!check_core_ready())
     {
-      res.status  = cryptonote::rpc::Message::STATUS_FAILED; 
+      res.status  = cryptonote::rpc::Message::STATUS_FAILED;
       res.error_details = "Core is busy";
       return;
     }
@@ -583,7 +578,7 @@ namespace wallstreetbetsMQ
     blob_reserve.resize(req.reserve_size, 0);
     size_t reserved_offset;
     crypto::hash seed_hash, next_seed_hash;
-    if(!get_block_template(info.address, NULL, blob_reserve, reserved_offset, res.difficulty, res.height, res.expected_reward, b, seed_hash, next_seed_hash, res))
+    if(!get_block_template(info.address, NULL, blob_reserve, reserved_offset, res.difficulty, res.height, res.expected_reward, b, res.seed_height, seed_hash, next_seed_hash, res))
       return;
     res.reserved_offset = reserved_offset;
     cryptonote::blobdata block_blob = cryptonote::t_serializable_object_to_blob(b);
@@ -598,10 +593,10 @@ namespace wallstreetbetsMQ
     return;
   }
 
-  bool ZmqHandler::get_block_template(const cryptonote::account_public_address &address, const crypto::hash *prev_block, const cryptonote::blobdata &extra_nonce, size_t &reserved_offset, cryptonote::difficulty_type &difficulty, uint64_t &height, uint64_t &expected_reward, cryptonote::block &b, crypto::hash &seed_hash, crypto::hash &next_seed_hash, cryptonote::rpc::GetBlockTemplate::Response& res)
+  bool ZmqHandler::get_block_template(const cryptonote::account_public_address &address, const crypto::hash *prev_block, const cryptonote::blobdata &extra_nonce, size_t &reserved_offset, cryptonote::difficulty_type &difficulty, uint64_t &height, uint64_t &expected_reward, cryptonote::block &b, uint64_t &seed_height, crypto::hash &seed_hash, crypto::hash &next_seed_hash, cryptonote::rpc::GetBlockTemplate::Response& res)
   {
     b = boost::value_initialized<cryptonote::block>();
-    if(!m_core.get_block_template(b, prev_block, address, difficulty, height, expected_reward, extra_nonce))
+    if(!m_core.get_block_template(b, prev_block, address, difficulty, height, expected_reward, extra_nonce, seed_height, seed_hash))
     {
       res.status = cryptonote::rpc::Message::STATUS_FAILED;
       res.error_details = "Internal error: failed to create block template";

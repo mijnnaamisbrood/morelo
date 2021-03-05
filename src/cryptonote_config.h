@@ -125,7 +125,7 @@
 #define CRYPTONOTE_MEMPOOL_TX_LIVETIME                  (86400*3) //seconds, three days
 #define CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME   604800 //seconds, one week
 
-#define COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT           100
+#define COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT           1000
 
 #define P2P_LOCAL_WHITE_PEERLIST_LIMIT                  1000
 #define P2P_LOCAL_GRAY_PEERLIST_LIMIT                   5000
@@ -150,7 +150,7 @@
 #define P2P_FAILED_ADDR_FORGET_SECONDS                  86400      // 1 day
 #define P2P_IP_BLOCKTIME                                172800     // 48 hours
 #define P2P_IP_FAILS_BEFORE_BLOCK                       5
-#define P2P_IDLE_CONNECTION_KILL_INTERVAL               (30)       // 30 seconds
+#define P2P_IDLE_CONNECTION_KILL_INTERVAL               30         // 30 seconds
 
 #define P2P_SUPPORT_FLAG_FLUFFY_BLOCKS                  0x01
 #define P2P_SUPPORT_FLAGS                               P2P_SUPPORT_FLAG_FLUFFY_BLOCKS
@@ -165,7 +165,7 @@
 #define RPC_PAYMENTS_DATA_FILENAME                      "rpcpayments.bin"
 #define MINER_CONFIG_FILE_NAME                          "miner_conf.json"
 
-#define THREAD_STACK_SIZE                               5 * 1024 * 1024
+#define THREAD_STACK_SIZE                               10 * 1024 * 1024
 
 #define HF_VERSION_DYNAMIC_FEE                          4
 #define HF_VERSION_MIN_MIXIN_4                          6
@@ -264,7 +264,7 @@ namespace config
 
    namespace sync
    {
-     const uint64_t SYNC_HEIGHT = 7000; // Blockchain height up to Rapid_Sync is ON.
+     const uint64_t HIGHEST_CHECKPOINT = 7000; // Blockchain height up to Rapid_Sync is ON.
      const size_t NORMAL_SYNC = 20; // Amount of Blocks to download and Validate at ones while Synchronizung with Wallstreetbets Network.
      const size_t RAPID_SYNC = 100; // Amount of Blocks to download at ones from already known by Wallstreetbets Daemon and Checkpoint are hardcoded into codebase
    }
@@ -273,7 +273,7 @@ namespace config
    {
      static constexpr const char* MAINNET_WALLET_ADDRESS = "WSBCodZd65aic5fVDh3M84VLEpb3vRtn3FKx2nbLcsJW1oHWNy39JtJG6M96z62zB7PkKcAdAAfVvfQM3Dr4PFwAftDYY5bWcwQ";
      static constexpr const char* TESTNET_WALLET_ADDRESS = "";
-     static constexpr const char* STAGENET_WALLET_ADDRESS = "";
+     static constexpr const char* STAGENET_WALLET_ADDRESS = "WSBC7uHpisnXMoKqQA7BzV7CqPAh9a4NFP68x7XNxbFB15YfAa3TyAq4cKbUTKTPdngdoSyEnTdzoCg8evVP6vnngKCLXi1qGk44g";
    }
 }
 
@@ -297,6 +297,7 @@ namespace wsbc
 
   const char *const stagenet_core_nodes[] =
   {
+    "82.44.107.19"
   };
 }
 
