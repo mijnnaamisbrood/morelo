@@ -40,9 +40,9 @@
 
 #include <atomic>
 
-#undef ARQMA_DEFAULT_LOG_CATEGORY
-#define ARQMA_DEFAULT_LOG_CATEGORY "mlocker"
-	
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "mlocker"
+
 // did an mlock operation previously fail? we only
 // want to log an error once and be done with it
 static std::atomic<bool> previously_failed{ false };

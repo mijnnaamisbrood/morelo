@@ -294,7 +294,7 @@ private:
       std::vector<multisig_info> m_multisig_info; // one per other participant
       std::vector<std::pair<uint64_t, crypto::hash>> m_uses;
 
-      bool is_rct() const { return m_rct; }
+      bool is_rct() const { return true; }
       uint64_t amount() const { return m_amount; }
       const crypto::public_key &get_public_key() const { return boost::get<const cryptonote::txout_to_key>(m_tx.vout[m_internal_output_index].target).key; }
 
@@ -321,10 +321,12 @@ private:
       END_SERIALIZE()
     };
 
+    typedef std::vector<uint64_t> amounts_container;
     struct payment_details
     {
       crypto::hash m_tx_hash;
       uint64_t m_amount;
+      amounts_container m_amounts;
       uint64_t m_fee;
       uint64_t m_block_height;
       uint64_t m_unlock_time;
@@ -388,7 +390,7 @@ private:
       std::vector<size_t> selected_transfers;
       std::vector<uint8_t> extra;
       uint64_t unlock_time;
-      bool use_rct;
+      bool use_rct = true;
       bool use_bulletproofs;
       std::vector<cryptonote::tx_destination_entry> dests; // original setup, does not include change
       uint32_t subaddr_account;   // subaddress account of your wallet to be used in this transfer
@@ -685,13 +687,13 @@ private:
     bool explicit_refresh_from_block_height() const {return m_explicit_refresh_from_block_height;}
 
     bool deinit();
-    bool init(std::string daemon_address = "http://localhost:42461",
+    bool init(std::string daemon_address = "http://localhost:17762",
       boost::optional<epee::net_utils::http::login> daemon_login = boost::none,
       boost::asio::ip::tcp::endpoint proxy = {},
       uint64_t upper_transaction_weight_limit = 0,
       bool trusted_daemon = true,
       epee::net_utils::ssl_options_t ssl_options = epee::net_utils::ssl_support_t::e_ssl_support_autodetect);
-    bool set_daemon(std::string daemon_address = "http://localhost:42461",
+    bool set_daemon(std::string daemon_address = "http://localhost:17762",
       boost::optional<epee::net_utils::http::login> daemon_login = boost::none, bool trusted_daemon = true,
       epee::net_utils::ssl_options_t ssl_options = epee::net_utils::ssl_support_t::e_ssl_support_autodetect);
 
@@ -774,10 +776,7 @@ private:
     // all locked & unlocked balances of all subaddress accounts
     uint64_t balance_all(bool strict) const;
     uint64_t unlocked_balance_all(bool strict, uint64_t *blocks_to_unlock = NULL) const;
-    template<typename T>
-    void transfer_selected(const std::vector<cryptonote::tx_destination_entry>& dsts, const std::vector<size_t>& selected_transfers, size_t fake_outputs_count,
-      std::vector<std::vector<tools::wallet2::get_outs_entry>> &outs,
-      uint64_t unlock_time, uint64_t fee, const std::vector<uint8_t>& extra, T destination_split_strategy, const tx_dust_policy& dust_policy, cryptonote::transaction& tx, pending_tx &ptx);
+
     void transfer_selected_rct(std::vector<cryptonote::tx_destination_entry> dsts, const std::vector<size_t>& selected_transfers, size_t fake_outputs_count,
       std::vector<std::vector<tools::wallet2::get_outs_entry>> &outs,
       uint64_t unlock_time, uint64_t fee, const std::vector<uint8_t>& extra, cryptonote::transaction& tx, pending_tx &ptx, rct::RangeProofType range_proof_type);
@@ -1258,7 +1257,7 @@ private:
     bool set_blackballed_outputs(const std::vector<std::pair<uint64_t, uint64_t>> &outputs, bool add = false);
     bool unblackball_output(const std::pair<uint64_t, uint64_t> &output);
     bool is_output_blackballed(const std::pair<uint64_t, uint64_t> &output) const;
-    
+
     uint64_t get_bytes_sent() const;
     uint64_t get_bytes_received() const;
 
@@ -1322,7 +1321,7 @@ private:
     void parse_block_round(const cryptonote::blobdata &blob, cryptonote::block &bl, crypto::hash &bl_id, bool &error) const;
     uint64_t get_upper_transaction_weight_limit();
     std::vector<uint64_t> get_unspent_amounts_vector(bool strict);
-    uint64_t get_dynamic_base_fee_estimate(); 
+    uint64_t get_dynamic_base_fee_estimate();
     float get_output_relatedness(const transfer_details &td0, const transfer_details &td1) const;
     std::vector<size_t> pick_preferred_rct_inputs(uint64_t needed_money, uint32_t subaddr_account, const std::set<uint32_t> &subaddr_indices) const;
     void set_spent(size_t idx, uint64_t height);
@@ -1488,7 +1487,7 @@ BOOST_CLASS_VERSION(tools::wallet2::transfer_details, 11)
 BOOST_CLASS_VERSION(tools::wallet2::multisig_info, 1)
 BOOST_CLASS_VERSION(tools::wallet2::multisig_info::LR, 0)
 BOOST_CLASS_VERSION(tools::wallet2::multisig_tx_set, 1)
-BOOST_CLASS_VERSION(tools::wallet2::payment_details, 4)
+BOOST_CLASS_VERSION(tools::wallet2::payment_details, 5)
 BOOST_CLASS_VERSION(tools::wallet2::pool_payment_details, 1)
 BOOST_CLASS_VERSION(tools::wallet2::unconfirmed_transfer_details, 8)
 BOOST_CLASS_VERSION(tools::wallet2::confirmed_transfer_details, 6)
@@ -1786,6 +1785,9 @@ namespace boost
         return;
       }
       a & x.m_coinbase;
+      if(ver < 5)
+        return;
+      a & x.m_amounts;
     }
 
     template <class Archive>

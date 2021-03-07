@@ -125,7 +125,7 @@ static const struct {
 Blockchain::Blockchain(tx_memory_pool& tx_pool) :
   m_db(), m_tx_pool(tx_pool), m_hardfork(NULL), m_timestamps_and_difficulties_height(0), m_current_block_cumul_weight_limit(0), m_current_block_cumul_weight_median(0),
   m_enforce_dns_checkpoints(true), m_max_prepare_blocks_threads(4), m_db_sync_on_blocks(true), m_db_sync_threshold(1), m_db_sync_mode(db_async), m_db_default_sync(false),
-  m_fast_sync(true), m_show_time_stats(true), m_sync_counter(0), m_bytes_to_sync(0), m_cancel(false),
+  m_fast_sync(true), m_show_time_stats(false), m_sync_counter(0), m_bytes_to_sync(0), m_cancel(false),
   m_long_term_block_weights_window(CRYPTONOTE_LONG_TERM_BLOCK_WEIGHT_WINDOW_SIZE),
   m_long_term_effective_median_block_weight(0),
   m_difficulty_for_next_block_top_hash(crypto::null_hash),
@@ -394,7 +394,7 @@ bool Blockchain::init(BlockchainDB* db, const network_type nettype, bool offline
 
   // genesis block has no timestamp, could probably change it to have timestamp of 1341378000...
   if(!top_block_timestamp)
-    timestamp_diff = time(NULL) - 1523689524;
+    timestamp_diff = time(NULL) - 1613607977;
 
   // create general purpose async service queue
 
@@ -403,7 +403,7 @@ bool Blockchain::init(BlockchainDB* db, const network_type nettype, bool offline
   m_async_pool.create_thread(boost::bind(&boost::asio::io_service::run, &m_async_service));
 
 #if defined(PER_BLOCK_CHECKPOINT)
-  if (m_nettype != FAKECHAIN)
+  if (m_nettype == MAINNET)
     load_compiled_in_block_hashes(get_checkpoints);
 #endif
 
@@ -3815,8 +3815,8 @@ leave:
       MCINFO("verify", "No pre-validated hash at height " << blockchain_height << ", verifying fully");
     }
   }
-  else
 #endif
+  if(!fast_check)
   {
     auto it = m_blocks_longhash_table.find(id);
     if (it != m_blocks_longhash_table.end())
@@ -4062,13 +4062,13 @@ leave:
     return false;
   }
 
-  MGINFO_MAGENTA("+++++ BLOCK SUCCESSFULLY ADDED" << std::endl << "id:\t" << id << std::endl << "PoW:\t" << proof_of_work << std::endl << "HEIGHT " << new_height-1 << ", difficulty:\t"
-         << current_diffic << std::endl << "block reward: " << print_money(base_reward) << "(" << print_money(base_reward - fee_summary) << " + " << print_money(fee_summary)
-         << "), coinbase_weight: " << coinbase_weight << ", cumulative weight: " << cumulative_block_weight << ", " << block_processing_time << "(" << target_calculating_time
+  MINFO("+++++ BLOCK SUCCESSFULLY ADDED" << std::endl << "id:\t" << id << std::endl << "PoW:\t" << proof_of_work << std::endl << "HEIGHT " << new_height-1 << ", difficulty:\t"
+         << current_diffic << std::endl << "block reward: " << print_money(base_reward) << "(" << print_money(base_reward - fee_summary) << " base reward + " << print_money(fee_summary)
+         << " in fees), coinbase_weight: " << coinbase_weight << ", cumulative weight: " << cumulative_block_weight << ", " << block_processing_time << "(" << target_calculating_time
          << "/" << longhash_calculating_time << ")ms");
   if(m_show_time_stats)
   {
-    MGINFO_MAGENTA("Height: " << new_height << " coinbase weight: " << coinbase_weight << " cumm: "
+    MINFO("Height: " << new_height << " coinbase weight: " << coinbase_weight << " cumm: "
         << cumulative_block_weight << " p/t: " << block_processing_time << " ("
         << target_calculating_time << "/" << longhash_calculating_time << "/"
         << t1 << "/" << t2 << "/" << t3 << "/" << t_exists << "/" << t_pool
@@ -5023,7 +5023,7 @@ uint64_t Blockchain::get_difficulty_target() const
   return get_current_diff_target(version);
 }
 
-std::map<uint64_t, std::tuple<uint64_t, uint64_t, uint64_t>> Blockchain:: get_output_histogram(const std::vector<uint64_t> &amounts, bool unlocked, uint64_t recent_cutoff, uint64_t min_count) const
+std::map<uint64_t, std::tuple<uint64_t, uint64_t, uint64_t>> Blockchain::get_output_histogram(const std::vector<uint64_t> &amounts, bool unlocked, uint64_t recent_cutoff, uint64_t min_count) const
 {
   return m_db->get_output_histogram(amounts, unlocked, recent_cutoff, min_count);
 }
@@ -5090,7 +5090,7 @@ void Blockchain::cancel()
 }
 
 #if defined(PER_BLOCK_CHECKPOINT)
-static const char expected_block_hashes_hash[] = "d08bc25b2a78cfa3a8bbaba132594956e3f276f2f84c1a06822b9f9e92982a55";
+static const char expected_block_hashes_hash[] = "992e1d1c5753b5215ba3e0eb112f8aef779270583bec44892dec6ee4946c14cf";
 void Blockchain::load_compiled_in_block_hashes(const GetCheckpointsCallback& get_checkpoints)
 {
   if (get_checkpoints == nullptr || !m_fast_sync)

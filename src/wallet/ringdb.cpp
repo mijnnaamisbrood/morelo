@@ -295,13 +295,13 @@ bool ringdb::remove_rings(const crypto::chacha_key &chacha_key, const cryptonote
   epee::misc_utils::auto_scope_leave_caller txn_dtor = epee::misc_utils::create_scope_leave_handler([&](){if (tx_active) mdb_txn_abort(txn);});
   tx_active = true;
 
-  for (const auto &in: tx.vin)
+  for(const auto &in : tx.vin)
   {
-    if (in.type() != typeid(cryptonote::txin_to_key))
+    if(in.type() != typeid(cryptonote::txin_to_key))
       continue;
     const auto &txin = boost::get<cryptonote::txin_to_key>(in);
     const uint32_t ring_size = txin.key_offsets.size();
-    if (ring_size == 1)
+    if(ring_size == 1)
       continue;
 
     MDB_val key, data;

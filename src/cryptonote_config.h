@@ -131,7 +131,7 @@
 #define P2P_LOCAL_GRAY_PEERLIST_LIMIT                   5000
 
 #define P2P_DEFAULT_CONNECTIONS_COUNT_OUT               6
-#define P2P_DEFAULT_CONNECTIONS_COUNT_IN                18
+#define P2P_DEFAULT_CONNECTIONS_COUNT_IN                12
 #define P2P_DEFAULT_HANDSHAKE_INTERVAL                  60         // secondes
 #define P2P_DEFAULT_PACKET_MAX_SIZE                     50000000   // 50000000 bytes maximum packet size
 #define P2P_DEFAULT_PEERS_IN_HANDSHAKE                  250
@@ -141,11 +141,11 @@
 #define P2P_DEFAULT_INVOKE_TIMEOUT                      60*2*1000  // 2 minutes
 #define P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT            5000       // 5 seconds
 #define P2P_DEFAULT_WHITELIST_CONNECTIONS_PERCENT       70
-#define P2P_DEFAULT_ANCHOR_CONNECTIONS_COUNT            6
+#define P2P_DEFAULT_ANCHOR_CONNECTIONS_COUNT            2
 #define P2P_DEFAULT_SYNC_SEARCH_CONNECTIONS_COUNT       2
 
 #define P2P_DEFAULT_LIMIT_RATE_UP                       4096       // Kbps
-#define P2P_DEFAULT_LIMIT_RATE_DOWN                     16384      // Kbps
+#define P2P_DEFAULT_LIMIT_RATE_DOWN                     8192       // Kbps
 
 #define P2P_FAILED_ADDR_FORGET_SECONDS                  86400      // 1 day
 #define P2P_IP_BLOCKTIME                                172800     // 48 hours
@@ -264,9 +264,9 @@ namespace config
 
    namespace sync
    {
-     const uint64_t HIGHEST_CHECKPOINT = 7000; // Blockchain height up to Rapid_Sync is ON.
+     const uint64_t HIGHEST_CHECKPOINT = 15700; // Blockchain height up to Rapid_Sync is ON.
      const size_t NORMAL_SYNC = 20; // Amount of Blocks to download and Validate at ones while Synchronizung with Wallstreetbets Network.
-     const size_t RAPID_SYNC = 100; // Amount of Blocks to download at ones from already known by Wallstreetbets Daemon and Checkpoint are hardcoded into codebase
+     const size_t RAPID_SYNC = 50; // Amount of Blocks to download at ones from already known by Wallstreetbets Daemon and Checkpoint are hardcoded into codebase
    }
 
    namespace governance

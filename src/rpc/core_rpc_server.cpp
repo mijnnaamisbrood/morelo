@@ -977,7 +977,7 @@ namespace cryptonote
       return true;
     }
 
-    if (req.do_sanity_checks && !cryptonote::tx_sanity_check(m_core.get_blockchain_storage(), tx_blob))
+    if(req.do_sanity_checks && !cryptonote::tx_sanity_check(m_core.get_blockchain_storage(), tx_blob))
     {
       res.status = "Failed";
       res.reason = "Sanity check failed";

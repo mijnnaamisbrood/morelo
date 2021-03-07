@@ -38,8 +38,8 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-#undef ARQMA_DEFAULT_LOG_CATEGORY
-#define ARQMA_DEFAULT_LOG_CATEGORY "net"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "net"
 
 namespace epee 
 {
