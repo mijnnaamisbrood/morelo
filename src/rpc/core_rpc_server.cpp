@@ -1138,9 +1138,12 @@ namespace cryptonote
     RPC_TRACKER(get_peer_list);
     std::vector<nodetool::peerlist_entry> white_list;
     std::vector<nodetool::peerlist_entry> gray_list;
-    m_p2p.get_public_peerlist(gray_list, white_list);
 
-    res.white_list.reserve(white_list.size());
+    if(req.public_only)
+      m_p2p.get_public_peerlist(gray_list, white_list);
+    else
+      m_p2p.get_peerlist(gray_list, white_list);
+
     for (auto & entry : white_list)
     {
       if (entry.adr.get_type_id() == epee::net_utils::ipv4_network_address::get_type_id())
@@ -1150,7 +1153,6 @@ namespace cryptonote
         res.white_list.emplace_back(entry.id, entry.adr.str(), entry.last_seen, entry.pruning_seed, entry.rpc_port, entry.rpc_credits_per_hash);
     }
 
-    res.gray_list.reserve(gray_list.size());
     for (auto & entry : gray_list)
     {
       if (entry.adr.get_type_id() == epee::net_utils::ipv4_network_address::get_type_id())

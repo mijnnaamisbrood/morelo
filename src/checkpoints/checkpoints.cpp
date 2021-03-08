@@ -76,7 +76,7 @@ namespace cryptonote
   bool checkpoints::add_checkpoint(uint64_t height, const std::string& hash_str)
   {
     crypto::hash h = crypto::null_hash;
-    bool r = epee::string_tools::parse_tpod_from_hex_string(hash_str, h);
+    bool r = epee::string_tools::hex_to_pod(hash_str, h);
     CHECK_AND_ASSERT_MES(r, false, "Failed to parse checkpoint hash string into binary representation!");
 
     // return false if adding at a height we already have AND the hash is different
@@ -157,7 +157,7 @@ namespace cryptonote
     return true;
   }
 
-   bool checkpoints::init_default_checkpoints(network_type nettype)
+  bool checkpoints::init_default_checkpoints(network_type nettype)
   {
     if (nettype == TESTNET)
     {
@@ -205,7 +205,7 @@ namespace cryptonote
     ADD_CHECKPOINT(14000, "3be9954bf6fcfa53b025ab03a70aebd6e0f578dd9fadb0f3480ccd2c00375dfb");
     ADD_CHECKPOINT(14500, "055bc95bbfd82aa967546d494d2cbb97e5b6afa415f1d14bed25d2c8bc5e031a");
     ADD_CHECKPOINT(15727, "ce2fff2a8e66b4d416fc0cf44b9e82eb793b4629790f07be8e3ba8efd8bc6405");
-
+    ADD_CHECKPOINT(17920, "9664327529bcb0ef2fd03b2f3eb8f7f54b89c015aef45edc77cf4812f7e1acc0");
     return true;
   }
 

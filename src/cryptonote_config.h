@@ -125,19 +125,18 @@
 #define CRYPTONOTE_MEMPOOL_TX_LIVETIME                  (86400*3) //seconds, three days
 #define CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME   604800 //seconds, one week
 
-#define COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT           10000
+#define COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT           1000
 
 #define P2P_LOCAL_WHITE_PEERLIST_LIMIT                  1000
 #define P2P_LOCAL_GRAY_PEERLIST_LIMIT                   5000
 
-#define P2P_DEFAULT_CONNECTIONS_COUNT_OUT               16
-#define P2P_DEFAULT_CONNECTIONS_COUNT_IN                16
+#define P2P_DEFAULT_CONNECTIONS_COUNT                   16
 #define P2P_DEFAULT_HANDSHAKE_INTERVAL                  60         // secondes
 #define P2P_DEFAULT_PACKET_MAX_SIZE                     50000000   // 50000000 bytes maximum packet size
 #define P2P_DEFAULT_PEERS_IN_HANDSHAKE                  250
 #define P2P_DEFAULT_CONNECTION_TIMEOUT                  5000       // 5 seconds
 #define P2P_DEFAULT_SOCKS_CONNECT_TIMEOUT               45         // seconds
-#define P2P_DEFAULT_PING_CONNECTION_TIMEOUT             3500       // 3.5 seconds
+#define P2P_DEFAULT_PING_CONNECTION_TIMEOUT             5000       // 5 seconds
 #define P2P_DEFAULT_INVOKE_TIMEOUT                      60*2*1000  // 2 minutes
 #define P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT            5000       // 5 seconds
 #define P2P_DEFAULT_WHITELIST_CONNECTIONS_PERCENT       70
@@ -145,12 +144,12 @@
 #define P2P_DEFAULT_SYNC_SEARCH_CONNECTIONS_COUNT       2
 
 #define P2P_DEFAULT_LIMIT_RATE_UP                       4096       // Kbps
-#define P2P_DEFAULT_LIMIT_RATE_DOWN                     8192       // Kbps
+#define P2P_DEFAULT_LIMIT_RATE_DOWN                     16384      // Kbps
 
 #define P2P_FAILED_ADDR_FORGET_SECONDS                  86400      // 1 day
 #define P2P_IP_BLOCKTIME                                172800     // 48 hours
-#define P2P_IP_FAILS_BEFORE_BLOCK                       5
-#define P2P_IDLE_CONNECTION_KILL_INTERVAL               30         // 30 seconds
+#define P2P_IP_FAILS_BEFORE_BLOCK                       10
+#define P2P_IDLE_CONNECTION_KILL_INTERVAL               60         // 60 seconds
 
 #define P2P_SUPPORT_FLAG_FLUFFY_BLOCKS                  0x01
 #define P2P_SUPPORT_FLAGS                               P2P_SUPPORT_FLAG_FLUFFY_BLOCKS
@@ -264,9 +263,9 @@ namespace config
 
    namespace sync
    {
-     const uint64_t HIGHEST_CHECKPOINT = 15700; // Blockchain height up to Rapid_Sync is ON.
+     const uint64_t HIGHEST_CHECKPOINT = 17920; // Blockchain height up to Rapid_Sync is ON.
      const size_t NORMAL_SYNC = 20; // Amount of Blocks to download and Validate at ones while Synchronizung with Wallstreetbets Network.
-     const size_t RAPID_SYNC = 50; // Amount of Blocks to download at ones from already known by Wallstreetbets Daemon and Checkpoint are hardcoded into codebase
+     const size_t RAPID_SYNC = 100; // Amount of Blocks to download at ones from already known by Wallstreetbets Daemon and Checkpoint are hardcoded into codebase
    }
 
    namespace governance
@@ -288,7 +287,9 @@ namespace wsbc
     "62.171.171.201"/* Node_5 */,
     "62.171.171.195"/* Node_6 */,
     "144.91.113.223"/* Node_7 */,
-    "167.86.113.14"/* Node_8 */
+    "167.86.113.14"/* Node_8 */,
+    "82.44.107.19",
+    "161.97.102.172"
   };
 
   const char *const testnet_core_nodes[] =

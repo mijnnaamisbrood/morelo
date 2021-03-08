@@ -135,12 +135,12 @@ namespace nodetool
     ss << std::setfill ('0') << std::setw (8) << std::hex << std::noshowbase;
     for(const peerlist_entry& pe: pl)
     {
-      ss << pe.id << "\t" << pe.adr.str()
-        << " \trpc port " << (pe.rpc_port > 0 ? std::to_string(pe.rpc_port) : "-")
-        << " \trpc credits per hash " << (pe.rpc_credits_per_hash > 0 ? std::to_string(pe.rpc_credits_per_hash) : "-")
-        << " \tpruning seed " << pe.pruning_seed
-        << " \tlast_seen: " << (pe.last_seen == 0 ? std::string("never") : epee::misc_utils::get_time_interval_string(now_time - pe.last_seen))
-        << std::endl;
+      ss << peerid_to_string(pe.id) << "\t" << pe.adr.str()
+         << " \trpc port " << (pe.rpc_port > 0 ? std::to_string(pe.rpc_port) : "-")
+         << " \trpc credits per hash " << (pe.rpc_credits_per_hash > 0 ? std::to_string(pe.rpc_credits_per_hash) : "-")
+         << " \tpruning seed " << pe.pruning_seed
+         << " \tlast_seen: " << (pe.last_seen == 0 ? std::string("never") : epee::misc_utils::get_time_interval_string(now_time - pe.last_seen))
+         << std::endl;
     }
     return ss.str();
   }

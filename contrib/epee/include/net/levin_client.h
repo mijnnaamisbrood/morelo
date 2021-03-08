@@ -52,10 +52,10 @@ namespace levin
 		levin_client_impl();
 		virtual ~levin_client_impl();
 
-		bool connect(u_long ip, int port, unsigned int timeout, const std::string& bind_ip = "0.0.0.0");
-    bool connect(const std::string& addr, int port, unsigned int timeout, const std::string& bind_ip = "0.0.0.0");
-		bool is_connected();
-		bool disconnect();
+	        bool connect(u_long ip, int port, unsigned int timeout, const std::string& bind_ip = "0.0.0.0");
+                bool connect(const std::string& addr, int port, unsigned int timeout, const std::string& bind_ip = "0.0.0.0");
+	        bool is_connected();
+	        bool disconnect();
 
 		virtual int invoke(int command, const epee::span<const uint8_t> in_buff, std::string& buff_out);
 		virtual int notify(int command, const std::string& in_buff);

@@ -220,7 +220,7 @@ namespace nodetool
       : m_payload_handler(payload_handler),
         m_external_port(0),
         m_rpc_port(0),
-		m_zmq_port(0),
+        m_zmq_port(0),
         m_rpc_credits_per_hash(0),
         m_allow_local_ip(false),
         m_hide_my_port(false),
@@ -228,7 +228,8 @@ namespace nodetool
         m_offline(false),
         m_save_graph(false),
         is_closing(false),
-        m_network_id()
+        m_network_id(),
+        max_connections(1)
     {}
     virtual ~node_server();
 
@@ -252,6 +253,7 @@ namespace nodetool
     size_t get_public_white_peers_count();
     size_t get_public_gray_peers_count();
     void get_public_peerlist(std::vector<peerlist_entry>& gray, std::vector<peerlist_entry>& white);
+    void get_peerlist(std::vector<peerlist_entry>& gray, std::vector<peerlist_entry>& white);
     size_t get_zone_count() const { return m_network_zones.size(); }
 
     void change_max_out_public_peers(size_t count);
@@ -416,16 +418,16 @@ namespace nodetool
     {
       m_rpc_port = rpc_port;
     }
-	
-	void set_zmq_port(uint16_t zmq_port)
+
+    void set_zmq_port(uint16_t zmq_port)
     {
       m_zmq_port = zmq_port;
     }
-    
+
     void set_rpc_credits_per_hash(uint32_t rpc_credits_per_hash)
-	{
-	  m_rpc_credits_per_hash = rpc_credits_per_hash;
-	}
+    {
+      m_rpc_credits_per_hash = rpc_credits_per_hash;
+    }
 
   private:
     std::string m_config_folder;
@@ -497,6 +499,8 @@ namespace nodetool
     cryptonote::network_type m_nettype;
 
     epee::net_utils::ssl_support_t m_ssl_support;
+
+    uint32_t max_connections;
   };
 
     const int64_t default_limit_up = P2P_DEFAULT_LIMIT_RATE_UP;    // Kbps
@@ -525,6 +529,8 @@ namespace nodetool
     extern const command_line::arg_descriptor<int64_t> arg_limit_rate;
 
     extern const command_line::arg_descriptor<bool> arg_save_graph;
+
+    extern const command_line::arg_descriptor<uint32_t> arg_max_connections_per_ip;
 }
 
 POP_WARNINGS
