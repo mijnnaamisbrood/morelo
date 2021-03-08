@@ -33,8 +33,8 @@
 #include "enableable.h"
 #include "keyvalue_serialization_overloads.h"
 
-#undef ARQMA_DEFAULT_LOG_CATEGORY
-#define ARQMA_DEFAULT_LOG_CATEGORY "serialization"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "serialization"
 
 namespace epee
 {

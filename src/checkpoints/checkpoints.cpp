@@ -76,7 +76,7 @@ namespace cryptonote
   bool checkpoints::add_checkpoint(uint64_t height, const std::string& hash_str)
   {
     crypto::hash h = crypto::null_hash;
-    bool r = epee::string_tools::parse_tpod_from_hex_string(hash_str, h);
+    bool r = epee::string_tools::hex_to_pod(hash_str, h);
     CHECK_AND_ASSERT_MES(r, false, "Failed to parse checkpoint hash string into binary representation!");
 
     // return false if adding at a height we already have AND the hash is different
@@ -157,20 +157,24 @@ namespace cryptonote
     return true;
   }
 
-   bool checkpoints::init_default_checkpoints(network_type nettype)
+  bool checkpoints::init_default_checkpoints(network_type nettype)
   {
     if (nettype == TESTNET)
     {
+      ADD_CHECKPOINT(0, "3260f61cf521e962d0f5728b61e4a9fa327df8e951a9fa5f7d824e323b17a8ae");
 
       return true;
     }
     if (nettype == STAGENET)
     {
+      ADD_CHECKPOINT(0, "3260f61cf521e962d0f5728b61e4a9fa327df8e951a9fa5f7d824e323b17a8ae");
+
       return true;
     }
 
 //checkpoints here
     ADD_CHECKPOINT(0, "3260f61cf521e962d0f5728b61e4a9fa327df8e951a9fa5f7d824e323b17a8ae");
+    ADD_CHECKPOINT(1, "e30f8be3f0f59cf88cd602914071ee7f79f7353ab017d89b40a6d666bf769655");
     ADD_CHECKPOINT(500, "00ba8207326830446ebf3afc7f3557f49ac886bd7f55c89409e70c6a9fa978ee");
     ADD_CHECKPOINT(1000, "a1a1a3c2c26dccd931354002ea9db642b954119723c66c95ae793f45099ebd2f");
     ADD_CHECKPOINT(1500, "d2865345b59952f90981c57b6b886f22703904a5687c59322b07e52e7b722152");
@@ -200,7 +204,8 @@ namespace cryptonote
     ADD_CHECKPOINT(13500, "9c8d81f40018a45db858dc8cc9ac854958d7d9e4588b23e65c091e69220ccc22");
     ADD_CHECKPOINT(14000, "3be9954bf6fcfa53b025ab03a70aebd6e0f578dd9fadb0f3480ccd2c00375dfb");
     ADD_CHECKPOINT(14500, "055bc95bbfd82aa967546d494d2cbb97e5b6afa415f1d14bed25d2c8bc5e031a");
-
+    ADD_CHECKPOINT(15727, "ce2fff2a8e66b4d416fc0cf44b9e82eb793b4629790f07be8e3ba8efd8bc6405");
+    ADD_CHECKPOINT(17920, "9664327529bcb0ef2fd03b2f3eb8f7f54b89c015aef45edc77cf4812f7e1acc0");
     return true;
   }
 

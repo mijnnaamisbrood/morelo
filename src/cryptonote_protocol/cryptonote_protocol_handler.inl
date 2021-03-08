@@ -65,10 +65,10 @@
 
 #define BLOCK_QUEUE_NSPANS_THRESHOLD 10 // chunks of N blocks
 #define BLOCK_QUEUE_SIZE_THRESHOLD (200*1024*1024) // MB
-#define BLOCK_QUEUE_FORCE_DOWNLOAD_NEAR_BLOCKS 3000
+#define BLOCK_QUEUE_FORCE_DOWNLOAD_NEAR_BLOCKS 2500
 #define REQUEST_NEXT_SCHEDULED_SPAN_THRESHOLD_STANDBY (5 * 1000000) // microseconds
 #define REQUEST_NEXT_SCHEDULED_SPAN_THRESHOLD (30 * 1000000) // microseconds
-#define IDLE_PEER_KICK_TIME (600 * 1000000) // microseconds
+#define IDLE_PEER_KICK_TIME (240 * 1000000) // microseconds
 #define PASSIVE_PEER_KICK_TIME (60 * 1000000) // microseconds
 #define DROP_ON_SYNC_WEDGE_THRESHOLD (30 * 1000000000ull) // nanoseconds
 #define LAST_ACTIVITY_STALL_THRESHOLD (2.0f) // seconds
@@ -169,34 +169,34 @@ namespace cryptonote
     double up_curr_sum = 0.0;
 
     ss << std::setw(30) << std::left << "Remote Host"
-      << std::setw(20) << "Peer id"
-      << std::setw(20) << "Support Flags"
-      << std::setw(30) << "Recv/Sent (inactive,sec)"
-      << std::setw(25) << "State"
-      << std::setw(20) << "Livetime(sec)"
-      << std::setw(12) << "Down (Kbps)"
-      << std::setw(14) << "Down(now)"
-      << std::setw(10) << "Up (Kbps)"
-      << std::setw(13) << "Up(now)"
-      << ENDL;
+       << std::setw(20) << "Peer id"
+       << std::setw(20) << "Support Flags"
+       << std::setw(30) << "Recv/Sent (inactive,sec)"
+       << std::setw(25) << "State"
+       << std::setw(20) << "Livetime(sec)"
+       << std::setw(12) << "Down (Kbps)"
+       << std::setw(14) << "Down(now)"
+       << std::setw(10) << "Up (Kbps)"
+       << std::setw(13) << "Up(now)"
+       << ENDL;
 
     m_p2p->for_each_connection([&](const connection_context& cntxt, nodetool::peerid_type peer_id, uint32_t support_flags)
     {
       bool local_ip = cntxt.m_remote_address.is_local();
       auto connection_time = time(NULL) - cntxt.m_started;
       ss << std::setw(30) << std::left << std::string(cntxt.m_is_income ? " [INC]":"[OUT]") + cntxt.m_remote_address.str()
-        << std::setw(20) << std::hex << peer_id
-        << std::setw(20) << std::hex << support_flags
-        << std::setw(30) << std::to_string(cntxt.m_recv_cnt)+ "(" + std::to_string(time(NULL) - cntxt.m_last_recv) + ")" + "/" + std::to_string(cntxt.m_send_cnt) + "(" + std::to_string(time(NULL) - cntxt.m_last_send) + ")"
-        << std::setw(25) << get_protocol_state_string(cntxt.m_state)
-        << std::setw(20) << std::to_string(time(NULL) - cntxt.m_started)
-        << std::setw(12) << std::fixed << (connection_time == 0 ? 0.0 : cntxt.m_recv_cnt / connection_time / 1024)
-        << std::setw(14) << std::fixed << cntxt.m_current_speed_down / 1024
-        << std::setw(10) << std::fixed << (connection_time == 0 ? 0.0 : cntxt.m_send_cnt / connection_time / 1024)
-        << std::setw(13) << std::fixed << cntxt.m_current_speed_up / 1024
-        << (local_ip ? "[LAN]" : "")
-        << std::left << (cntxt.m_remote_address.is_loopback() ? "[LOCALHOST]" : "") // 127.0.0.1
-        << ENDL;
+         << std::setw(20) << nodetool::peerid_to_string(peer_id)
+         << std::setw(20) << std::hex << support_flags
+         << std::setw(30) << std::to_string(cntxt.m_recv_cnt)+ "(" + std::to_string(time(NULL) - cntxt.m_last_recv) + ")" + "/" + std::to_string(cntxt.m_send_cnt) + "(" + std::to_string(time(NULL) - cntxt.m_last_send) + ")"
+         << std::setw(25) << get_protocol_state_string(cntxt.m_state)
+         << std::setw(20) << std::to_string(time(NULL) - cntxt.m_started)
+         << std::setw(12) << std::fixed << (connection_time == 0 ? 0.0 : cntxt.m_recv_cnt / connection_time / 1024)
+         << std::setw(14) << std::fixed << cntxt.m_current_speed_down / 1024
+         << std::setw(10) << std::fixed << (connection_time == 0 ? 0.0 : cntxt.m_send_cnt / connection_time / 1024)
+         << std::setw(13) << std::fixed << cntxt.m_current_speed_up / 1024
+         << (local_ip ? "[LAN]" : "")
+         << std::left << (cntxt.m_remote_address.is_loopback() ? "[LOCALHOST]" : "") // 127.0.0.1
+         << ENDL;
 
       if (connection_time > 1)
       {
@@ -245,9 +245,7 @@ namespace cryptonote
       cnx.rpc_port = cntxt.m_rpc_port;
       cnx.rpc_credits_per_hash = cntxt.m_rpc_credits_per_hash;
 
-      std::stringstream peer_id_str;
-      peer_id_str << std::hex << std::setw(16) << peer_id;
-      peer_id_str >> cnx.peer_id;
+      cnx.peer_id = nodetool::peerid_to_string(peer_id);
 
       cnx.support_flags = support_flags;
 
@@ -369,8 +367,8 @@ namespace cryptonote
     uint64_t max_block_height = std::max(hshd.current_height,m_core.get_current_blockchain_height());
 
     // *** (uint64_t)-1 *** <- Need to be fill in when we will know correct fork values
-    uint64_t last_block_v10 = m_core.get_nettype() == TESTNET ? 1 : m_core.get_nettype() == MAINNET ? 1 : 1;
-    uint64_t last_block_v15 = m_core.get_nettype() == TESTNET ? (uint64_t)-1 : m_core.get_nettype() == MAINNET ? (uint64_t)-1 : (uint64_t)-1;
+    uint64_t last_block_v10 = m_core.get_nettype() == TESTNET ? 0 : m_core.get_nettype() == MAINNET ? 0 : 0;
+    uint64_t last_block_v15 = m_core.get_nettype() == TESTNET ? (uint64_t)-1 : m_core.get_nettype() == MAINNET ? 6179 : 49;
     uint64_t diff_v11 = max_block_height > last_block_v10 ? std::min(abs_diff, max_block_height - last_block_v10) : 0;
     uint64_t diff_v16 = max_block_height > last_block_v15 ? std::min(abs_diff, max_block_height - last_block_v15) : 0;
 

@@ -68,14 +68,17 @@ namespace levin
 
 
 #define LEVIN_DEFAULT_TIMEOUT_PRECONFIGURED 0
-#define LEVIN_DEFAULT_MAX_PACKET_SIZE 100000000      //100MB by default
+#define LEVIN_DEFAULT_MAX_PACKET_SIZE 104857600 // (100 * 1024 * 1024) <-> 100MB by default.
+                                                // When old setting was set (not equal with bytes)
+                                                // [P2P4]  ERROR   net     contrib/epee/include/net/levin_protocol_handler_async.h:535
+                                                // [xxx.xxx.xxx.xxx:xxxxx INC] Maximum packet size exceed!, m_max_packet_size = 100000000, packet header received 101135426, connection will be closed.
 
-#define LEVIN_PACKET_REQUEST			0x00000001
-#define LEVIN_PACKET_RESPONSE		0x00000002
+#define LEVIN_PACKET_REQUEST 0x00000001
+#define LEVIN_PACKET_RESPONSE 0x00000002
 
 
-#define LEVIN_PROTOCOL_VER_0         0
-#define LEVIN_PROTOCOL_VER_1         1
+#define LEVIN_PROTOCOL_VER_0 0
+#define LEVIN_PROTOCOL_VER_1 1
 
   template<class t_connection_context = net_utils::connection_context_base>
   struct levin_commands_handler

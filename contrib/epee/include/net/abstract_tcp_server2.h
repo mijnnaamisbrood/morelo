@@ -58,10 +58,10 @@
 #include "connection_basic.hpp"
 #include "network_throttle-detail.hpp"
 
-#undef ARQMA_DEFAULT_LOG_CATEGORY
-#define ARQMA_DEFAULT_LOG_CATEGORY "net"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "net"
 
-#define ABSTRACT_SERVER_SEND_QUE_MAX_COUNT 3000
+#define ABSTRACT_SERVER_SEND_QUE_MAX_COUNT 2000
 
 namespace epee
 {
@@ -226,7 +226,7 @@ namespace net_utils
     void create_server_type_map();
 
     bool init_server(uint32_t port, const std::string address = "0.0.0.0", ssl_options_t ssl_options = ssl_support_t::e_ssl_support_autodetect);
-    bool init_server(const std::string port,  const std::string& address = "0.0.0.0", ssl_options_t ssl_options = ssl_support_t::e_ssl_support_autodetect);
+    bool init_server(const std::string port, const std::string& address = "0.0.0.0", ssl_options_t ssl_options = ssl_support_t::e_ssl_support_autodetect);
 
     // Run the server's io_service loop.
     bool run_server(size_t threads_count, bool wait = true, const boost::thread::attributes& attrs = boost::thread::attributes());

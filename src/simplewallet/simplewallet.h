@@ -84,9 +84,9 @@ namespace cryptonote
     std::string get_commands_str();
     std::string get_command_usage(const std::vector<std::string> &args);
   private:
-    
+
     enum ResetType { ResetNone, ResetSoft, ResetHard, ResetSoftKeepKI };
-    
+
     bool handle_command_line(const boost::program_options::variables_map& vm);
 
     bool run_console_handler();
@@ -228,6 +228,7 @@ namespace cryptonote
     bool export_raw_multisig(const std::vector<std::string>& args);
     bool print_ring(const std::vector<std::string>& args);
     bool set_ring(const std::vector<std::string>& args);
+    bool unset_ring(const std::vector<std::string>& args);
     bool save_known_rings(const std::vector<std::string>& args);
     bool blackball(const std::vector<std::string>& args);
     bool unblackball(const std::vector<std::string>& args);

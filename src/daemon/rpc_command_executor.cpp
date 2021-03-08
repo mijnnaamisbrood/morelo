@@ -37,6 +37,7 @@
 #include "rpc/core_rpc_server_commands_defs.h"
 #include "cryptonote_core/cryptonote_core.h"
 #include "cryptonote_basic/hardfork.h"
+#include "version.h"
 #include "rpc_sig/rpc_payment_signature.h"
 #include <boost/format.hpp>
 #include <ctime>
@@ -61,15 +62,11 @@ namespace {
     time(&now);
     time_t last_seen = static_cast<time_t>(peer.last_seen);
 
-    std::string id_str;
-    std::string port_str;
     std::string elapsed = epee::misc_utils::get_time_interval_string(now - last_seen);
-    std::string ip_str = epee::string_tools::get_ip_string_from_int32(peer.ip);
-    std::stringstream peer_id_str;
-    peer_id_str << std::hex << std::setw(16) << peer.id;
-    peer_id_str >> id_str;
+    std::string id_str = epee::string_tools::pad_string(epee::string_tools::to_string_hex(peer.id), 16, '0', true);
+    std::string port_str;
     epee::string_tools::xtype_to_string(peer.port, port_str);
-    std::string addr_str = ip_str + ":" + port_str;
+    std::string addr_str = peer.host + ":" + port_str;
     std::string rpc_port = peer.rpc_port ? std::to_string(peer.rpc_port) : "-";
     std::string rpc_credits_per_hash = peer.rpc_credits_per_hash ? print_float(peer.rpc_credits_per_hash / RPC_CREDITS_PER_HASH_SCALE, 2) : "-";
     std::string pruning_seed = epee::string_tools::to_string_hex(peer.pruning_seed);
@@ -174,6 +171,9 @@ bool t_rpc_command_executor::print_peer_list(bool white, bool gray, size_t limit
   cryptonote::COMMAND_RPC_GET_PEER_LIST::response res;
 
   std::string failure_message = "Couldn't retrieve peer list";
+
+  req.public_only = false;
+
   if (m_is_rpc)
   {
     if (!m_rpc_client->rpc_request(req, res, "/get_peer_list", failure_message.c_str()))
@@ -467,7 +467,7 @@ bool t_rpc_command_executor::show_status() {
     }
   }
 
-  tools::success_msg_writer() << boost::format("Height: %llu/%llu (%.1f%%) on %s%s, %s, net hash %s, v%u%s, %s, %u(out)+%u(in) connections, uptime %ud %uh %um %us")
+  tools::success_msg_writer() << boost::format("Height: %llu/%llu (%.1f%%) on %s%s, %s, net hash %s, Release: %s-v%s/HFv%u%s, %s, %u(out)+%u(in) connections, uptime %ud %uh %um %us")
     % (unsigned long long)ires.height
     % (unsigned long long)net_height
     % get_sync_percentage(ires)
@@ -475,6 +475,8 @@ bool t_rpc_command_executor::show_status() {
     % bootstrap_msg
     % (!has_mining_info ? "mining info unavailable" : mining_busy ? "syncing" : mres.active ? ( ( mres.is_background_mining_enabled ? "smart " : "" ) + std::string("mining at ") + get_mining_speed(mres.speed) ) : "not mining")
     % get_mining_speed(ires.difficulty / ires.target)
+    % WALLSTREETBETS_RELEASE_NAME
+    % WALLSTREETBETS_VERSION
     % (unsigned)hfres.version
     % get_fork_extra_info(hfres.earliest_height, net_height, ires.target)
     % (hfres.state == cryptonote::HardFork::LikelyForked ? "out of date, likely forked" : "up to date")
@@ -513,36 +515,35 @@ bool t_rpc_command_executor::print_connections() {
   }
 
   tools::msg_writer() << std::setw(30) << std::left << "Remote Host"
-      << std::setw(6) << "SSL"
-      << std::setw(20) << "Peer id"
-      << std::setw(20) << "Support Flags"
-      << std::setw(30) << "Recv/Sent (inactive,sec)"
-      << std::setw(25) << "State"
-      << std::setw(20) << "Livetime(sec)"
-      << std::setw(12) << "Down (Kbps)"
-      << std::setw(14) << "Down(now)"
-      << std::setw(10) << "Up (Kbps)"
-      << std::setw(13) << "Up(now)"
+      << std::setw(4) << "SSL"
+      << std::setw(8) << "RPC"
+      << std::setw(8) << "Height"
+      << std::setw(18) << "Peer id"
+      << std::setw(6) << "Flags"
+      << std::setw(26) << "Recv/Sent (inactive,sec)"
+      << std::setw(18) << "State"
+      << std::setw(22) << "Down | Up (kB/s)"
+      << std::setw(8) << "Alive(seconds)"
       << std::endl;
 
   for (auto & info : res.connections)
   {
+    std::string rpc_port = info.rpc_port ? std::to_string(info.rpc_port) : "no";
     std::string address = info.incoming ? "INC " : "OUT ";
     address += info.ip + ":" + info.port;
     //std::string in_out = info.incoming ? "INC " : "OUT ";
     tools::msg_writer()
      //<< std::setw(30) << std::left << in_out
      << std::setw(30) << std::left << address
-     << std::setw(6) << (info.ssl ? "yes" : "no")
-     << std::setw(20) << epee::string_tools::pad_string(info.peer_id, 16, '0', true)
-     << std::setw(20) << info.support_flags
-     << std::setw(30) << std::to_string(info.recv_count) + "("  + std::to_string(info.recv_idle_time) + ")/" + std::to_string(info.send_count) + "(" + std::to_string(info.send_idle_time) + ")"
-     << std::setw(25) << info.state
-     << std::setw(20) << info.live_time
-     << std::setw(12) << info.avg_download
-     << std::setw(14) << info.current_download
-     << std::setw(10) << info.avg_upload
-     << std::setw(13) << info.current_upload
+     << std::setw(4) << (info.ssl ? "yes" : "no")
+     << std::setw(8) << rpc_port
+     << std::setw(8) << info.height
+     << std::setw(18) << info.peer_id
+     << std::setw(6) << info.support_flags
+     << std::setw(26) << std::to_string(info.recv_count) + "("  + std::to_string(info.recv_idle_time) + ")/" + std::to_string(info.send_count) + "(" + std::to_string(info.send_idle_time) + ")"
+     << std::setw(18) << info.state
+     << std::setw(22) << std::to_string(info.avg_download) + "/" + std::to_string(info.current_download) + " | " + std::to_string(info.avg_upload) + "/" + std::to_string(info.current_upload)
+     << std::setw(9) << info.live_time
 
      << std::left << (info.localhost ? "[LOCALHOST]" : "")
      << std::left << (info.local_ip ? "[LAN]" : "");
@@ -564,11 +565,11 @@ bool t_rpc_command_executor::print_net_stats()
 
   if (m_is_rpc)
   {
-    if (!m_rpc_client->json_rpc_request(net_stats_req, net_stats_res, "get_net_stats", fail_message.c_str()))
+    if (!m_rpc_client->rpc_request(net_stats_req, net_stats_res, "/get_net_stats", fail_message.c_str()))
     {
       return true;
     }
-    if (!m_rpc_client->json_rpc_request(limit_req, limit_res, "get_limit", fail_message.c_str()))
+    if (!m_rpc_client->rpc_request(limit_req, limit_res, "/get_limit", fail_message.c_str()))
     {
       return true;
     }
@@ -591,10 +592,11 @@ bool t_rpc_command_executor::print_net_stats()
   uint64_t average = seconds > 0 ? net_stats_res.total_bytes_in / seconds : 0;
   uint64_t limit = limit_res.limit_down * 1024;   // convert to bytes, as limits are always kB/s
   double percent = (double)average / (double)limit * 100.0;
-  tools::success_msg_writer() << boost::format("Received %u bytes (%s) in %u packets, average %s/s = %.2f%% of the limit of %s/s")
+  tools::success_msg_writer() << boost::format("Received %u bytes (%s) in %u packets in %s, average %s/s = %.2f%% of the limit of %s/s")
     % net_stats_res.total_bytes_in
     % tools::get_human_readable_bytes(net_stats_res.total_bytes_in)
     % net_stats_res.total_packets_in
+    % tools::get_human_readable_timespan(seconds)
     % tools::get_human_readable_bytes(average)
     % percent
     % tools::get_human_readable_bytes(limit);
@@ -602,10 +604,11 @@ bool t_rpc_command_executor::print_net_stats()
   average = seconds > 0 ? net_stats_res.total_bytes_out / seconds : 0;
   limit = limit_res.limit_up * 1024;
   percent = (double)average / (double)limit * 100.0;
-  tools::success_msg_writer() << boost::format("Sent %u bytes (%s) in %u packets, average %s/s = %.2f%% of the limit of %s/s")
+  tools::success_msg_writer() << boost::format("Sent %u bytes (%s) in %u packets in %s, average %s/s = %.2f%% of the limit of %s/s")
     % net_stats_res.total_bytes_out
     % tools::get_human_readable_bytes(net_stats_res.total_bytes_out)
     % net_stats_res.total_packets_out
+    % tools::get_human_readable_timespan(seconds)
     % tools::get_human_readable_bytes(average)
     % percent
     % tools::get_human_readable_bytes(limit);
@@ -1741,7 +1744,7 @@ bool t_rpc_command_executor::print_coinbase_tx_sum(uint64_t height, uint64_t cou
   }
 
   tools::msg_writer() << "Sum of coinbase transactions between block heights ["
-    << height << ", " << (height + count) << ") is "
+    << height << ", " << (height + count) << "] is "
     << cryptonote::print_money(res.emission_amount + res.fee_amount) << " "
     << "consisting of " << cryptonote::print_money(res.emission_amount)
     << " in emissions, and " << cryptonote::print_money(res.fee_amount) << " in fees";
@@ -2101,7 +2104,7 @@ bool t_rpc_command_executor::sync_info()
       for (const auto &s: res.spans)
         if (s.connection_id == p.info.connection_id)
           nblocks += s.nblocks, size += s.size;
-      tools::success_msg_writer() << address << "  " << epee::string_tools::pad_string(p.info.peer_id, 16, '0', true) << "  "
+      tools::success_msg_writer() << address << "  " << p.info.peer_id << "  "
                                   << epee::string_tools::pad_string(p.info.state, 16) << "  "
                                   << epee::string_tools::pad_string(epee::string_tools::to_string_hex(p.info.pruning_seed), 8) << "  " << p.info.height << "  "
                                   << p.info.current_download << " Kbps, " << nblocks << " blocks / " << size/1e6 << " MB queued";

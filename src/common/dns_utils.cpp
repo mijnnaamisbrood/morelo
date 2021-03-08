@@ -421,13 +421,13 @@ std::string address_from_txt_record(const std::string& s)
   if (pos2 != std::string::npos)
   {
     // length of address == 97, we can at least validate that much here
-    if (pos2 - pos == 97)
+    if (pos2 - pos == 99)
     {
-      return s.substr(pos, 97);
+      return s.substr(pos, 99);
     }
-    else if (pos2 - pos == 109) // length of address == 109 --> integrated address
+    else if (pos2 - pos == 110) // length of address == 109 --> integrated address
     {
-      return s.substr(pos, 109);
+      return s.substr(pos, 110);
     }
   }
   return {};
