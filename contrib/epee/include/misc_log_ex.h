@@ -34,15 +34,15 @@
 
 #include "easylogging++.h"
 
-#undef ARQMA_DEFAULT_LOG_CATEGORY
-#define ARQMA_DEFAULT_LOG_CATEGORY "default"
+#undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
+#define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "default"
 
 #define MAX_LOG_FILE_SIZE 104850000 // 100 MB - 7600 bytes
 #define MAX_LOG_FILES 50
 
 #define MCLOG_TYPE(level, cat, color, type, x) do { \
     if (ELPP->vRegistry()->allowed(level, cat)) { \
-      el::base::Writer(level, color,__FILE__, __LINE__, ELPP_FUNC, type).construct(cat) << x; \
+      el::base::Writer(level, color, __FILE__, __LINE__, ELPP_FUNC, type).construct(cat) << x; \
     } \
   } while (0)
 
@@ -64,20 +64,20 @@
 #define MCLOG_MAGENTA(level,cat,x) MCLOG_COLOR(level,cat,el::Color::Magenta,x)
 #define MCLOG_CYAN(level,cat,x) MCLOG_COLOR(level,cat,el::Color::Cyan,x)
 
-#define MLOG_RED(level,x) MCLOG_RED(level,ARQMA_DEFAULT_LOG_CATEGORY,x)
-#define MLOG_GREEN(level,x) MCLOG_GREEN(level,ARQMA_DEFAULT_LOG_CATEGORY,x)
-#define MLOG_YELLOW(level,x) MCLOG_YELLOW(level,ARQMA_DEFAULT_LOG_CATEGORY,x)
-#define MLOG_BLUE(level,x) MCLOG_BLUE(level,ARQMA_DEFAULT_LOG_CATEGORY,x)
-#define MLOG_MAGENTA(level,x) MCLOG_MAGENTA(level,ARQMA_DEFAULT_LOG_CATEGORY,x)
-#define MLOG_CYAN(level,x) MCLOG_CYAN(level,ARQMA_DEFAULT_LOG_CATEGORY,x)
+#define MLOG_RED(level,x) MCLOG_RED(level,WALLSTREETBETS_DEFAULT_LOG_CATEGORY,x)
+#define MLOG_GREEN(level,x) MCLOG_GREEN(level,WALLSTREETBETS_DEFAULT_LOG_CATEGORY,x)
+#define MLOG_YELLOW(level,x) MCLOG_YELLOW(level,WALLSTREETBETS_DEFAULT_LOG_CATEGORY,x)
+#define MLOG_BLUE(level,x) MCLOG_BLUE(level,WALLSTREETBETS_DEFAULT_LOG_CATEGORY,x)
+#define MLOG_MAGENTA(level,x) MCLOG_MAGENTA(level,WALLSTREETBETS_DEFAULT_LOG_CATEGORY,x)
+#define MLOG_CYAN(level,x) MCLOG_CYAN(level,WALLSTREETBETS_DEFAULT_LOG_CATEGORY,x)
 
-#define MFATAL(x) MCFATAL(ARQMA_DEFAULT_LOG_CATEGORY,x)
-#define MERROR(x) MCERROR(ARQMA_DEFAULT_LOG_CATEGORY,x)
-#define MWARNING(x) MCWARNING(ARQMA_DEFAULT_LOG_CATEGORY,x)
-#define MINFO(x) MCINFO(ARQMA_DEFAULT_LOG_CATEGORY,x)
-#define MDEBUG(x) MCDEBUG(ARQMA_DEFAULT_LOG_CATEGORY,x)
-#define MTRACE(x) MCTRACE(ARQMA_DEFAULT_LOG_CATEGORY,x)
-#define MLOG(level,x) MCLOG(level,ARQMA_DEFAULT_LOG_CATEGORY,el::Color::Default,x)
+#define MFATAL(x) MCFATAL(WALLSTREETBETS_DEFAULT_LOG_CATEGORY,x)
+#define MERROR(x) MCERROR(WALLSTREETBETS_DEFAULT_LOG_CATEGORY,x)
+#define MWARNING(x) MCWARNING(WALLSTREETBETS_DEFAULT_LOG_CATEGORY,x)
+#define MINFO(x) MCINFO(WALLSTREETBETS_DEFAULT_LOG_CATEGORY,x)
+#define MDEBUG(x) MCDEBUG(WALLSTREETBETS_DEFAULT_LOG_CATEGORY,x)
+#define MTRACE(x) MCTRACE(WALLSTREETBETS_DEFAULT_LOG_CATEGORY,x)
+#define MLOG(level,x) MCLOG(level,WALLSTREETBETS_DEFAULT_LOG_CATEGORY,el::Color::Default,x)
 
 #define MGINFO(x) MCINFO("global",x)
 #define MGINFO_RED(x) MCLOG_RED(el::Level::Info, "global",x)
@@ -94,7 +94,7 @@
       el::base::Writer(level, color, __FILE__, __LINE__, ELPP_FUNC, type).construct(cat) << x; \
     } \
   } while(0)
-#define MIDEBUG(init, x) IFLOG(el::Level::Debug, ARQMA_DEFAULT_LOG_CATEGORY, el::Color::Default, el::base::DispatchAction::NormalLog, init, x)
+#define MIDEBUG(init, x) IFLOG(el::Level::Debug, WALLSTREETBETS_DEFAULT_LOG_CATEGORY, el::Color::Default, el::base::DispatchAction::NormalLog, init, x)
 
 
 #define LOG_ERROR(x) MERROR(x)

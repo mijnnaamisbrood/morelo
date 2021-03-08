@@ -1363,6 +1363,7 @@ namespace wallet_rpc
     typedef epee::misc_utils::struct_init<response_t> response;
   };
 
+  typedef std::vector<uint64_t> amounts_container;
   struct transfer_entry
   {
     std::string txid;
@@ -1370,6 +1371,7 @@ namespace wallet_rpc
     uint64_t height;
     uint64_t timestamp;
     uint64_t amount;
+    amounts_container amounts;
     uint64_t fee;
     std::string note;
     std::list<transfer_destination> destinations;
@@ -1382,18 +1384,19 @@ namespace wallet_rpc
     uint64_t suggested_confirmations_threshold;
 
     BEGIN_KV_SERIALIZE_MAP()
-      KV_SERIALIZE(txid);
-      KV_SERIALIZE(payment_id);
-      KV_SERIALIZE(height);
-      KV_SERIALIZE(timestamp);
-      KV_SERIALIZE(amount);
-      KV_SERIALIZE(fee);
-      KV_SERIALIZE(note);
-      KV_SERIALIZE(destinations);
-      KV_SERIALIZE(type);
+      KV_SERIALIZE(txid)
+      KV_SERIALIZE(payment_id)
+      KV_SERIALIZE(height)
+      KV_SERIALIZE(timestamp)
+      KV_SERIALIZE(amount)
+      KV_SERIALIZE(amounts)
+      KV_SERIALIZE(fee)
+      KV_SERIALIZE(note)
+      KV_SERIALIZE(destinations)
+      KV_SERIALIZE(type)
       KV_SERIALIZE(unlock_time)
-      KV_SERIALIZE(subaddr_index);
-      KV_SERIALIZE(address);
+      KV_SERIALIZE(subaddr_index)
+      KV_SERIALIZE(address)
       KV_SERIALIZE(double_spend_seen)
       KV_SERIALIZE_OPT(confirmations, (uint64_t)0)
       KV_SERIALIZE_OPT(suggested_confirmations_threshold, (uint64_t)0)
