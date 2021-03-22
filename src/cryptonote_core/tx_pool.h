@@ -608,14 +608,8 @@ namespace boost
       ar & td.receive_time;
       ar & td.last_relayed_time;
       ar & td.relayed;
-      if (version < 11)
-        return;
       ar & td.kept_by_block;
-      if (version < 12)
-        return;
       ar & td.do_not_relay;
-      if (version < 13)
-        return;
       ar & td.weight;
     }
   }

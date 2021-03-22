@@ -38,6 +38,7 @@
 #include "common/util.h"
 #include "common/pruning.h"
 #include "cryptonote_basic/cryptonote_format_utils.h"
+#include "cryptonote_config.h"
 #include "crypto/crypto.h"
 #include "profile_tools.h"
 #include "ringct/rctOps.h"
@@ -83,7 +84,7 @@ inline void throw1(const T &e)
   throw e;
 }
 
-#define MDB_val_set(var, val)   MDB_val var = {sizeof(val), (void *)&val}
+#define MDB_val_set(var, val) MDB_val var = {sizeof(val), (void *)&val}
 
 #define MDB_val_sized(var, val) MDB_val var = {val.size(), (void *)val.data()}
 
@@ -582,7 +583,7 @@ bool BlockchainLMDB::need_resize(uint64_t threshold_size) const
   MDEBUG("Space remaining: " << mei.me_mapsize - size_used);
   MDEBUG("Size threshold:  " << threshold_size);
   float resize_percent = RESIZE_PERCENT;
-  MDEBUG(boost::format("Percent used: %.04f  Percent threshold: %.04f") % ((double)size_used/mei.me_mapsize) % resize_percent);
+  MDEBUG(boost::format("Percent used: %.04f  Percent threshold: %.04f") % (100.*size_used/mei.me_mapsize) % (100.*resize_percent));
 
   if (threshold_size > 0)
   {
@@ -595,7 +596,7 @@ bool BlockchainLMDB::need_resize(uint64_t threshold_size) const
       return false;
   }
 
-  if ((double)size_used / mei.me_mapsize  > resize_percent)
+  if ((double)size_used / mei.me_mapsize > resize_percent)
   {
     MINFO("Threshold met (percent-based)");
     return true;
@@ -764,7 +765,7 @@ void BlockchainLMDB::add_block(const block& blk, size_t block_weight, uint64_t l
   bi.bi_diff = cumulative_difficulty;
   bi.bi_hash = blk_hash;
   bi.bi_cum_rct = num_rct_outs;
-  if (blk.major_version >= 4)
+  if (blk.major_version >= 15)
   {
     uint64_t last_height = m_height-1;
     MDB_val_set(h, last_height);
@@ -2504,8 +2505,9 @@ std::vector<uint64_t> BlockchainLMDB::get_block_info_64bit_fields(uint64_t start
   RCURSOR(block_info);
 
   const uint64_t h = height();
-  if (start_height >= h)
-    throw0(DB_ERROR(("Height " + std::to_string(start_height) + " not in blockchain").c_str()));
+  if(h != 0)
+    if (start_height >= h)
+      throw0(DB_ERROR(("Height " + std::to_string(start_height) + " not in blockchain").c_str()));
 
   std::vector<uint64_t> ret;
   ret.reserve(count);
@@ -3694,7 +3696,7 @@ void BlockchainLMDB::block_wtxn_stop()
     throw0(DB_ERROR_TXN_START((std::string("Attempted to stop write txn from the wrong thread in ")+__FUNCTION__).c_str()));
   {
     if (! m_batch_active)
-	{
+    {
       TIME_MEASURE_START(time1);
       m_write_txn->commit();
       TIME_MEASURE_FINISH(time1);
@@ -3703,7 +3705,7 @@ void BlockchainLMDB::block_wtxn_stop()
       delete m_write_txn;
       m_write_txn = nullptr;
       memset(&m_wcursors, 0, sizeof(m_wcursors));
-	}
+    }
   }
 }
 
@@ -3714,7 +3716,7 @@ void BlockchainLMDB::block_wtxn_abort()
     throw0(DB_ERROR_TXN_START((std::string("Attempted to abort write txn when no such txn exists in ")+__FUNCTION__).c_str()));
   if(m_writer != boost::this_thread::get_id())
     throw0(DB_ERROR_TXN_START((std::string("Attempted to abort write txn from the wrong thread in ")+__FUNCTION__).c_str()));
-	
+
   if(!m_batch_active)
   {
     delete m_write_txn;
@@ -4119,7 +4121,7 @@ void BlockchainLMDB::add_alt_block(const crypto::hash &blkid, const cryptonote::
 
 bool BlockchainLMDB::get_alt_block(const crypto::hash &blkid, alt_block_data_t *data, cryptonote::blobdata *blob)
 {
-  LOG_PRINT_L3("BlockchainLMDB:: " << __func__);
+  LOG_PRINT_L3("BlockchainLMDB::" << __func__);
   check_open();
 
   TXN_PREFIX_RDONLY();
@@ -4166,7 +4168,7 @@ void BlockchainLMDB::remove_alt_block(const crypto::hash &blkid)
 
 uint64_t BlockchainLMDB::get_alt_block_count()
 {
-  LOG_PRINT_L3("BlockchainLMDB:: " << __func__);
+  LOG_PRINT_L3("BlockchainLMDB::" << __func__);
   check_open();
 
   TXN_PREFIX_RDONLY();
@@ -5179,7 +5181,7 @@ void BlockchainLMDB::migrate_3_4()
       if (past_long_term_weight)
       {
         std::vector<uint64_t> weights(long_term_block_weights.begin(), long_term_block_weights.end());
-        uint64_t long_term_effective_block_median_weight = std::max<uint64_t>(CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V5, epee::misc_utils::median(weights));
+        uint64_t long_term_effective_block_median_weight = std::max<uint64_t>(config::blockchain_settings::new_block_min_size, epee::misc_utils::median(weights));
         long_term_block_weight = std::min<uint64_t>(bi.bi_weight, long_term_effective_block_median_weight + long_term_effective_block_median_weight * 2 / 5);
       }
       else

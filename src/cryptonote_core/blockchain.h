@@ -734,17 +734,16 @@ namespace cryptonote
      * @param sync_mode the ::blockchain_db_sync_mode to use
      * @param fast_sync sync using built-in block hashes as trusted
      */
-    void set_user_options(uint64_t maxthreads, bool sync_on_blocks, uint64_t sync_threshold,
-        blockchain_db_sync_mode sync_mode, bool fast_sync);
-	
-	void set_zmq_options(const std::string& ip, const std::string port, uint16_t clients, bool enabled) 
-        {
-            zmq_ip = ip; 
-            zmq_port = port; 
-            zmq_max_clients = clients;
-            zmq_enabled = enabled;
-        }
-	
+    void set_user_options(uint64_t maxthreads, bool sync_on_blocks, uint64_t sync_threshold, blockchain_db_sync_mode sync_mode, bool fast_sync);
+
+    void set_zmq_options(const std::string& ip, const std::string port, uint16_t clients, bool enabled)
+    {
+      zmq_ip = ip;
+      zmq_port = port;
+      zmq_max_clients = clients;
+      zmq_enabled = enabled;
+    }
+
     /**
      * @brief sets a block notify object to call for every new block
      *
@@ -1087,9 +1086,9 @@ namespace cryptonote
     crypto::hash m_btc_seed_hash;
     uint64_t m_btc_seed_height;
     bool m_btc_valid;
-    
+
     bool m_batch_success;
-	
+
     std::string zmq_ip;
     std::string zmq_port;
     uint16_t zmq_max_clients;
@@ -1097,7 +1096,7 @@ namespace cryptonote
 
     std::shared_ptr<tools::Notify> m_block_notify;
     std::shared_ptr<tools::Notify> m_reorg_notify;
-	
+
     zmq::context_t context;
     zmq::socket_t producer{context, ZMQ_DEALER};
     zmq::message_t create_message(std::string &&data);

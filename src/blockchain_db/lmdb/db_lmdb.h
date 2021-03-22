@@ -74,12 +74,12 @@ typedef struct mdb_txn_cursors
   MDB_cursor *m_txc_properties;
 } mdb_txn_cursors;
 
-#define m_cur_blocks	m_cursors->m_txc_blocks
-#define m_cur_block_heights	m_cursors->m_txc_block_heights
+#define m_cur_blocks            m_cursors->m_txc_blocks
+#define m_cur_block_heights     m_cursors->m_txc_block_heights
 #define m_cur_block_info	m_cursors->m_txc_block_info
 #define m_cur_output_txs	m_cursors->m_txc_output_txs
 #define m_cur_output_amounts	m_cursors->m_txc_output_amounts
-#define m_cur_txs	m_cursors->m_txc_txs
+#define m_cur_txs               m_cursors->m_txc_txs
 #define m_cur_txs_pruned	m_cursors->m_txc_txs_pruned
 #define m_cur_txs_prunable	m_cursors->m_txc_txs_prunable
 #define m_cur_txs_prunable_hash	m_cursors->m_txc_txs_prunable_hash
@@ -89,7 +89,7 @@ typedef struct mdb_txn_cursors
 #define m_cur_spent_keys	m_cursors->m_txc_spent_keys
 #define m_cur_txpool_meta	m_cursors->m_txc_txpool_meta
 #define m_cur_txpool_blob	m_cursors->m_txc_txpool_blob
-#define m_cur_alt_blocks  m_cursors->m_txc_alt_blocks
+#define m_cur_alt_blocks        m_cursors->m_txc_alt_blocks
 #define m_cur_hf_versions	m_cursors->m_txc_hf_versions
 #define m_cur_properties	m_cursors->m_txc_properties
 
@@ -327,7 +327,7 @@ public:
   virtual bool block_rtxn_start() const;
   virtual void block_rtxn_stop() const;
   virtual void block_rtxn_abort() const;
-	
+
   bool block_rtxn_start(MDB_txn **mtxn, mdb_txn_cursors **mcur) const;
 
   virtual void pop_block(block& blk, std::vector<transaction>& txs);
@@ -413,11 +413,10 @@ private:
   virtual uint64_t get_database_size() const;
 
   std::vector<uint64_t> get_block_info_64bit_fields(uint64_t start_height, size_t count, off_t offset) const;
-  
+
   uint64_t get_max_block_size();
   void add_max_block_size(uint64_t sz);
 
-  // fix up anything that may be wrong due to past bugs
   virtual void fixup();
 
   // migrate from older DB version to current

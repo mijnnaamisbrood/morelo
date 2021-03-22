@@ -2102,7 +2102,7 @@ namespace nodetool
   {
     if(max == -1)
     {
-      zone.m_config.m_net_config.max_out_connection_count = P2P_DEFAULT_CONNECTIONS_COUNT;
+      zone.m_config.m_net_config.max_out_connection_count = m_nettype == cryptonote::MAINNET ? P2P_DEFAULT_CONNECTIONS_COUNT : P2P_DEFAULT_CONNECTIONS_COUNT_STAGENET;
       return true;
     }
     zone.m_config.m_net_config.max_out_connection_count = max;

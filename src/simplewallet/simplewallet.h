@@ -53,7 +53,7 @@
 #undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
 #define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "wallet.simplewallet"
 
-constexpr const char WALLSTREETBETS_DONATION_ADDR[] = "ar46iCiw5uB7SjnYhL5EJLP1LpqGkZbCcWhWgdbLL1c4DicNuYi3ZeRJPi8FFmEhYnagbxRyaQKyTYBA95JqmPcr1XZytK9o3";
+constexpr const char WALLSTREETBETS_DONATION_ADDR[] = "WSBCodZd65aic5fVDh3M84VLEpb3vRtn3FKx2nbLcsJW1oHWNy39JtJG6M96z62zB7PkKcAdAAfVvfQM3Dr4PFwAftDYY5bWcwQ";
 
 /*!
  * \namespace cryptonote
@@ -124,7 +124,6 @@ namespace cryptonote
     bool set_always_confirm_transfers(const std::vector<std::string> &args = std::vector<std::string>());
     bool set_print_ring_members(const std::vector<std::string> &args = std::vector<std::string>());
     bool set_store_tx_info(const std::vector<std::string> &args = std::vector<std::string>());
-    bool set_default_ring_size(const std::vector<std::string> &args = std::vector<std::string>());
     bool set_auto_refresh(const std::vector<std::string> &args = std::vector<std::string>());
     bool set_refresh_type(const std::vector<std::string> &args = std::vector<std::string>());
     bool set_confirm_missing_payment_id(const std::vector<std::string> &args = std::vector<std::string>());
@@ -166,13 +165,9 @@ namespace cryptonote
     bool sweep_all(const std::vector<std::string> &args);
     bool sweep_below(const std::vector<std::string> &args);
     bool sweep_single(const std::vector<std::string> &args);
-    bool sweep_unmixable(const std::vector<std::string> &args);
     bool donate(const std::vector<std::string> &args);
     bool sign_transfer(const std::vector<std::string> &args);
     bool submit_transfer(const std::vector<std::string> &args);
-    std::vector<std::vector<cryptonote::tx_destination_entry>> split_amounts(
-        std::vector<cryptonote::tx_destination_entry> dsts, size_t num_splits
-    );
     bool account(const std::vector<std::string> &args = std::vector<std::string>());
     void print_accounts();
     void print_accounts(const std::string& tag);
@@ -403,7 +398,7 @@ namespace cryptonote
     bool m_rpc_payment_mining_requested;
     bool m_daemon_rpc_payment_message_displayed;
     float m_rpc_payment_hash_rate;
-    
+
     std::unordered_map<std::string, uint32_t> m_claimed_cph;
   };
 }

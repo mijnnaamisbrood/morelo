@@ -41,11 +41,7 @@ using namespace cryptonote;
 
 static uint8_t get_block_vote(const cryptonote::block &b)
 {
-  // Pre-hardfork blocks have a minor version hardcoded to 0.
-  // For the purposes of voting, we consider 0 to refer to
-  // version number 1, which is what all blocks from the genesis
-  // block are. It makes things simpler.
-  if (b.minor_version == 0)
+  if(b.minor_version == 0)
     return 1;
   return b.minor_version;
 }
@@ -55,12 +51,13 @@ static uint8_t get_block_version(const cryptonote::block &b)
   return b.major_version;
 }
 
-HardFork::HardFork(cryptonote::BlockchainDB &db, uint8_t original_version, time_t forked_time, uint64_t window_size, uint8_t default_threshold_percent):
+HardFork::HardFork(cryptonote::BlockchainDB &db, uint8_t original_version, uint64_t original_version_till_height, time_t forked_time, uint64_t window_size, uint8_t default_threshold_percent):
   db(db),
   forked_time(forked_time),
   window_size(window_size),
   default_threshold_percent(default_threshold_percent),
   original_version(original_version),
+  original_version_till_height(original_version_till_height),
   current_fork_index(0)
 {
   if (window_size == 0)
@@ -184,33 +181,15 @@ void HardFork::init()
   else
     height = 1;
 
-  bool populate = false;
-  try
-  {
-    db.get_hard_fork_version(0);
-  }
-  catch (...) { populate = true; }
-  if (populate)
-  {
-    MINFO("The DB has no hard fork info, reparsing from start");
-    height = 1;
-  }
-  MDEBUG("reorganizing from " << height);
-  if (populate)
-  {
-    reorganize_from_chain_height(height);
-    // reorg will not touch the genesis block, use this as a flag for populating done
-    db.set_hard_fork_version(0, original_version);
-  }
-  else
-  {
-    rescan_from_chain_height(height);
-  }
-  MDEBUG("reorganization done");
+  rescan_from_chain_height(height);
+  MDEBUG("init done");
 }
 
 uint8_t HardFork::get_block_version(uint64_t height) const
 {
+  if(height <= original_version_till_height)
+    return original_version;
+
   const cryptonote::block &block = db.get_block_from_height(height);
   return ::get_block_version(block);
 }
@@ -432,3 +411,4 @@ bool HardFork::get_voting_info(uint8_t version, uint32_t &window, uint32_t &vote
   voting = heights.back().version;
   return enabled;
 }
+

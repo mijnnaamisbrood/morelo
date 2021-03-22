@@ -281,8 +281,7 @@ namespace cryptonote
           {
             ar.tag("rctsig_prunable");
             ar.begin_object();
-            r = rct_signatures.p.serialize_rctsig_prunable(ar, rct_signatures.type, vin.size(), vout.size(),
-                vin.size() > 0 && vin[0].type() == typeid(txin_to_key) ? boost::get<txin_to_key>(vin[0]).key_offsets.size() - 1 : 0);
+            r = rct_signatures.p.serialize_rctsig_prunable(ar, rct_signatures.type, vin.size(), vout.size(), vin.size() > 0 && vin[0].type() == typeid(txin_to_key) ? boost::get<txin_to_key>(vin[0]).key_offsets.size() - 1 : 0);
             if (!r || !ar.stream().good()) return false;
             ar.end_object();
           }
@@ -297,7 +296,7 @@ namespace cryptonote
     {
       FIELDS(*static_cast<transaction_prefix *>(this))
 
-      if (version == 1)
+      if(version == 1)
       {
       }
       else
@@ -381,7 +380,7 @@ namespace cryptonote
     uint8_t major_version;
     uint8_t minor_version;  // now used as a voting mechanism, rather than how this particular block is built
     uint64_t timestamp;
-    crypto::hash  prev_id;
+    crypto::hash prev_id;
     uint32_t nonce;
 
     BEGIN_SERIALIZE()
@@ -420,8 +419,7 @@ namespace cryptonote
       FIELDS(*static_cast<block_header *>(this))
       FIELD(miner_tx)
       FIELD(tx_hashes)
-      if(tx_hashes.size() > config::tx_settings::MAX_TRANSACTIONS_IN_BLOCK)
-        return false;
+      if(tx_hashes.size() > config::tx_settings::max_tx_in_block) return false;
     END_SERIALIZE()
   };
 

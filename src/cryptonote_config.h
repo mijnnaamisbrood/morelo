@@ -40,16 +40,11 @@
 #define CRYPTONOTE_DNS_TIMEOUT_MS                       20000
 
 #define CRYPTONOTE_MAX_BLOCK_NUMBER                     500000000
-#define CRYPTONOTE_GETBLOCKTEMPLATE_MAX_BLOCK_SIZE      196608 //size of block (bytes) that is the maximum that miners will produce
 #define CRYPTONOTE_PUBLIC_ADDRESS_TEXTBLOB_VER          0
-#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2           300*2
-#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V3           100*3
+#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2           600
+#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V3           300
 #define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V4           CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V3
-#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT              60*60*2
-
-#define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW               60
-#define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V2            11
-#define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V9            BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V2
+#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT              240
 
 // MONEY_SUPPLY - total number coins to be generated
 #define MONEY_SUPPLY                                    ((uint64_t)100000000000000000)
@@ -59,9 +54,6 @@
 
 
 #define CRYPTONOTE_REWARD_BLOCKS_WINDOW                 100
-#define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2    60000 //size of block (bytes) after which reward for block calculated using block size
-#define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1    20000 //size of block (bytes) after which reward for block calculated using block size - before first fork
-#define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V5    300000 //size of block (bytes) after which reward for block calculated using block size - second change, from v5
 #define CRYPTONOTE_LONG_TERM_BLOCK_WEIGHT_WINDOW_SIZE   100000 // size in blocks of the long term block weight median window
 #define CRYPTONOTE_SHORT_TERM_BLOCK_WEIGHT_SURGE_FACTOR 50
 #define CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE          600
@@ -69,13 +61,8 @@
 // COIN - number of smallest units in one coin
 #define COIN                                            ((uint64_t)1000000000)
 
-#define FEE_PER_KB_OLD                                  ((uint64_t)10000000)
-#define FEE_PER_KB                                      ((uint64_t)20000)
-#define FEE_PER_BYTE                                    ((uint64_t)3)
-#define DYNAMIC_FEE_PER_KB_BASE_FEE                     ((uint64_t)20000)
 #define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)10000000000)
-#define DYNAMIC_FEE_PER_KB_BASE_FEE_V5                  ((uint64_t)20000 * (uint64_t)CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2 / CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V5)
-#define DYNAMIC_FEE_PER_BYTE_BASE_FEE_V13               ((uint64_t)(DYNAMIC_FEE_PER_KB_BASE_FEE_V5) * 50 / 1000)
+#define DYNAMIC_FEE_PER_BYTE                            ((uint64_t)200)
 #define DYNAMIC_FEE_REFERENCE_TRANSACTION_WEIGHT        ((uint64_t)750)
 
 #define ORPHANED_BLOCKS_MAX_COUNT                       100
@@ -92,28 +79,27 @@
 
 #define DIFFICULTY_TARGET_V10                           120
 #define DIFFICULTY_BLOCKS_COUNT_V10                     (DIFFICULTY_WINDOW_V10 + 1)
-#define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V10           11
 #define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V10          360
 #define DIFFICULTY_WINDOW_V10                           90
 
 #define DIFFICULTY_TARGET_V11                           120
 #define DIFFICULTY_BLOCKS_COUNT_V11                     (DIFFICULTY_WINDOW_V11 + 1)
-#define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V11           11
 #define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V11          360
 #define DIFFICULTY_WINDOW_V11                           90
 
 #define DIFFICULTY_TARGET_V16                           60
 #define DIFFICULTY_WINDOW_V16                           45
-#define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V16           11
 #define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V16          180
 #define DIFFICULTY_BLOCKS_COUNT_V16                     (DIFFICULTY_WINDOW_V16 + 1)
+
+#define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW               11
 
 #define DIFFICULTY_BLOCKS_COUNT_V3                      (DIFFICULTY_WINDOW_V3 + 1)
 #define DIFFICULTY_BLOCKS_COUNT_V2                      (DIFFICULTY_WINDOW_V2 + 1) // added to make N=N
 #define DIFFICULTY_BLOCKS_COUNT                         DIFFICULTY_WINDOW + DIFFICULTY_LAG
 
-#define CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS_V1   DIFFICULTY_TARGET_V1 * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS
-#define CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS_V2   DIFFICULTY_TARGET_V2 * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS
+#define CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS_V1   DIFFICULTY_TARGET_V11 * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS
+#define CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS_V2   DIFFICULTY_TARGET_V16 * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS
 #define CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS       1
 
 #define DIFFICULTY_BLOCKS_ESTIMATE_TIMESPAN             DIFFICULTY_TARGET_V2 //just alias; used by tests
@@ -131,6 +117,7 @@
 #define P2P_LOCAL_GRAY_PEERLIST_LIMIT                   5000
 
 #define P2P_DEFAULT_CONNECTIONS_COUNT                   16
+#define P2P_DEFAULT_CONNECTIONS_COUNT_STAGENET          2
 #define P2P_DEFAULT_HANDSHAKE_INTERVAL                  60         // secondes
 #define P2P_DEFAULT_PACKET_MAX_SIZE                     50000000   // 50000000 bytes maximum packet size
 #define P2P_DEFAULT_PEERS_IN_HANDSHAKE                  250
@@ -164,19 +151,9 @@
 #define RPC_PAYMENTS_DATA_FILENAME                      "rpcpayments.bin"
 #define MINER_CONFIG_FILE_NAME                          "miner_conf.json"
 
+#define HF_VERSION_LONG_TERM_BLOCK_WEIGHT               15
+
 #define THREAD_STACK_SIZE                               10 * 1024 * 1024
-
-#define HF_VERSION_DYNAMIC_FEE                          4
-#define HF_VERSION_MIN_MIXIN_4                          6
-#define HF_VERSION_MIN_MIXIN_6                          7
-#define HF_VERSION_ENFORCE_RCT                          6
-
-#define HF_VERSION_MIN_MIXIN_10                         13
-
-#define HF_VERSION_LOWER_FEE                            10
-#define HF_VERSION_PER_BYTE_FEE                         13
-#define HF_FORBID_BORROMEAN                             13
-#define HF_VERSION_LONG_TERM_BLOCK_WEIGHT               14
 
 #define PER_KB_FEE_QUANTIZATION_DECIMALS                8
 
@@ -200,8 +177,7 @@ static constexpr double POISSON_LOG_P_REJECT = -75.0; // Reject reorg if the pro
 // New constants are intended to go here
 namespace config
 {
-   uint64_t const DEFAULT_DUST_THRESHOLD = ((uint64_t)20000); // Deprecated
-   uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)100000);
+   uint64_t const DEFAULT_DUST_THRESHOLD = 0; // Deprecated
    std::string const P2P_REMOTE_DEBUG_TRUSTED_PUB_KEY = "0000000000000000000000000000000000000000000000000000000000000000";
 
    uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0x233caf; // Wallet prefix: WSBC MainNet
@@ -246,8 +222,8 @@ namespace config
    {
      const uint64_t WALLSTREETBETS_PREMINE = 14000000000000000;
      const uint64_t PREMINE_BURN = 0; // Will need to be set after knowing exact amount.
-     const uint64_t MAXIMUM_BLOCK_SIZE_LIMIT = 2 * 1024 * 1024; // It is set to 2048kB (2MB)
-     const uint64_t MINIMUM_BLOCK_SIZE_LIMIT = 1 * 1024 * 1024; // It is set to 1024kB (1MB)
+     const uint64_t old_block_min_size = 1048576;
+     const uint64_t new_block_min_size = 262144;
      const uint8_t WALLSTREETBETS_GENESIS_BLOCK_MAJOR_VERSION = 1;
      const uint8_t WALLSTREETBETS_GENESIS_BLOCK_MINOR_VERSION = 1;
      const uint8_t WALLSTREETBETS_BLOCK_UNLOCK_CONFIRMATIONS = 18; // How many blocks mined are needed to unlock block_reward.
@@ -257,8 +233,11 @@ namespace config
    {
      const uint8_t WALLSTREETBETS_TX_CONFIRMATIONS_REQUIRED = 4; // How many blocks are needed to confirm transaction sent.
      const uint8_t CURRENT_TX_VERSION = 2; // Current Transaction Version Valid on Arq-Net
-     const uint64_t TRANSACTION_SIZE_LIMIT = 48 * 1024; // I did set it to 48kB for now but it need to be verified.
-     const uint64_t MAX_TRANSACTIONS_IN_BLOCK = 1024; // Maximum allowed transactions in One Block
+     const uint64_t old_tx_size_limit = 49152;
+     const uint64_t new_tx_size_limit = 102400;
+     const uint64_t max_tx_in_block = 1024;
+     const uint64_t default_mixin = 10;
+     const uint64_t default_ringsize = default_mixin + 1;
    }
 
    namespace sync
@@ -298,7 +277,9 @@ namespace wsbc
 
   const char *const stagenet_core_nodes[] =
   {
-    "82.44.107.19"
+    "82.44.107.19",
+    "161.97.102.172",
+    "37.247.209.235"
   };
 }
 

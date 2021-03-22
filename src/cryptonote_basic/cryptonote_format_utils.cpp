@@ -126,7 +126,7 @@ namespace cryptonote
   //---------------------------------------------------------------
   bool expand_transaction_1(transaction &tx, bool base_only)
   {
-    if (tx.version >= 2 && !is_coinbase(tx))
+    if(tx.version >= 2 && !is_coinbase(tx))
     {
       rct::rctSig &rv = tx.rct_signatures;
       if (rv.outPk.size() != tx.vout.size())
@@ -396,7 +396,7 @@ namespace cryptonote
   //---------------------------------------------------------------
   uint64_t get_transaction_weight(const transaction &tx, size_t blob_size)
   {
-    if (tx.version < 2)
+    if(tx.version < 2)
       return blob_size;
     const rct::rctSig &rv = tx.rct_signatures;
     if (!rct::is_rct_bulletproof(rv.type))
@@ -438,23 +438,7 @@ namespace cryptonote
   //---------------------------------------------------------------
   bool get_tx_fee(const transaction& tx, uint64_t & fee)
   {
-    if (tx.version > 1)
-    {
-      fee = tx.rct_signatures.txnFee;
-      return true;
-    }
-    uint64_t amount_in = 0;
-    uint64_t amount_out = 0;
-    for(auto& in: tx.vin)
-    {
-      CHECK_AND_ASSERT_MES(in.type() == typeid(txin_to_key), 0, "unexpected type id in transaction");
-      amount_in += boost::get<txin_to_key>(in).amount;
-    }
-    for(auto& o: tx.vout)
-      amount_out += o.amount;
-
-    CHECK_AND_ASSERT_MES(amount_in >= amount_out, false, "transaction spend (" <<amount_in << ") more than it has (" << amount_out << ")");
-    fee = amount_in - amount_out;
+    fee = tx.rct_signatures.txnFee;
     return true;
   }
   //---------------------------------------------------------------
@@ -992,7 +976,7 @@ namespace cryptonote
   //---------------------------------------------------------------
   bool calculate_transaction_prunable_hash(const transaction& t, const cryptonote::blobdata *blob, crypto::hash& res)
   {
-    if (t.version == 1)
+    if(t.version == 1)
       return false;
     const unsigned int unprunable_size = t.unprunable_size;
     if (blob && unprunable_size)
@@ -1024,9 +1008,7 @@ namespace cryptonote
   //---------------------------------------------------------------
   crypto::hash get_pruned_transaction_hash(const transaction& t, const crypto::hash &pruned_data_hash)
   {
-    // v1 transactions hash the entire blob
     CHECK_AND_ASSERT_THROW_MES(t.version > 1, "Hash for pruned v1 tx cannot be calculated");
-
     // v2 transactions hash different parts together, than hash the set of those hashes
     crypto::hash hashes[3];
 
@@ -1065,7 +1047,6 @@ namespace cryptonote
       size_t ignored_blob_size, &blob_size_ref = blob_size ? *blob_size : ignored_blob_size;
       return get_object_hash(t, res, blob_size_ref);
     }
-
     // v2 transactions hash different parts together, than hash the set of those hashes
     crypto::hash hashes[3];
 
@@ -1183,25 +1164,6 @@ namespace cryptonote
     return p;
   }
   //---------------------------------------------------------------
-/*  bool get_block_longhash(const block& b, crypto::hash& res, uint64_t height)
-  {
-    blobdata bd = get_block_hashing_blob(b);
-
-    if(b.major_version >= 12)
-    {
-      crypto::cn_turtle_hash(bd.data(), bd.size(), res);
-    }
-    else if(b.major_version >= 7)
-    {
-      crypto::cn_arqma_hash_v1(bd.data(), bd.size(), res);
-    }
-    else
-    {
-      crypto::cn_arqma_hash_v0(bd.data(), bd.size(), res);
-    }
-    return true;
-  }
-  //--------------------------------------------------------------- */
   std::vector<uint64_t> relative_output_offsets_to_absolute(const std::vector<uint64_t>& off)
   {
     std::vector<uint64_t> res = off;
@@ -1222,13 +1184,6 @@ namespace cryptonote
     return res;
   }
   //---------------------------------------------------------------
-/*  crypto::hash get_block_longhash(const block& b, uint64_t height)
-  {
-    crypto::hash p = null_hash;
-    get_block_longhash(b, p, height);
-    return p;
-  }
-  //--------------------------------------------------------------- */
   bool parse_and_validate_block_from_blob(const blobdata& b_blob, block& b)
   {
     std::stringstream ss;

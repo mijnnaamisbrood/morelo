@@ -170,7 +170,7 @@ void BlockchainDB::add_transaction(const crypto::hash& blk_hash, const transacti
 
   uint64_t tx_id = add_transaction_data(blk_hash, tx, tx_hash, tx_prunable_hash);
 
-  std::vector<uint64_t> amount_output_indices;
+  std::vector<uint64_t> amount_output_indices(tx.vout.size());
 
   // iterate tx.vout using indices instead of C++11 foreach syntax because
   // we need the index
@@ -178,16 +178,16 @@ void BlockchainDB::add_transaction(const crypto::hash& blk_hash, const transacti
   {
     // miner v2 txes have their coinbase output in one single out to save space,
     // and we store them as rct outputs with an identity mask
-    if (miner_tx && tx.version >= 2)
+    if (miner_tx && tx.version == 2)
     {
       cryptonote::tx_out vout = tx.vout[i];
       rct::key commitment = rct::zeroCommit(vout.amount);
       vout.amount = 0;
-      amount_output_indices.push_back(add_output(tx_hash, vout, i, tx.unlock_time, &commitment));
+      amount_output_indices[i] = add_output(tx_hash, vout, i, tx.unlock_time, &commitment);
     }
     else
     {
-      amount_output_indices.push_back(add_output(tx_hash, tx.vout[i], i, tx.unlock_time, tx.version > 1 ? &tx.rct_signatures.outPk[i].mask : NULL));
+      amount_output_indices[i] = add_output(tx_hash, tx.vout[i], i, tx.unlock_time, tx.version > 1 ? &tx.rct_signatures.outPk[i].mask : NULL);
     }
   }
   add_tx_amount_output_indices(tx_id, amount_output_indices);
@@ -219,7 +219,7 @@ uint64_t BlockchainDB::add_block( const block& blk
 
   uint64_t num_rct_outs = 0;
   add_transaction(blk_hash, blk.miner_tx);
-  if (blk.miner_tx.version >= 2)
+  if (blk.miner_tx.version == 2)
     num_rct_outs += blk.miner_tx.vout.size();
   int tx_i = 0;
   crypto::hash tx_hash = crypto::null_hash;
@@ -392,24 +392,6 @@ void BlockchainDB::fixup()
 
   set_batch_transactions(true);
   batch_start();
-  
-  // Premine Burn Transaction key_images
-  static const char* const burn_vout_images[] =
-  {
-   // "55fbaf353dc0750a522a3d5b9dc5500659681b8b8d5e7126e529a34f6887d8c6", // tx_hash: e8642cc515dc92e7fe31a5c5dc0558ed336e7ce5139a173e2f1680d2f46453fc
-   // "c37f0d76d9143384ee1f2cf9d6f05f131ec0f11c8b20b4c69179a5a563cd2792", // tx_hash: e8642cc515dc92e7fe31a5c5dc0558ed336e7ce5139a173e2f1680d2f46453fc
-  };
-  
-  for(const auto &kis : burn_vout_images)
-  {
-    crypto::key_image ki;
-    epee::string_tools::hex_to_pod(kis, ki);
-    if(!has_key_image(ki))
-    {
-      LOG_PRINT_L1("Adding Premine Burn Transaction key_images to spent" << ki);
-      add_spent_key(ki);
-    }
-  }
   batch_stop();
 }
 

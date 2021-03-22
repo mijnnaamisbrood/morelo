@@ -152,7 +152,6 @@ public:
                                         PendingTransaction::Priority priority = PendingTransaction::Priority_Low,
                                         uint32_t subaddr_account = 0,
                                         std::set<uint32_t> subaddr_indices = {}) override;
-    virtual PendingTransaction * createSweepUnmixableTransaction() override;
     bool submitTransaction(const std::string &fileName) override;
     virtual UnsignedTransaction * loadUnsignedTx(const std::string &unsigned_filename) override;
     bool exportKeyImages(const std::string &filename) override;
@@ -165,7 +164,6 @@ public:
     virtual SubaddressAccount * subaddressAccount() override;
     virtual void setListener(WalletListener * l) override;
     virtual uint32_t defaultMixin() const override;
-    virtual void setDefaultMixin(uint32_t arg) override;
     virtual bool setUserNote(const std::string &txid, const std::string &note) override;
     virtual std::string getUserNote(const std::string &txid) const override;
     virtual std::string getTxKey(const std::string &txid) const override;
