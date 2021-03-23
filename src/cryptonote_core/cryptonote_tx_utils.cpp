@@ -102,12 +102,20 @@ namespace cryptonote
     return k;
   }
 
-  uint64_t get_governance_reward(uint64_t height, uint64_t base_reward, uint8_t hard_fork_version)
+  uint64_t get_governance_reward(uint64_t height, uint64_t base_reward, uint8_t hard_fork_version, network_type nettype)
   {
-    if(hard_fork_version >= 16 && height < 9022)
-      return base_reward * 10 / 100;
-    else if(hard_fork_version >= 16 && height >= 9022)
-      return base_reward * 0.1 / 100;
+    if(nettype == cryptonote::MAINNET)
+    {
+      if(hard_fork_version >= 16 && height < 9022)
+        return base_reward * 10 / 100;
+      else if(hard_fork_version >= 16 && height >= 9022)
+        return base_reward * 0.1 / 100;
+    }
+    else
+    {
+      if(hard_fork_version >= 16)
+        return base_reward * 10 / 100;
+    }
     return 0;
   }
 
@@ -190,7 +198,7 @@ namespace cryptonote
     uint64_t governance_reward = 0;
     if(hard_fork_version >= 16)
     {
-      governance_reward = get_governance_reward(height, block_reward, hard_fork_version);
+      governance_reward = get_governance_reward(height, block_reward, hard_fork_version, nettype);
       block_reward -= governance_reward;
     }
 

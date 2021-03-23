@@ -1355,7 +1355,7 @@ bool Blockchain::validate_miner_transaction(const block& b, size_t cumulative_bl
 
   if(hard_fork_version >= 16)
   {
-    uint64_t governance_reward = get_governance_reward(height, base_reward, hard_fork_version);
+    uint64_t governance_reward = get_governance_reward(height, base_reward, hard_fork_version, m_nettype);
 
     if(b.miner_tx.vout.back().amount != governance_reward)
     {
