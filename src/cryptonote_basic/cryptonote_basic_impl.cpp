@@ -109,8 +109,14 @@ namespace cryptonote {
     return amount_lo;
   }
   //-----------------------------------------------------------------------------------------------
-  bool get_block_reward(size_t median_weight, size_t current_block_weight, uint64_t already_generated_coins, uint64_t fee, uint64_t &reward, uint8_t hard_fork_version)
+  bool get_block_reward(size_t median_weight, size_t current_block_weight, uint64_t already_generated_coins, uint64_t fee, uint64_t &reward, uint8_t hard_fork_version, uint64_t height)
   {
+    if(height == 1)
+    {
+      reward = config::blockchain_settings::WALLSTREETBETS_PREMINE;
+      return true;
+    }
+
     static_assert(DIFFICULTY_TARGET_V2 % 60 == 0,"difficulty targets must be a multiple of 60");
     static_assert(DIFFICULTY_TARGET_V16 % 60 == 0,"difficulty targets must be a multiple of 60");
     const int target_minutes = hard_fork_version >= 16 ? (DIFFICULTY_TARGET_V16 / 60) : (DIFFICULTY_TARGET_V2 / 60);
@@ -128,11 +134,6 @@ namespace cryptonote {
       return false;
     }
 
-    //if(hard_fork_version > 12)
-    //{
-    //  already_generated_coins -= config::blockchain_settings::PREMINE_BURN;
-    //}
-
     uint64_t base_reward = (MONEY_SUPPLY - already_generated_coins) >> emission_speed_factor;
     if(base_reward < FINAL_SUBSIDY_PER_MINUTE * target_minutes)
     {
@@ -142,9 +143,15 @@ namespace cryptonote {
     reward = get_penalized_amount(base_reward, median_weight, current_block_weight);
 
     if(hard_fork_version >= 16)
+    {
       reward += fee;
+      return true;
+    }
     else
+    {
       reward += get_penalized_amount(fee, median_weight, current_block_weight);
+      return true;
+    }
 
     return true;
   }

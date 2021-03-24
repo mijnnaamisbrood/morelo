@@ -126,9 +126,9 @@ using namespace cryptonote;
 
 #define OUTPUT_EXPORT_FILE_MAGIC "Wallstreetbets output export\004"
 
-#define SEGREGATION_FORK_HEIGHT 6180
+#define SEGREGATION_FORK_HEIGHT 41100
 #define TESTNET_SEGREGATION_FORK_HEIGHT 9999999999999
-#define STAGENET_SEGREGATION_FORK_HEIGHT 9999999999999
+#define STAGENET_SEGREGATION_FORK_HEIGHT 200
 #define SEGREGATION_FORK_VICINITY 1500 /* blocks */
 
 #define FIRST_REFRESH_GRANULARITY 1024
@@ -1028,7 +1028,6 @@ wallet2::wallet2(network_type nettype, uint64_t kdf_rounds, bool unattended):
   m_refresh_from_block_height(0),
   m_explicit_refresh_from_block_height(true),
   m_confirm_missing_payment_id(true),
-  m_confirm_non_default_ring_size(true),
   m_ask_password(AskPasswordToDecrypt),
   m_min_output_count(0),
   m_min_output_value(0),
@@ -3410,9 +3409,6 @@ bool wallet2::store_keys(const std::string& keys_file_name, const epee::wipeable
   value2.SetInt(m_confirm_missing_payment_id ? 1 :0);
   json.AddMember("confirm_missing_payment_id", value2, json.GetAllocator());
 
-  value2.SetInt(m_confirm_non_default_ring_size ? 1 :0);
-  json.AddMember("confirm_non_default_ring_size", value2, json.GetAllocator());
-
   value2.SetInt(m_ask_password);
   json.AddMember("ask_password", value2, json.GetAllocator());
 
@@ -3575,7 +3571,6 @@ bool wallet2::load_keys(const std::string& keys_file_name, const epee::wipeable_
     m_refresh_type = RefreshType::RefreshDefault;
     m_refresh_from_block_height = 0;
     m_confirm_missing_payment_id = true;
-    m_confirm_non_default_ring_size = true;
     m_ask_password = AskPasswordToDecrypt;
     cryptonote::set_default_decimal_point(CRYPTONOTE_DISPLAY_DECIMAL_POINT);
     m_min_output_count = 0;
@@ -3709,8 +3704,6 @@ bool wallet2::load_keys(const std::string& keys_file_name, const epee::wipeable_
     m_refresh_from_block_height = field_refresh_height;
     GET_FIELD_FROM_JSON_RETURN_ON_ERROR(json, confirm_missing_payment_id, int, Int, false, true);
     m_confirm_missing_payment_id = field_confirm_missing_payment_id;
-    GET_FIELD_FROM_JSON_RETURN_ON_ERROR(json, confirm_non_default_ring_size, int, Int, false, true);
-    m_confirm_non_default_ring_size = field_confirm_non_default_ring_size;
     GET_FIELD_FROM_JSON_RETURN_ON_ERROR(json, ask_password, AskPasswordType, Int, false, AskPasswordToDecrypt);
     m_ask_password = field_ask_password;
     GET_FIELD_FROM_JSON_RETURN_ON_ERROR(json, default_decimal_point, int, Int, false, CRYPTONOTE_DISPLAY_DECIMAL_POINT);
