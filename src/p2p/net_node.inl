@@ -757,6 +757,15 @@ namespace nodetool
         return;
       }
 
+      if(rsp.node_data.version.size() == 0)
+      {
+        MINFO("Peer " << context.m_remote_address.str() << " did not provide version info. It is probably Old Version");
+      }
+      else if(rsp.node_data.version.size() != 0 && rsp.node_data.version != WALLSTREETBETS_VERSION)
+      {
+        MINFO("Peer " << context.m_remote_address.str() << " has a different version than ours: " << rsp.node_data.version.substr(0,12));
+      }
+
       if(rsp.node_data.network_id != m_network_id)
       {
         LOG_WARNING_CC(context, "COMMAND_HANDSHAKE Failed, wrong network!  (" << rsp.node_data.network_id << "), closing connection.");
@@ -1579,6 +1588,7 @@ namespace nodetool
     time(&local_time);
     node_data.local_time = local_time;  // \TODO This can be an identifying value across zones (public internet to tor/i2p) ...
     node_data.peer_id = zone.m_config.m_peer_id;
+    node_data.version = WALLSTREETBETS_VERSION;
     if(!m_hide_my_port && zone.m_can_pingback)
       node_data.my_port = m_external_port ? m_external_port : m_listening_port;
     else
@@ -1884,6 +1894,20 @@ namespace nodetool
   template<class t_payload_net_handler>
   int node_server<t_payload_net_handler>::handle_handshake(int command, typename COMMAND_HANDSHAKE::request& arg, typename COMMAND_HANDSHAKE::response& rsp, p2p_connection_context& context)
   {
+    if(arg.node_data.version.size() == 0)
+    {
+      MGINFO("Peer " << context.m_remote_address.str() << " did not provide version info. It is probably Old Version");
+      drop_connection(context);
+      block_host(context.m_remote_address);
+    }
+
+    if(arg.node_data.version.size() != 0 && arg.node_data.version != WALLSTREETBETS_VERSION)
+    {
+      MGINFO("Peer " << context.m_remote_address.str() << " has a different version than ours: " << arg.node_data.version.substr(0,12));
+      drop_connection(context);
+      block_host(context.m_remote_address);
+    }
+
     if(arg.node_data.network_id != m_network_id)
     {
 
