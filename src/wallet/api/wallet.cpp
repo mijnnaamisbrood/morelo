@@ -61,7 +61,6 @@ namespace Monero {
 
 namespace {
     // copy-pasted from simplewallet
-    static const size_t DEFAULT_MIXIN = 10;
     static const int    DEFAULT_REFRESH_INTERVAL_MILLIS = 1000 * 10;
     // limit maximum refresh interval as one minute
     static const int    MAX_REFRESH_INTERVAL_MILLIS = 1000 * 60 * 1;
@@ -1344,9 +1343,7 @@ PendingTransaction *WalletImpl::createTransaction(const string &dst_addr, const 
 
     // indicates if dst_addr is integrated address (address + payment_id)
     // TODO:  (https://bitcointalk.org/index.php?topic=753252.msg9985441#msg9985441)
-    size_t fake_outs_count = mixin_count > 0 ? mixin_count : m_wallet->default_mixin();
-    if (fake_outs_count == 0)
-        fake_outs_count = DEFAULT_MIXIN;
+    size_t fake_outs_count = config::tx_settings::default_mixin;
 
     uint32_t adjusted_priority = m_wallet->adjust_priority(static_cast<uint32_t>(priority));
 
@@ -1465,7 +1462,6 @@ PendingTransaction *WalletImpl::createTransaction(const string &dst_addr, const 
             for (const std::pair<uint64_t, uint64_t> outs_for_amount : e.scanty_outs()) {
                 writer << "\n" << tr("output amount") << " = " << print_money(outs_for_amount.first) << ", " << tr("found outputs to use") << " = " << outs_for_amount.second;
             }
-            writer << "\n" << tr("Please sweep unmixable outputs.");
             setStatusError(writer.str());
         } catch (const tools::error::tx_not_constructed&) {
             setStatusError(tr("transaction was not constructed"));
@@ -1493,87 +1489,6 @@ PendingTransaction *WalletImpl::createTransaction(const string &dst_addr, const 
     statusWithErrorString(transaction->m_status, transaction->m_errorString);
     // Resume refresh thread
     startRefresh();
-    return transaction;
-}
-
-PendingTransaction *WalletImpl::createSweepUnmixableTransaction()
-
-{
-    clearStatus();
-    cryptonote::tx_destination_entry de;
-
-    PendingTransactionImpl * transaction = new PendingTransactionImpl(*this);
-
-    do {
-        try {
-            transaction->m_pending_tx = m_wallet->create_unmixable_sweep_transactions();
-
-        } catch (const tools::error::daemon_busy&) {
-            // TODO: make it translatable with "tr"?
-            setStatusError(tr("daemon is busy. Please try again later."));
-        } catch (const tools::error::no_connection_to_daemon&) {
-            setStatusError(tr("no connection to daemon. Please make sure daemon is running."));
-        } catch (const tools::error::wallet_rpc_error& e) {
-            setStatusError(tr("RPC error: ") +  e.to_string());
-        } catch (const tools::error::get_outs_error&) {
-            setStatusError(tr("failed to get outputs to mix"));
-        } catch (const tools::error::not_enough_unlocked_money& e) {
-            setStatusError("");
-            std::ostringstream writer;
-
-            writer << boost::format(tr("not enough money to transfer, available only %s, sent amount %s")) %
-                      print_money(e.available()) %
-                      print_money(e.tx_amount());
-            setStatusError(writer.str());
-        } catch (const tools::error::not_enough_money& e) {
-            setStatusError("");
-            std::ostringstream writer;
-
-            writer << boost::format(tr("not enough money to transfer, overall balance only %s, sent amount %s")) %
-                      print_money(e.available()) %
-                      print_money(e.tx_amount());
-            setStatusError(writer.str());
-        } catch (const tools::error::tx_not_possible& e) {
-            setStatusError("");
-            std::ostringstream writer;
-
-            writer << boost::format(tr("not enough money to transfer, available only %s, transaction amount %s = %s + %s (fee)")) %
-                      print_money(e.available()) %
-                      print_money(e.tx_amount() + e.fee())  %
-                      print_money(e.tx_amount()) %
-                      print_money(e.fee());
-            setStatusError(writer.str());
-        } catch (const tools::error::not_enough_outs_to_mix& e) {
-            std::ostringstream writer;
-            writer << tr("not enough outputs for specified ring size") << " = " << (e.mixin_count() + 1) << ":";
-            for (const std::pair<uint64_t, uint64_t> outs_for_amount : e.scanty_outs()) {
-                writer << "\n" << tr("output amount") << " = " << print_money(outs_for_amount.first) << ", " << tr("found outputs to use") << " = " << outs_for_amount.second;
-            }
-            setStatusError(writer.str());
-        } catch (const tools::error::tx_not_constructed&) {
-            setStatusError(tr("transaction was not constructed"));
-        } catch (const tools::error::tx_rejected& e) {
-            std::ostringstream writer;
-            writer << (boost::format(tr("transaction %s was rejected by daemon with status: ")) % get_transaction_hash(e.tx())) <<  e.status();
-            setStatusError(writer.str());
-        } catch (const tools::error::tx_sum_overflow& e) {
-            setStatusError(e.what());
-        } catch (const tools::error::zero_destination&) {
-            setStatusError(tr("one of destinations is zero"));
-        } catch (const tools::error::tx_too_big& e) {
-            setStatusError(tr("failed to find a suitable way to split transactions"));
-        } catch (const tools::error::transfer_error& e) {
-            setStatusError(string(tr("unknown transfer error: ")) + e.what());
-        } catch (const tools::error::wallet_internal_error& e) {
-            setStatusError(string(tr("internal error: ")) + e.what());
-        } catch (const std::exception& e) {
-            setStatusError(string(tr("unexpected error: ")) + e.what());
-        } catch (...) {
-            setStatusError(tr("unknown error"));
-        }
-    } while (false);
-
-    statusWithErrorString(transaction->m_status, transaction->m_errorString);
     return transaction;
 }
 
@@ -1611,11 +1526,6 @@ void WalletImpl::setListener(WalletListener *l)
 uint32_t WalletImpl::defaultMixin() const
 {
     return m_wallet->default_mixin();
-}
-
-void WalletImpl::setDefaultMixin(uint32_t arg)
-{
-    m_wallet->default_mixin(arg);
 }
 
 bool WalletImpl::setUserNote(const std::string &txid, const std::string &note)

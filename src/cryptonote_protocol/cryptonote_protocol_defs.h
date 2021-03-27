@@ -69,15 +69,15 @@ namespace cryptonote
     std::string state;
 
     uint64_t live_time;
-    
+
     uint64_t avg_download;
     uint64_t current_download;
-    
+
     uint64_t avg_upload;
     uint64_t current_upload;
-    
+
     uint32_t support_flags;
-    
+
     std::string connection_id;
 
     uint64_t height;
@@ -211,16 +211,18 @@ namespace cryptonote
   {
     uint64_t current_height;
     uint64_t cumulative_difficulty;
-    crypto::hash  top_id;
+    crypto::hash top_id;
     uint8_t top_version;
     uint32_t pruning_seed;
+    std::string client_version;
 
     BEGIN_KV_SERIALIZE_MAP()
       KV_SERIALIZE(current_height)
       KV_SERIALIZE(cumulative_difficulty)
       KV_SERIALIZE_VAL_POD_AS_BLOB(top_id)
-      KV_SERIALIZE_OPT(top_version, (uint8_t)0)
-      KV_SERIALIZE_OPT(pruning_seed, (uint32_t)0)
+      KV_SERIALIZE(top_version)
+      KV_SERIALIZE(pruning_seed)
+      KV_SERIALIZE(client_version)
     END_KV_SERIALIZE_MAP()
   };
 

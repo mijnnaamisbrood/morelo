@@ -595,7 +595,7 @@ namespace wallstreetbetsMQ
 
   bool ZmqHandler::get_block_template(const cryptonote::account_public_address &address, const crypto::hash *prev_block, const cryptonote::blobdata &extra_nonce, size_t &reserved_offset, cryptonote::difficulty_type &difficulty, uint64_t &height, uint64_t &expected_reward, cryptonote::block &b, uint64_t &seed_height, crypto::hash &seed_hash, crypto::hash &next_seed_hash, cryptonote::rpc::GetBlockTemplate::Response& res)
   {
-    b = boost::value_initialized<cryptonote::block>();
+    b = {};
     if(!m_core.get_block_template(b, prev_block, address, difficulty, height, expected_reward, extra_nonce, seed_height, seed_hash))
     {
       res.status = cryptonote::rpc::Message::STATUS_FAILED;
@@ -871,17 +871,8 @@ namespace wallstreetbetsMQ
   {
     res.hard_fork_version = m_core.get_blockchain_storage().get_current_hard_fork_version();
     res.estimated_base_fee = m_core.get_blockchain_storage().get_dynamic_base_fee_estimate(req.num_grace_blocks);
-
-    if (res.hard_fork_version < HF_VERSION_PER_BYTE_FEE)
-    {
-       res.size_scale = 1024; // per KiB fee
-       res.fee_mask = 1;
-    }
-    else
-    {
-      res.size_scale = 1; // per byte fee
-      res.fee_mask = cryptonote::Blockchain::get_fee_quantization_mask();
-    }
+    res.size_scale = 1; // per byte fee
+    res.fee_mask = cryptonote::Blockchain::get_fee_quantization_mask();
     res.status = cryptonote::rpc::Message::STATUS_OK;
   }
 

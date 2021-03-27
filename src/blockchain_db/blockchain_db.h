@@ -1763,13 +1763,7 @@ public:
    */
   virtual uint64_t get_database_size() const = 0;
 
-  // TODO: this should perhaps be (or call) a series of functions which
-  // progressively update through version updates
-  /**
-   * @brief fix up anything that may be wrong due to past bugs
-   */
   virtual void fixup();
-
   /**
    * @brief set whether or not to automatically remove logs
    *
@@ -1827,10 +1821,10 @@ private:
   bool readonly;
   bool active;
 };
-	
+
   class db_rtxn_guard: public db_txn_guard { public: db_rtxn_guard(BlockchainDB *db): db_txn_guard(db, true) {} };
   class db_wtxn_guard: public db_txn_guard { public: db_wtxn_guard(BlockchainDB *db): db_txn_guard(db, false) {} };
-	
+
 BlockchainDB *new_db(const std::string& db_type);
 
 }  // namespace cryptonote

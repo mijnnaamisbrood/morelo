@@ -404,8 +404,6 @@ private:
 
   virtual bool is_read_only() const;
 
-  //
-  // fix up anything that may be wrong due to past bugs
   virtual void fixup();
 
   bool m_run_checkpoint;

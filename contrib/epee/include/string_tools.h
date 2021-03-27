@@ -49,6 +49,7 @@
 #include "mlocker.h"
 #include "span.h"
 #include "warnings.h"
+#include "string_coding.h"
 
 
 #ifndef OUT
@@ -367,6 +368,29 @@ POP_WARNINGS
   }
   //----------------------------------------------------------------------------
   bool validate_hex(uint64_t length, const std::string& str);
+  //----------------------------------------------------------------------------
+  inline bool string_to_num_fast(const std::string& buff, int64_t& val)
+  {
+
+#if (defined _MSC_VER)
+  val = _atoi64(buff.c_str());
+#else
+  val = atoll(buff.c_str());
+#endif
+
+    if(buff != "0" && val == 0)
+      return false;
+    return true;
+  }
+  //----------------------------------------------------------------------------
+  inline bool string_to_num_fast(const std::string& buff, int& val)
+  {
+    val = atoi(buff.c_str());
+    if(buff != "0" && val == 0)
+      return false;
+
+    return true;
+  }
   //----------------------------------------------------------------------------
 	inline std::string get_extension(const std::string& str)
 	{

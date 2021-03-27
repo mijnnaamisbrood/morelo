@@ -70,18 +70,16 @@ namespace cryptonote {
   //-----------------------------------------------------------------------------------------------
   size_t get_min_block_weight(uint8_t hard_fork_version)
   {
-    if(hard_fork_version < 2)
-      return CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;
-    else if(hard_fork_version < 5)
-      return CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;
-    else if(hard_fork_version < 13)
-      return CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V5;
-    return config::blockchain_settings::MINIMUM_BLOCK_SIZE_LIMIT;
+    if(hard_fork_version < 17)
+      return config::blockchain_settings::old_block_min_size;
+    return config::blockchain_settings::new_block_min_size;
   }
   //-----------------------------------------------------------------------------------------------
-  size_t get_max_tx_size()
+  size_t get_max_tx_size(uint8_t hard_fork_version)
   {
-    return config::tx_settings::TRANSACTION_SIZE_LIMIT;
+    if(hard_fork_version < 17)
+      return config::tx_settings::old_tx_size_limit;
+    return config::tx_settings::new_tx_size_limit;
   }
   //-----------------------------------------------------------------------------------------------
   uint64_t get_penalized_amount(const uint64_t amount, const size_t median_weight, const size_t current_block_weight)
@@ -111,7 +109,14 @@ namespace cryptonote {
     return amount_lo;
   }
   //-----------------------------------------------------------------------------------------------
-  bool get_block_reward(size_t median_weight, size_t current_block_weight, uint64_t already_generated_coins, uint64_t fee, uint64_t &reward, uint8_t hard_fork_version) {
+  bool get_block_reward(size_t median_weight, size_t current_block_weight, uint64_t already_generated_coins, uint64_t fee, uint64_t &reward, uint8_t hard_fork_version, uint64_t height)
+  {
+    if(height == 1)
+    {
+      reward = config::blockchain_settings::WALLSTREETBETS_PREMINE;
+      return true;
+    }
+
     static_assert(DIFFICULTY_TARGET_V2 % 60 == 0,"difficulty targets must be a multiple of 60");
     static_assert(DIFFICULTY_TARGET_V16 % 60 == 0,"difficulty targets must be a multiple of 60");
     const int target_minutes = hard_fork_version >= 16 ? (DIFFICULTY_TARGET_V16 / 60) : (DIFFICULTY_TARGET_V2 / 60);
@@ -129,26 +134,23 @@ namespace cryptonote {
       return false;
     }
 
-    if(hard_fork_version > 12)
-    {
-      already_generated_coins -= config::blockchain_settings::PREMINE_BURN;
-    }
-
     uint64_t base_reward = (MONEY_SUPPLY - already_generated_coins) >> emission_speed_factor;
-    if(base_reward < FINAL_SUBSIDY_PER_MINUTE*target_minutes)
+    if(base_reward < FINAL_SUBSIDY_PER_MINUTE * target_minutes)
     {
-      base_reward = FINAL_SUBSIDY_PER_MINUTE*target_minutes;
+      base_reward = FINAL_SUBSIDY_PER_MINUTE * target_minutes;
     }
 
     reward = get_penalized_amount(base_reward, median_weight, current_block_weight);
 
-    if(median_weight != 0 && already_generated_coins == 30 && hard_fork_version == 15)
+    if(hard_fork_version >= 16)
     {
-      reward = config::blockchain_settings::WALLSTREETBETS_PREMINE;
+      reward += fee;
+      return true;
     }
     else
     {
-      reward += hard_fork_version >= 16 ? fee : get_penalized_amount(fee, median_weight, current_block_weight);
+      reward += get_penalized_amount(fee, median_weight, current_block_weight);
+      return true;
     }
 
     return true;

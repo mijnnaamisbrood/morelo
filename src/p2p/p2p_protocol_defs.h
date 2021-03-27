@@ -78,7 +78,7 @@ namespace nodetool
     int64_t last_seen;
     uint32_t pruning_seed;
     uint16_t rpc_port;
-	uint16_t zmq_port;
+    uint16_t zmq_port;
     uint32_t rpc_credits_per_hash;
 
     BEGIN_KV_SERIALIZE_MAP()
@@ -109,17 +109,21 @@ namespace nodetool
   };
   typedef anchor_peerlist_entry_base<epee::net_utils::network_address> anchor_peerlist_entry;
 
+#define P2P_CONNECTION_ENTRY_VERSION_MAX_SIZE 50
+
   template<typename AddressType>
   struct connection_entry_base
   {
     AddressType adr;
     peerid_type id;
     bool is_income;
+    char version[P2P_CONNECTION_ENTRY_VERSION_MAX_SIZE];
 
     BEGIN_KV_SERIALIZE_MAP()
       KV_SERIALIZE(adr)
       KV_SERIALIZE(id)
       KV_SERIALIZE(is_income)
+      KV_SERIALIZE(version)
     END_KV_SERIALIZE_MAP()
   };
   typedef connection_entry_base<epee::net_utils::network_address> connection_entry;
@@ -172,7 +176,7 @@ namespace nodetool
     uint64_t local_time;
     uint32_t my_port;
     uint16_t rpc_port;
-	uint16_t zmq_port;
+    uint16_t zmq_port;
     uint32_t rpc_credits_per_hash;
     peerid_type peer_id;
 

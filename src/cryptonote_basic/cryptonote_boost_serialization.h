@@ -165,7 +165,7 @@ namespace boost
     a & x.vin;
     a & x.vout;
     a & x.extra;
-    if (x.version == 1)
+    if(x.version == 1)
     {
       a & x.signatures;
     }

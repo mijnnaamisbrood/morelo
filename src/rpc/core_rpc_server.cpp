@@ -1406,7 +1406,7 @@ namespace cryptonote
   //------------------------------------------------------------------------------------------------------------------------------
   bool core_rpc_server::get_block_template(const account_public_address &address, const crypto::hash *prev_block, const cryptonote::blobdata &extra_nonce, size_t &reserved_offset, cryptonote::difficulty_type &difficulty, uint64_t &height, uint64_t &expected_reward, block &b, uint64_t &seed_height, crypto::hash &seed_hash, crypto::hash &next_seed_hash, epee::json_rpc::error &error_resp)
   {
-    b = boost::value_initialized<cryptonote::block>();
+    b = {};
     if(!m_core.get_block_template(b, prev_block, address, difficulty, height, expected_reward, extra_nonce, seed_height, seed_hash))
     {
       error_resp.code = CORE_RPC_ERROR_CODE_INTERNAL_ERROR;
@@ -1609,7 +1609,7 @@ namespace cryptonote
     template_req.reserve_size = 1;
     template_req.wallet_address = req.wallet_address;
     template_req.prev_block = req.prev_block;
-    submit_req.push_back(boost::value_initialized<std::string>());
+    submit_req.push_back(std::string{});
     res.height = m_core.get_blockchain_storage().get_current_blockchain_height();
 
     bool r = CORE_RPC_STATUS_OK;

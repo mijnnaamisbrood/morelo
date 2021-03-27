@@ -205,7 +205,7 @@ namespace nodetool
         m_config.m_support_flags = 0; // only set in public zone
       }
     };
-    
+
     enum igd_t
     {
       no_igd,

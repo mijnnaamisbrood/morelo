@@ -1330,7 +1330,7 @@ private:
     void set_unspent(size_t idx);
     bool is_spent(const transfer_details &td, bool strict = true) const;
     bool is_spent(size_t idx, bool strict = true) const;
-    void get_outs(std::vector<std::vector<get_outs_entry>> &outs, const std::vector<size_t> &selected_transfers, size_t fake_outputs_count);
+    void get_outs(std::vector<std::vector<get_outs_entry>> &outs, const std::vector<size_t> &selected_transfers, size_t fake_outputs_count, bool rct);
     void get_outs(std::vector<std::vector<get_outs_entry>> &outs, const std::vector<size_t> &selected_transfers, size_t fake_outputs_count, std::vector<uint64_t> &rct_offsets);
     bool tx_add_fake_output(std::vector<std::vector<tools::wallet2::get_outs_entry>> &outs, uint64_t global_index, const crypto::public_key& tx_public_key, const rct::key& mask, uint64_t real_index, bool unlocked) const;
     crypto::public_key get_tx_pub_key_from_received_outs(const tools::wallet2::transfer_details &td) const;
@@ -1458,7 +1458,7 @@ private:
     bool m_light_wallet; /* sends view key to daemon for scanning */
     uint64_t m_light_wallet_scanned_block_height;
     uint64_t m_light_wallet_blockchain_height;
-    uint64_t m_light_wallet_per_kb_fee = FEE_PER_KB;
+    uint64_t m_light_wallet_per_kb_fee = (DYNAMIC_FEE_PER_BYTE * 1024);
     bool m_light_wallet_connected;
     uint64_t m_light_wallet_balance;
     uint64_t m_light_wallet_unlocked_balance;

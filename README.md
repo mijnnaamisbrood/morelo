@@ -172,11 +172,11 @@ Install all dependencies at once on OSX:
 
 Clone recursively to pull-in needed submodule(s):
 
-$ git clone https://github.com/wsbc-coin/wallstreetbets
+$ git clone git@github.com:wsbc-coin/wallstreetbets.git
 
 If you already have a repo cloned, initialize and update:
 
-$ cd wallstreetbets && git checkout release-v0.7.0.0
+$ cd wallstreetbets && git checkout release-v8.1
 
 $ git submodule init && git submodule update
 
@@ -190,18 +190,18 @@ invokes cmake commands as needed.
 * Install the dependencies
 * Change to the root of the source code directory and build:
 
-        `$ cd wsbc-wallstreetbetscoin && make`
+        `$ cd wallstreetbets && git submodule init && git submodule update && make release`
 
 
     *Optional*: If your machine has several cores and enough memory, enable
-    parallel build by running `make -j<number of threads>` instead of `make`. For
-    this to be worthwhile, the machine should have one core and about 2GB of RAM
+    parallel build by running `make release -j<number of threads>` instead of `make`.
+    For this to be worthwhile, the machine should have one core and about 2GB of RAM
     available per thread.
 
 
-* The resulting executables can be found in `build/release/bin`
+* The resulting executables can be found in `build/<host>/release-v8.1/release/bin`
 
-* Add `PATH="$PATH:$HOME/wallstreetbets/build/release/bin"` to `.profile`
+* Add `PATH="$PATH:$HOME/wallstreetbets/build/release-v8.1/release/bin"` to `.profile`
 
 * Run WallStreetBets with `wallstreetbetsd --detach`
 
@@ -242,7 +242,7 @@ Tested on a Raspberry Pi Zero with a clean install of minimal Raspbian Stretch (
 ```
 * Clone wallstreetbets and checkout most recent release version:
 ```
-  git clone https://github.com/cryptodeveloperbro/wsbc-wallstreetbetscoin
+  git clone git@github.com:wsbc-coin/wallstreetbets.git -b release-v8.1 --recursive
 	cd wallstreetbets
 
 ```
@@ -252,9 +252,9 @@ Tested on a Raspberry Pi Zero with a clean install of minimal Raspbian Stretch (
 ```
 * Wait 4-6 hours
 
-* The resulting executables can be found in `build/release/bin`
+* The resulting executables can be found in `build/<host>/release-v8.1/release/bin`
 
-* Add `PATH="$PATH:$HOME/wallstreetbets/build/release/bin"` to `.profile`
+* Add `PATH="$PATH:$HOME/wallstreetbets/build/<host>/release-v8.1/release/bin"` to `.profile`
 
 * Run WallStreetBets with `wallstreetbetsd --detach`
 
@@ -328,11 +328,11 @@ application.
 
 * Download WallStreetBets with command:
 
-	`git clone https://github.com/cryptodeveloperbro/wsbc-wallstreetbetscoin
+	`git clone git@github.com:wsbc-coin/wallstreetbets.git -b release-v8.1 --recursive
 
 * Change branch to last Release:
 
-	`cd wsbc-wallstreetbets-coin
+	`cd wallstreetbets
 
 * Activate and update submodules:
 
@@ -342,7 +342,7 @@ application.
 
         make release-static-win
 
-* The resulting executables can be found in `build/release/bin`
+* The resulting executables can be found in `build/MINGW64_NT-10.0-nnnnn/release-v8.1/release/bin (where "nnnnn" point to msys2_mingw wersion)`
 
 * **Optional**: to build Windows binaries suitable for debugging on a 64-bit system, run:
 

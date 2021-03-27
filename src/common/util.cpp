@@ -976,6 +976,43 @@ if(not f.is_open())
     return true;
   }
 
+  bool check_remote_client_version(const std::string& client_ver)
+  {
+    std::string v = client_ver.substr(0, client_ver.find('-')); // remove commit id
+    v = v.substr(0, v.rfind('.')); // remove build number
+
+    int v_major = 0, v_minor = 0, v_revision = 0;
+
+    size_t dot_pos = v.find('.');
+    if (dot_pos == std::string::npos || !epee::string_tools::string_to_num_fast(v.substr(0, dot_pos), v_major))
+      return false;
+
+    v = v.substr(dot_pos + 1);
+    dot_pos = v.find('.');
+    if (!epee::string_tools::string_to_num_fast(v.substr(0, dot_pos), v_minor))
+      return false;
+
+    if (dot_pos != std::string::npos)
+    {
+      // revision
+      v = v.substr(dot_pos + 1);
+      if (!epee::string_tools::string_to_num_fast(v, v_revision))
+        return false;
+    }
+
+    // got v_major, v_minor, v_revision
+
+    // allow 8.1.x and greater
+
+    if (v_major < 8)
+      return false;
+
+    if (v_major == 8 && v_minor < 1)
+      return false;
+
+    return true;
+  }
+
   boost::optional<std::pair<uint32_t, uint32_t>> parse_subaddress_lookahead(const std::string& str)
   {
     auto pos = str.find(":");

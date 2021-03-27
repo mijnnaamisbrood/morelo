@@ -870,7 +870,7 @@ namespace tools
       return false;
     }
 
-    if(m_wallet->use_fork_rules(HF_FORBID_BORROMEAN) && dsts.size() >= BULLETPROOF_MAX_OUTPUTS)
+    if(dsts.size() >= BULLETPROOF_MAX_OUTPUTS)
     {
       er.code = WALLET_RPC_ERROR_CODE_TX_TOO_LARGE;
       er.message = "Transaction is too large. Try /transfer_split.";
@@ -879,15 +879,7 @@ namespace tools
 
     try
     {
-      uint64_t mixin;
-      if(req.ring_size != 0)
-      {
-        mixin = m_wallet->adjust_mixin(req.ring_size - 1);
-      }
-      else
-      {
-        mixin = m_wallet->adjust_mixin(req.mixin);
-      }
+      uint64_t mixin = m_wallet->adjust_mixin(req.ring_size ? req.ring_size - 1 : 0);
       uint32_t priority = m_wallet->adjust_priority(req.priority);
       std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_2(dsts, mixin, req.unlock_time, priority, extra, req.account_index, req.subaddr_indices);
 
@@ -939,15 +931,7 @@ namespace tools
 
     try
     {
-      uint64_t mixin;
-      if(req.ring_size != 0)
-      {
-        mixin = m_wallet->adjust_mixin(req.ring_size - 1);
-      }
-      else
-      {
-        mixin = m_wallet->adjust_mixin(req.mixin);
-      }
+      uint64_t mixin = m_wallet->adjust_mixin(req.ring_size ? req.ring_size - 1 : 0);
       uint32_t priority = m_wallet->adjust_priority(req.priority);
       LOG_PRINT_L2("on_transfer_split calling create_transactions_2");
       std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_2(dsts, mixin, req.unlock_time, priority, extra, req.account_index, req.subaddr_indices);
@@ -1310,31 +1294,6 @@ namespace tools
   }
 
   //------------------------------------------------------------------------------------------------------------------------------
-  bool wallet_rpc_server::on_sweep_dust(const wallet_rpc::COMMAND_RPC_SWEEP_DUST::request& req, wallet_rpc::COMMAND_RPC_SWEEP_DUST::response& res, epee::json_rpc::error& er, const connection_context *ctx)
-  {
-    if (!m_wallet) return not_open(er);
-    if (m_restricted)
-    {
-      er.code = WALLET_RPC_ERROR_CODE_DENIED;
-      er.message = "Command unavailable in restricted mode.";
-      return false;
-    }
-
-    try
-    {
-      std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_unmixable_sweep_transactions();
-
-      return fill_response(ptx_vector, req.get_tx_keys, res.tx_key_list, res.amount_list, res.fee_list, res.multisig_txset, res.unsigned_txset, req.do_not_relay,
-          res.tx_hash_list, req.get_tx_hex, res.tx_blob_list, req.get_tx_metadata, res.tx_metadata_list, er);
-    }
-    catch (const std::exception& e)
-    {
-      handle_rpc_exception(std::current_exception(), er, WALLET_RPC_ERROR_CODE_GENERIC_TRANSFER_ERROR);
-      return false;
-    }
-    return true;
-  }
-  //------------------------------------------------------------------------------------------------------------------------------
   bool wallet_rpc_server::on_sweep_all(const wallet_rpc::COMMAND_RPC_SWEEP_ALL::request& req, wallet_rpc::COMMAND_RPC_SWEEP_ALL::response& res, epee::json_rpc::error& er, const connection_context *ctx)
   {
     std::vector<cryptonote::tx_destination_entry> dsts;
@@ -1367,15 +1326,7 @@ namespace tools
 
     try
     {
-      uint64_t mixin;
-      if(req.ring_size != 0)
-      {
-        mixin = m_wallet->adjust_mixin(req.ring_size - 1);
-      }
-      else
-      {
-        mixin = m_wallet->adjust_mixin(req.mixin);
-      }
+      uint64_t mixin = m_wallet->adjust_mixin(req.ring_size ? req.ring_size - 1 : 0);
       uint32_t priority = m_wallet->adjust_priority(req.priority);
       std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_all(req.below_amount, dsts[0].addr, dsts[0].is_subaddress, req.outputs, mixin, req.unlock_time, priority, extra, req.account_index, req.subaddr_indices);
 
@@ -1430,15 +1381,7 @@ namespace tools
 
     try
     {
-      uint64_t mixin;
-      if(req.ring_size != 0)
-      {
-        mixin = m_wallet->adjust_mixin(req.ring_size - 1);
-      }
-      else
-      {
-        mixin = m_wallet->adjust_mixin(req.mixin);
-      }
+      uint64_t mixin = m_wallet->adjust_mixin(req.ring_size ? req.ring_size - 1 : 0);
       uint32_t priority = m_wallet->adjust_priority(req.priority);
       std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_single(ki, dsts[0].addr, dsts[0].is_subaddress, req.outputs, mixin, req.unlock_time, priority, extra);
 
@@ -1799,13 +1742,15 @@ namespace tools
         if (req.account_index != td.m_subaddr_index.major || (!req.subaddr_indices.empty() && req.subaddr_indices.count(td.m_subaddr_index.minor) == 0))
           continue;
         wallet_rpc::transfer_details rpc_transfers;
-        rpc_transfers.amount       = td.amount();
-        rpc_transfers.spent        = td.m_spent;
-        rpc_transfers.global_index = td.m_global_output_index;
-        rpc_transfers.tx_hash      = epee::string_tools::pod_to_hex(td.m_txid);
+        rpc_transfers.amount        = td.amount();
+        rpc_transfers.spent         = td.m_spent;
+        rpc_transfers.global_index  = td.m_global_output_index;
+        rpc_transfers.tx_hash       = epee::string_tools::pod_to_hex(td.m_txid);
         rpc_transfers.subaddr_index = {td.m_subaddr_index.major, td.m_subaddr_index.minor};
-        rpc_transfers.key_image    = td.m_key_image_known ? epee::string_tools::pod_to_hex(td.m_key_image) : "";
-        rpc_transfers.unlocked     = m_wallet->is_transfer_unlocked(td);
+        rpc_transfers.key_image     = td.m_key_image_known ? epee::string_tools::pod_to_hex(td.m_key_image) : "";
+        rpc_transfers.pubkey        = epee::string_tools::pod_to_hex(td.get_public_key());
+        rpc_transfers.block_height  = td.m_block_height;
+        rpc_transfers.unlocked      = m_wallet->is_transfer_unlocked(td);
         res.transfers.push_back(rpc_transfers);
       }
     }

@@ -212,7 +212,6 @@ namespace cryptonote
               m_miner(this, [this](const cryptonote::block &b, uint64_t height, const crypto::hash *seed_hash, unsigned int threads, crypto::hash &hash) {
                 return cryptonote::get_block_longhash(&m_blockchain_storage, b, hash, height, seed_hash, threads);
               }),
-              m_miner_address(boost::value_initialized<account_public_address>()),
               m_starter_message_showed(false),
               m_target_blockchain_height(0),
               m_checkpoints_path(""),
@@ -733,19 +732,10 @@ namespace cryptonote
   //-----------------------------------------------------------------------------------------------
   bool core::handle_incoming_tx_pre(const blobdata& tx_blob, tx_verification_context& tvc, cryptonote::transaction &tx, crypto::hash &tx_hash, bool keeped_by_block, bool relayed, bool do_not_relay)
   {
-    tvc = boost::value_initialized<tx_verification_context>();
+    tvc = {};
 
-    uint8_t hf = m_blockchain_storage.get_current_hard_fork_version();
-    uint64_t max_tx_size;
-
-    if(hf < 13)
-    {
-      max_tx_size = get_max_tx_size() * 4;
-    }
-    else
-    {
-      max_tx_size = get_max_tx_size();
-    }
+    const uint8_t hard_fork_version = m_blockchain_storage.get_current_hard_fork_version();
+    uint64_t max_tx_size = get_max_tx_size(hard_fork_version);
 
     if(tx_blob.size() > max_tx_size)
     {
@@ -778,9 +768,7 @@ namespace cryptonote
     }
     bad_semantics_txes_lock.unlock();
 
-    uint8_t version = m_blockchain_storage.get_current_hard_fork_version();
-    const size_t max_tx_version = version == 1 ? 1 : 2;
-    if (tx.version == 0 || tx.version > max_tx_version)
+    if (tx.version == 0 || tx.version > config::tx_settings::CURRENT_TX_VERSION)
     {
       // v2 is the latest one we know
       tvc.m_verifivation_failed = true;
@@ -802,7 +790,7 @@ namespace cryptonote
     // outPk aren't the only thing that need resolving for a fully resolved tx,
     // but outPk (1) are needed now to check range proof semantics, and
     // (2) do not need access to the blockchain to find data
-    if(tx.version >= 2)
+    if(tx.version > 1)
     {
       rct::rctSig &rv = tx.rct_signatures;
       if(rv.type != rct::RCTTypeBulletproof)
@@ -1102,7 +1090,7 @@ namespace cryptonote
       MERROR_VER("tx with invalid outputs, rejected for tx id= " << get_transaction_hash(tx));
       return false;
     }
-    if (tx.version > 1)
+    if(tx.version > 1)
     {
       if (tx.rct_signatures.outPk.size() != tx.vout.size())
       {
@@ -1117,18 +1105,6 @@ namespace cryptonote
       return false;
     }
 
-    if (tx.version == 1)
-    {
-      uint64_t amount_in = 0;
-      get_inputs_money_amount(tx, amount_in);
-      uint64_t amount_out = get_outs_money_amount(tx);
-
-      if(amount_in <= amount_out)
-      {
-        MERROR_VER("tx with wrong amounts: ins " << amount_in << ", outs " << amount_out << ", rejected for tx id= " << get_transaction_hash(tx));
-        return false;
-      }
-    }
     // for version > 1, ringct signatures check verifies amounts match
 
     if(!keeped_by_block && get_transaction_weight(tx) >= m_blockchain_storage.get_current_cumulative_block_weight_limit() - CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE)
@@ -1242,7 +1218,7 @@ namespace cryptonote
   bool core::check_tx_inputs_ring_members_diff(const transaction& tx) const
   {
     const uint8_t version = m_blockchain_storage.get_current_hard_fork_version();
-    if (version >= 6)
+    if(version > 1)
     {
       for(const auto& in: tx.vin)
       {
@@ -1397,7 +1373,7 @@ namespace cryptonote
   //-----------------------------------------------------------------------------------------------
   bool core::handle_block_found(block& b, block_verification_context &bvc)
   {
-    bvc = boost::value_initialized<block_verification_context>();
+    bvc = {};
     m_miner.pause();
     std::vector<block_complete_entry> blocks;
     try
@@ -1420,7 +1396,7 @@ namespace cryptonote
     CHECK_AND_ASSERT_MES(!bvc.m_verifivation_failed, false, "mined block failed verification");
     if(bvc.m_added_to_main_chain)
     {
-      cryptonote_connection_context exclude_context = boost::value_initialized<cryptonote_connection_context>();
+      cryptonote_connection_context exclude_context = {};
       NOTIFY_NEW_BLOCK::request arg = AUTO_VAL_INIT(arg);
       arg.current_blockchain_height = m_blockchain_storage.get_current_blockchain_height();
       std::vector<crypto::hash> missed_txs;
@@ -1484,7 +1460,7 @@ namespace cryptonote
   {
     TRY_ENTRY();
 
-    bvc = boost::value_initialized<block_verification_context>();
+    bvc = {};
 
     if(!check_incoming_block_size(block_blob))
     {

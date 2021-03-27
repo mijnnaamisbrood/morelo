@@ -92,7 +92,6 @@ struct PendingTransaction
     // commit transaction or save to file if filename is provided.
     virtual bool commit(const std::string &filename = "", bool overwrite = false) = 0;
     virtual uint64_t amount() const = 0;
-    virtual uint64_t dust() const = 0;
     virtual uint64_t fee() const = 0;
     virtual std::vector<std::string> txid() const = 0;
     /*!
@@ -784,14 +783,6 @@ struct Wallet
                                                    uint32_t subaddr_account = 0,
                                                    std::set<uint32_t> subaddr_indices = {}) = 0;
 
-    /*!
-     * \brief createSweepUnmixableTransaction creates transaction with unmixable outputs.
-     * \return                  PendingTransaction object. caller is responsible to check PendingTransaction::status()
-     *                          after object returned
-     */
-
-    virtual PendingTransaction * createSweepUnmixableTransaction() = 0;
-
    /*!
     * \brief loadUnsignedTx  - creates transaction from unsigned tx file
     * \return                - UnsignedTransaction object. caller is responsible to check UnsignedTransaction::status()
@@ -837,10 +828,6 @@ struct Wallet
      * \return
      */
     virtual uint32_t defaultMixin() const = 0;
-    /*!
-     * \brief setDefaultMixin - setum number of mixins to be used for new transactions
-     * \param arg
-     */
     virtual void setDefaultMixin(uint32_t arg) = 0;
 
     /*!

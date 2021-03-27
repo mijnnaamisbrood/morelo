@@ -48,7 +48,6 @@ public:
     std::string errorString() const override;
     bool commit(const std::string &filename = "", bool overwrite = false) override;
     uint64_t amount() const override;
-    uint64_t dust() const override;
     uint64_t fee() const override;
     std::vector<std::string> txid() const override;
     uint64_t txCount() const override;

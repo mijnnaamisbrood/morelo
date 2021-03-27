@@ -64,7 +64,7 @@
   MCINFO(WALLSTREETBETS_DEFAULT_LOG_CATEGORY, context << "[" << epee::string_tools::to_string_hex(context.m_pruning_seed) << "] state: " << x << " in state " << cryptonote::get_protocol_state_string(context.m_state))
 
 #define BLOCK_QUEUE_NSPANS_THRESHOLD 10 // chunks of N blocks
-#define BLOCK_QUEUE_SIZE_THRESHOLD (200*1024*1024) // MB
+#define BLOCK_QUEUE_SIZE_THRESHOLD 209715200 // 200MB
 #define BLOCK_QUEUE_FORCE_DOWNLOAD_NEAR_BLOCKS 2500
 #define REQUEST_NEXT_SCHEDULED_SPAN_THRESHOLD_STANDBY (5 * 1000000) // microseconds
 #define REQUEST_NEXT_SCHEDULED_SPAN_THRESHOLD (30 * 1000000) // microseconds
@@ -134,7 +134,7 @@ namespace cryptonote
 
     if(context.m_state == cryptonote_connection_context::state_synchronizing)
     {
-      NOTIFY_REQUEST_CHAIN::request r = boost::value_initialized<NOTIFY_REQUEST_CHAIN::request>();
+      NOTIFY_REQUEST_CHAIN::request r = {};
       context.m_needed_objects.clear();
       m_core.get_short_chain_history(r.block_ids);
       handler_request_blocks_history( r.block_ids ); // change the limit(?), sleep(?)
@@ -295,17 +295,18 @@ namespace cryptonote
   template<class t_core>
   bool t_cryptonote_protocol_handler<t_core>::process_payload_sync_data(const CORE_SYNC_DATA& hshd, cryptonote_connection_context& context, bool is_inital)
   {
+    context.m_remote_version = hshd.client_version;
+
     if(context.m_state == cryptonote_connection_context::state_before_handshake && !is_inital)
       return true;
 
     if(context.m_state == cryptonote_connection_context::state_synchronizing)
       return true;
 
-    // from v6, if the peer advertises a top block version, reject if it's not what it should be (will only work if no voting)
     if (hshd.current_height > 0)
     {
       const uint8_t version = m_core.get_ideal_hard_fork_version(hshd.current_height - 1);
-      if (version >= 6 && version != hshd.top_version)
+      if (version > 1 && version != hshd.top_version)
       {
         if (version < hshd.top_version && version == m_core.get_ideal_hard_fork_version())
           MCLOG_RED(el::Level::Warning, "global", context << " peer claims higher version that we think (" <<
@@ -367,17 +368,18 @@ namespace cryptonote
     uint64_t max_block_height = std::max(hshd.current_height,m_core.get_current_blockchain_height());
 
     // *** (uint64_t)-1 *** <- Need to be fill in when we will know correct fork values
-    uint64_t last_block_v10 = m_core.get_nettype() == TESTNET ? 0 : m_core.get_nettype() == MAINNET ? 0 : 0;
-    uint64_t last_block_v15 = m_core.get_nettype() == TESTNET ? (uint64_t)-1 : m_core.get_nettype() == MAINNET ? 6179 : 49;
-    uint64_t diff_v11 = max_block_height > last_block_v10 ? std::min(abs_diff, max_block_height - last_block_v10) : 0;
+    uint64_t last_block_v15 = m_core.get_nettype() == TESTNET ? 1 : m_core.get_nettype() == MAINNET ? 6179 : 99;
     uint64_t diff_v16 = max_block_height > last_block_v15 ? std::min(abs_diff, max_block_height - last_block_v15) : 0;
 
     MCLOG(is_inital ? el::Level::Info : el::Level::Debug, "global", el::Color::Yellow, context <<  "Sync data returned a new top block candidate: " << m_core.get_current_blockchain_height() << " -> " << hshd.current_height
-      << " [Your node is " << abs_diff << " blocks (" << (((abs_diff - diff_v16) / (24 * 60 * 60 / DIFFICULTY_TARGET_V11)) + (diff_v16 / (24 * 60 * 60 / DIFFICULTY_TARGET_V16)) + ((diff_v16 - diff_v11) / (24 * 60 * 60 / DIFFICULTY_TARGET_V2)) + (diff_v11 / (24 * 60 * 60 / DIFFICULTY_TARGET_V11)))  << " days) "
+      << " [Your node is " << abs_diff << " blocks (" << tools::get_human_readable_timespan((abs_diff - diff_v16) / DIFFICULTY_TARGET_V11 + diff_v16 * DIFFICULTY_TARGET_V16) << " days) "
       << (0 <= diff ? std::string("behind") : std::string("ahead"))
       << "] " << ENDL << "SYNCHRONIZATION started");
-
-      if (m_core.get_target_blockchain_height() == 0) // only when sync starts
+      if(hshd.current_height >= m_core.get_current_blockchain_height() + 5)
+      {
+        m_core.safesyncmode(false);
+      }
+      if(m_core.get_target_blockchain_height() == 0) // only when sync starts
       {
         m_sync_timer.resume();
         m_sync_timer.reset();
@@ -410,20 +412,21 @@ namespace cryptonote
     hshd.cumulative_difficulty = m_core.get_block_cumulative_difficulty(hshd.current_height);
     hshd.current_height +=1;
     hshd.pruning_seed = m_core.get_blockchain_pruning_seed();
+    hshd.client_version = WALLSTREETBETS_VERSION_FULL;
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
-    template<class t_core>
-    bool t_cryptonote_protocol_handler<t_core>::get_payload_sync_data(blobdata& data)
+  template<class t_core>
+  bool t_cryptonote_protocol_handler<t_core>::get_payload_sync_data(blobdata& data)
   {
-    CORE_SYNC_DATA hsd = boost::value_initialized<CORE_SYNC_DATA>();
+    CORE_SYNC_DATA hsd = {};
     get_payload_sync_data(hsd);
     epee::serialization::store_t_to_binary(hsd, data);
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
-    template<class t_core>
-    int t_cryptonote_protocol_handler<t_core>::handle_notify_new_block(int command, NOTIFY_NEW_BLOCK::request& arg, cryptonote_connection_context& context)
+  template<class t_core>
+  int t_cryptonote_protocol_handler<t_core>::handle_notify_new_block(int command, NOTIFY_NEW_BLOCK::request& arg, cryptonote_connection_context& context)
   {
     MLOG_P2P_MESSAGE("Received NOTIFY_NEW_BLOCK (" << arg.b.txs.size() << " txes)");
     if(context.m_state != cryptonote_connection_context::state_normal)
@@ -451,7 +454,7 @@ namespace cryptonote
       }
     }
 
-    block_verification_context bvc = boost::value_initialized<block_verification_context>();
+    block_verification_context bvc = {};
     m_core.handle_incoming_block(arg.b.block, bvc); // got block from handle_notify_new_block
     if (!m_core.cleanup_handle_incoming_blocks(true))
     {
@@ -474,7 +477,7 @@ namespace cryptonote
     {
       context.m_needed_objects.clear();
       context.m_state = cryptonote_connection_context::state_synchronizing;
-      NOTIFY_REQUEST_CHAIN::request r = boost::value_initialized<NOTIFY_REQUEST_CHAIN::request>();
+      NOTIFY_REQUEST_CHAIN::request r = {};
       m_core.get_short_chain_history(r.block_ids);
       handler_request_blocks_history(r.block_ids); // change the limit(?), sleep(?)
       MLOG_P2P_MESSAGE("-->>NOTIFY_REQUEST_CHAIN: m_block_ids.size()=" << r.block_ids.size() );
@@ -717,7 +720,7 @@ namespace cryptonote
         blocks.push_back(b);
         m_core.prepare_handle_incoming_blocks(blocks);
 
-        block_verification_context bvc = boost::value_initialized<block_verification_context>();
+        block_verification_context bvc = {};
         m_core.handle_incoming_block(arg.b.block, bvc); // got block from handle_notify_new_block
         if (!m_core.cleanup_handle_incoming_blocks(true))
         {
@@ -745,7 +748,7 @@ namespace cryptonote
         {
           context.m_needed_objects.clear();
           context.m_state = cryptonote_connection_context::state_synchronizing;
-          NOTIFY_REQUEST_CHAIN::request r = boost::value_initialized<NOTIFY_REQUEST_CHAIN::request>();
+          NOTIFY_REQUEST_CHAIN::request r = {};
           m_core.get_short_chain_history(r.block_ids);
           handler_request_blocks_history(r.block_ids); // change the limit(?), sleep(?)
           MLOG_P2P_MESSAGE("-->>NOTIFY_REQUEST_CHAIN: m_block_ids.size()=" << r.block_ids.size() );
@@ -1243,7 +1246,7 @@ namespace cryptonote
             // process block
 
             TIME_MEASURE_START(block_process_time);
-            block_verification_context bvc = boost::value_initialized<block_verification_context>();
+            block_verification_context bvc = {};
 
             m_core.handle_incoming_block(block_entry.block, bvc, false); // <--- process block
 
@@ -1945,7 +1948,7 @@ skip:
     if(context.m_last_response_height < context.m_remote_blockchain_height-1)
     {//we have to fetch more objects ids, request blockchain entry
 
-      NOTIFY_REQUEST_CHAIN::request r = boost::value_initialized<NOTIFY_REQUEST_CHAIN::request>();
+      NOTIFY_REQUEST_CHAIN::request r = {};
       m_core.get_short_chain_history(r.block_ids);
       CHECK_AND_ASSERT_MES(!r.block_ids.empty(), false, "Short chain history is empty");
 
