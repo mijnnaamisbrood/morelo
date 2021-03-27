@@ -620,7 +620,8 @@ namespace nodetool
             }
             else
             {
-              ++number_of_out_peers;
+              if(!(cntxt.m_state == p2p_connection_context::state_before_handshake && std::time(NULL) < cntxt.m_started + 15))
+                ++number_of_out_peers;
             }
             return true;
           }); // lambda
@@ -633,8 +634,8 @@ namespace nodetool
     })); // lambda
 
     network_zone& public_zone = m_network_zones.at(epee::net_utils::zone::public_);
-    public_zone.m_net_server.add_idle_handler(std::bind(&node_server<t_payload_net_handler>::idle_worker, this), 1000);
-    public_zone.m_net_server.add_idle_handler(std::bind(&t_payload_net_handler::on_idle, &m_payload_handler), 1000);
+    public_zone.m_net_server.add_idle_handler(boost::bind(&node_server<t_payload_net_handler>::idle_worker, this), 1000);
+    public_zone.m_net_server.add_idle_handler(boost::bind(&t_payload_net_handler::on_idle, &m_payload_handler), 1000);
 
     //here you can set worker threads count
     int thrds_count = 10;
@@ -757,14 +758,13 @@ namespace nodetool
         return;
       }
 
-      if(rsp.node_data.version.size() == 0)
-      {
-        MINFO("Peer " << context.m_remote_address.str() << " did not provide version info. It is probably Old Version");
-      }
-      else if(rsp.node_data.version.size() != 0 && rsp.node_data.version != WALLSTREETBETS_VERSION)
-      {
-        MINFO("Peer " << context.m_remote_address.str() << " has a different version than ours: " << rsp.node_data.version.substr(0,12));
-      }
+      if(rsp.payload_data.top_version >= 17)
+        if(!tools::check_remote_client_version(rsp.payload_data.client_version))
+        {
+          MGINFO_MAGENTA("COMMAND_HANDSHAKE Failed due to Wrong Client Version: " << rsp.payload_data.client_version << ", Closing Connection.");
+          add_host_fail(context.m_remote_address);
+          return;
+        }
 
       if(rsp.node_data.network_id != m_network_id)
       {
@@ -791,7 +791,7 @@ namespace nodetool
         pi = context.peer_id = rsp.node_data.peer_id;
         context.m_rpc_port = rsp.node_data.rpc_port;
         context.m_rpc_credits_per_hash = rsp.node_data.rpc_credits_per_hash;
-	    m_network_zones.at(context.m_remote_address.get_zone()).m_peerlist.set_peer_just_seen(rsp.node_data.peer_id, context.m_remote_address, context.m_pruning_seed, context.m_rpc_port, context.m_rpc_credits_per_hash);
+        m_network_zones.at(context.m_remote_address.get_zone()).m_peerlist.set_peer_just_seen(rsp.node_data.peer_id, context.m_remote_address, context.m_pruning_seed, context.m_rpc_port, context.m_rpc_credits_per_hash);
 
         // move
         for (auto const& zone : m_network_zones)
@@ -804,8 +804,9 @@ namespace nodetool
           }
         }
         LOG_INFO_CC(context, "New connection handshaked, pruning seed " << epee::string_tools::to_string_hex(context.m_pruning_seed));
-        LOG_DEBUG_CC(context, " COMMAND_HANDSHAKE INVOKED OK");
-      }else
+        LOG_DEBUG_CC(context, "COMMAND_HANDSHAKE INVOKED OK");
+      }
+      else
       {
         LOG_DEBUG_CC(context, " COMMAND_HANDSHAKE(AND CLOSE) INVOKED OK");
       }
@@ -819,7 +820,7 @@ namespace nodetool
 
     if(!hsh_result)
     {
-      LOG_WARNING_CC(context_, "COMMAND_HANDSHAKE Failed");
+      LOG_WARNING_CC(context_, "COMMAND_HANDSHAKE Failed, closing connection");
       m_network_zones.at(context_.m_remote_address.get_zone()).m_net_server.get_config_object().close(context_.m_connection_id);
     }
     else
@@ -888,50 +889,49 @@ namespace nodetool
   template<class t_payload_net_handler>
   bool node_server<t_payload_net_handler>::is_peer_used(const peerlist_entry& peer)
   {
-    for(const auto& zone : m_network_zones)
-      if(zone.second.m_config.m_peer_id == peer.id)
+    const auto zone = peer.adr.get_zone();
+    const auto server = m_network_zones.find(zone);
+    if(server == m_network_zones.end())
+      return false;
+
+    if(server->second.m_config.m_peer_id == peer.id)
         return true;//dont make connections to ourself
 
     bool used = false;
-    for(auto& zone : m_network_zones)
+    server->second.m_net_server.get_config_object().foreach_connection([&](const p2p_connection_context& cntxt)
     {
-      zone.second.m_net_server.get_config_object().foreach_connection([&](const p2p_connection_context& cntxt)
+      if(cntxt.peer_id == peer.id || (!cntxt.m_is_income && peer.adr == cntxt.m_remote_address))
       {
-        if(cntxt.peer_id == peer.id || (!cntxt.m_is_income && peer.adr == cntxt.m_remote_address))
-        {
-          used = true;
-          return false;//stop enumerating
-        }
-        return true;
-      });
-
-      if(used)
-        return true;
-    }
-    return false;
+        used = true;
+        return false;//stop enumerating
+      }
+      return true;
+    });
+    return used;
   }
   //-----------------------------------------------------------------------------------
   template<class t_payload_net_handler>
   bool node_server<t_payload_net_handler>::is_peer_used(const anchor_peerlist_entry& peer)
   {
-    for(auto& zone : m_network_zones) {
-      if(zone.second.m_config.m_peer_id == peer.id) {
-        return true; // do NOT make connections to ourself
-      }
-      bool used = false;
-      zone.second.m_net_server.get_config_object().foreach_connection([&](const p2p_connection_context& cntxt)
+    const auto zone = peer.adr.get_zone();
+    const auto server = m_network_zones.find(zone);
+    if(server == m_network_zones.end())
+      return false;
+
+    if(server->second.m_config.m_peer_id == peer.id)
+      return true; // do NOT make connections to ourself
+
+    bool used = false;
+    server->second.m_net_server.get_config_object().foreach_connection([&](const p2p_connection_context& cntxt)
+    {
+      if(cntxt.peer_id == peer.id || (!cntxt.m_is_income && peer.adr == cntxt.m_remote_address))
       {
-        if(cntxt.peer_id == peer.id || (!cntxt.m_is_income && peer.adr == cntxt.m_remote_address))
-        {
-          used = true;
-          return false;//stop enumerating
-        }
-        return true;
-      });
-      if (used)
-        return true;
-    }
-    return false;
+        used = true;
+        return false;//stop enumerating
+      }
+      return true;
+    });
+    return used;
   }
   //-----------------------------------------------------------------------------------
   template<class t_payload_net_handler>
@@ -964,6 +964,7 @@ namespace nodetool
     } \
   } while(0)
 
+  //-----------------------------------------------------------------------------------
   template<class t_payload_net_handler>
   bool node_server<t_payload_net_handler>::try_to_connect_and_handshake_with_new_peer(const epee::net_utils::network_address& na, bool just_take_peerlist, uint64_t last_seen_stamp, PeerType peer_type, uint64_t first_seen_stamp)
   {
@@ -982,10 +983,7 @@ namespace nodetool
       return false;
     }
 
-
-    MDEBUG("Connecting to " << na.str() << "(peer_type=" << peer_type << ", last_seen: "
-        << (last_seen_stamp ? epee::misc_utils::get_time_interval_string(time(NULL) - last_seen_stamp):"never")
-        << ")...");
+    MINFO("Connecting to " << na.str() << "(peer_type=" << peer_type << ", last_seen: " << (last_seen_stamp ? epee::misc_utils::get_time_interval_string(time(NULL) - last_seen_stamp):"never") << ")...");
 
     auto con = zone.m_connect(zone, na, m_ssl_support);
     if(!con)
@@ -1462,11 +1460,11 @@ namespace nodetool
   template<class t_payload_net_handler>
   bool node_server<t_payload_net_handler>::idle_worker()
   {
-    m_peer_handshake_idle_maker_interval.do_call(std::bind(&node_server<t_payload_net_handler>::peer_sync_idle_maker, this));
-    m_connections_maker_interval.do_call(std::bind(&node_server<t_payload_net_handler>::connections_maker, this));
-    m_gray_peerlist_housekeeping_interval.do_call(std::bind(&node_server<t_payload_net_handler>::gray_peerlist_housekeeping, this));
-    m_peerlist_store_interval.do_call(std::bind(&node_server<t_payload_net_handler>::store_config, this));
-    m_incoming_connections_interval.do_call(std::bind(&node_server<t_payload_net_handler>::check_incoming_connections, this));
+    m_peer_handshake_idle_maker_interval.do_call(boost::bind(&node_server<t_payload_net_handler>::peer_sync_idle_maker, this));
+    m_connections_maker_interval.do_call(boost::bind(&node_server<t_payload_net_handler>::connections_maker, this));
+    m_gray_peerlist_housekeeping_interval.do_call(boost::bind(&node_server<t_payload_net_handler>::gray_peerlist_housekeeping, this));
+    m_peerlist_store_interval.do_call(boost::bind(&node_server<t_payload_net_handler>::store_config, this));
+    m_incoming_connections_interval.do_call(boost::bind(&node_server<t_payload_net_handler>::check_incoming_connections, this));
     return true;
   }
   //-----------------------------------------------------------------------------------
@@ -1588,7 +1586,6 @@ namespace nodetool
     time(&local_time);
     node_data.local_time = local_time;  // \TODO This can be an identifying value across zones (public internet to tor/i2p) ...
     node_data.peer_id = zone.m_config.m_peer_id;
-    node_data.version = WALLSTREETBETS_VERSION;
     if(!m_hide_my_port && zone.m_can_pingback)
       node_data.my_port = m_external_port ? m_external_port : m_listening_port;
     else
@@ -1666,6 +1663,9 @@ namespace nodetool
       ce.adr  = cntxt.m_remote_address;
       ce.id = cntxt.peer_id;
       ce.is_income = cntxt.m_is_income;
+      size_t len = std::min(sizeof(ce.version) - 1, cntxt.m_remote_version.size());
+      std::strncpy(ce.version, cntxt.m_remote_version.c_str(), len);
+      ce.version[len] = 0;
       rsp.connections_list.push_back(ce);
       return true;
     });
@@ -1894,18 +1894,15 @@ namespace nodetool
   template<class t_payload_net_handler>
   int node_server<t_payload_net_handler>::handle_handshake(int command, typename COMMAND_HANDSHAKE::request& arg, typename COMMAND_HANDSHAKE::response& rsp, p2p_connection_context& context)
   {
-    if(arg.node_data.version.size() == 0)
+    if(arg.payload_data.top_version >= 17)
     {
-      MGINFO("Peer " << context.m_remote_address.str() << " did not provide version info. It is probably Old Version");
-      drop_connection(context);
-      block_host(context.m_remote_address);
-    }
-
-    if(arg.node_data.version.size() != 0 && arg.node_data.version != WALLSTREETBETS_VERSION)
-    {
-      MGINFO("Peer " << context.m_remote_address.str() << " has a different version than ours: " << arg.node_data.version.substr(0,12));
-      drop_connection(context);
-      block_host(context.m_remote_address);
+      if(!tools::check_remote_client_version(arg.payload_data.client_version))
+      {
+        MGINFO_MAGENTA("COMMAND_HANDSHAKE Failed due to Wrong Client Version: " << arg.payload_data.client_version << ", Closing Connection.");
+        drop_connection(context);
+        add_host_fail(context.m_remote_address);
+        return 1;
+      }
     }
 
     if(arg.node_data.network_id != m_network_id)
@@ -1934,7 +1931,14 @@ namespace nodetool
 
     network_zone& zone = m_network_zones.at(context.m_remote_address.get_zone());
 
-    if (zone.m_current_number_of_in_peers >= zone.m_config.m_net_config.max_in_connection_count) // in peers limit
+    if(arg.node_data.peer_id == zone.m_config.m_peer_id)
+    {
+      LOG_DEBUG_CC(context, "Connection to self. Disconnecting");
+      drop_connection(context);
+      return 1;
+    }
+
+    if(zone.m_current_number_of_in_peers >= zone.m_config.m_net_config.max_in_connection_count) // in peers limit
     {
       LOG_WARNING_CC(context, "COMMAND_HANDSHAKE came, but already have max incoming connections, so dropping this one.");
       drop_connection(context);
@@ -1962,7 +1966,7 @@ namespace nodetool
     context.m_zmq_port = arg.node_data.zmq_port;
     context.m_rpc_credits_per_hash = arg.node_data.rpc_credits_per_hash;
 
-    if(arg.node_data.peer_id != zone.m_config.m_peer_id && arg.node_data.my_port && zone.m_can_pingback)
+    if(arg.node_data.my_port && zone.m_can_pingback)
     {
       peerid_type peer_id_l = arg.node_data.peer_id;
       uint32_t port_l = arg.node_data.my_port;
@@ -1997,7 +2001,8 @@ namespace nodetool
     zone.m_peerlist.get_peerlist_head(rsp.local_peerlist_new, true);
     get_local_node_data(rsp.node_data, zone);
     m_payload_handler.get_payload_sync_data(rsp.payload_data);
-    LOG_DEBUG_CC(context, "COMMAND_HANDSHAKE");
+    MGINFO_GREEN("COMMAND_HANFSHAKE: v" << arg.payload_data.client_version << " top: " << epee::string_tools::pod_to_hex(arg.payload_data.top_id).substr(0,6)
+                                        << "@" << arg.payload_data.current_height - 1 << " - Hard_Fork Version: " << arg.payload_data.top_version);
     return 1;
   }
   //-----------------------------------------------------------------------------------
@@ -2315,8 +2320,8 @@ namespace nodetool
     const uint32_t index = stripe - 1;
     CRITICAL_REGION_LOCAL(m_used_stripe_peers_mutex);
     MINFO("adding stripe " << stripe << " peer: " << context.m_remote_address.str());
-    std::remove_if(m_used_stripe_peers[index].begin(), m_used_stripe_peers[index].end(),
-        [&context](const epee::net_utils::network_address &na){ return context.m_remote_address == na; });
+    m_used_stripe_peers[index].erase(std::remove_if(m_used_stripe_peers[index].begin(), m_used_stripe_peers[index].end(),
+        [&context](const epee::net_utils::network_address &na){ return context.m_remote_address == na; }), m_used_stripe_peers[index].end());
     m_used_stripe_peers[index].push_back(context.m_remote_address);
   }
 
@@ -2329,8 +2334,8 @@ namespace nodetool
     const uint32_t index = stripe - 1;
     CRITICAL_REGION_LOCAL(m_used_stripe_peers_mutex);
     MINFO("removing stripe " << stripe << " peer: " << context.m_remote_address.str());
-    std::remove_if(m_used_stripe_peers[index].begin(), m_used_stripe_peers[index].end(),
-        [&context](const epee::net_utils::network_address &na){ return context.m_remote_address == na; });
+    m_used_stripe_peers[index].erase(std::remove_if(m_used_stripe_peers[index].begin(), m_used_stripe_peers[index].end(),
+        [&context](const epee::net_utils::network_address &na){ return context.m_remote_address == na; }), m_used_stripe_peers[index].end());
   }
 
   template<class t_payload_net_handler>

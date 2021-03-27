@@ -828,6 +828,7 @@ struct Wallet
      * \return
      */
     virtual uint32_t defaultMixin() const = 0;
+    virtual void setDefaultMixin(uint32_t arg) = 0;
 
     /*!
      * \brief setUserNote - attach an arbitrary string note to a txid

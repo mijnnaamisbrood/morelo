@@ -106,16 +106,22 @@ namespace cryptonote
   {
     if(nettype == cryptonote::MAINNET)
     {
-      if(hard_fork_version >= 16 && height < 9022)
-        return base_reward * 10 / 100;
-      else if(hard_fork_version >= 16 && height >= 9022)
-        return base_reward * 0.1 / 100;
+      if(hard_fork_version >= 16)
+      {
+        if(height < 9022)
+          return base_reward * 10 / 100;
+        else
+          return base_reward * 0.1 / 100;
+      }
     }
-    else
+    else if(nettype == cryptonote::STAGENET)
     {
       if(hard_fork_version >= 16)
         return base_reward * 10 / 100;
     }
+    else if(hard_fork_version >= 17)
+      return base_reward * 10 / 100;
+
     return 0;
   }
 

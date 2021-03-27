@@ -295,13 +295,14 @@ namespace cryptonote
   template<class t_core>
   bool t_cryptonote_protocol_handler<t_core>::process_payload_sync_data(const CORE_SYNC_DATA& hshd, cryptonote_connection_context& context, bool is_inital)
   {
+    context.m_remote_version = hshd.client_version;
+
     if(context.m_state == cryptonote_connection_context::state_before_handshake && !is_inital)
       return true;
 
     if(context.m_state == cryptonote_connection_context::state_synchronizing)
       return true;
 
-    // from v6, if the peer advertises a top block version, reject if it's not what it should be (will only work if no voting)
     if (hshd.current_height > 0)
     {
       const uint8_t version = m_core.get_ideal_hard_fork_version(hshd.current_height - 1);
@@ -371,11 +372,14 @@ namespace cryptonote
     uint64_t diff_v16 = max_block_height > last_block_v15 ? std::min(abs_diff, max_block_height - last_block_v15) : 0;
 
     MCLOG(is_inital ? el::Level::Info : el::Level::Debug, "global", el::Color::Yellow, context <<  "Sync data returned a new top block candidate: " << m_core.get_current_blockchain_height() << " -> " << hshd.current_height
-      << " [Your node is " << abs_diff << " blocks (" << ((abs_diff - diff_v16) / DIFFICULTY_TARGET_V11 + diff_v16 * DIFFICULTY_TARGET_V16) << " days) "
+      << " [Your node is " << abs_diff << " blocks (" << tools::get_human_readable_timespan((abs_diff - diff_v16) / DIFFICULTY_TARGET_V11 + diff_v16 * DIFFICULTY_TARGET_V16) << " days) "
       << (0 <= diff ? std::string("behind") : std::string("ahead"))
       << "] " << ENDL << "SYNCHRONIZATION started");
-
-      if (m_core.get_target_blockchain_height() == 0) // only when sync starts
+      if(hshd.current_height >= m_core.get_current_blockchain_height() + 5)
+      {
+        m_core.safesyncmode(false);
+      }
+      if(m_core.get_target_blockchain_height() == 0) // only when sync starts
       {
         m_sync_timer.resume();
         m_sync_timer.reset();
@@ -408,11 +412,12 @@ namespace cryptonote
     hshd.cumulative_difficulty = m_core.get_block_cumulative_difficulty(hshd.current_height);
     hshd.current_height +=1;
     hshd.pruning_seed = m_core.get_blockchain_pruning_seed();
+    hshd.client_version = WALLSTREETBETS_VERSION_FULL;
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
-    template<class t_core>
-    bool t_cryptonote_protocol_handler<t_core>::get_payload_sync_data(blobdata& data)
+  template<class t_core>
+  bool t_cryptonote_protocol_handler<t_core>::get_payload_sync_data(blobdata& data)
   {
     CORE_SYNC_DATA hsd = {};
     get_payload_sync_data(hsd);
@@ -420,8 +425,8 @@ namespace cryptonote
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
-    template<class t_core>
-    int t_cryptonote_protocol_handler<t_core>::handle_notify_new_block(int command, NOTIFY_NEW_BLOCK::request& arg, cryptonote_connection_context& context)
+  template<class t_core>
+  int t_cryptonote_protocol_handler<t_core>::handle_notify_new_block(int command, NOTIFY_NEW_BLOCK::request& arg, cryptonote_connection_context& context)
   {
     MLOG_P2P_MESSAGE("Received NOTIFY_NEW_BLOCK (" << arg.b.txs.size() << " txes)");
     if(context.m_state != cryptonote_connection_context::state_normal)

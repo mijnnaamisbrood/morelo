@@ -101,7 +101,7 @@ public:
   virtual size_t getTransferCount() = 0;
 
   virtual TransactionId findTransactionByTransferId(TransferId transferId) = 0;
-  
+
   virtual bool getTransaction(TransactionId transactionId, Transaction& transaction) = 0;
   virtual bool getTransfer(TransferId transferId, Transfer& transfer) = 0;
 

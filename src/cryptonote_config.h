@@ -242,7 +242,7 @@ namespace config
 
    namespace sync
    {
-     const uint64_t HIGHEST_CHECKPOINT = 17920; // Blockchain height up to Rapid_Sync is ON.
+     const uint64_t HIGHEST_CHECKPOINT = 43520; // Blockchain height up to Rapid_Sync is ON.
      const size_t NORMAL_SYNC = 20; // Amount of Blocks to download and Validate at ones while Synchronizung with Wallstreetbets Network.
      const size_t RAPID_SYNC = 100; // Amount of Blocks to download at ones from already known by Wallstreetbets Daemon and Checkpoint are hardcoded into codebase
    }
@@ -267,7 +267,7 @@ namespace wsbc
     "62.171.171.195"/* Node_6 */,
     "144.91.113.223"/* Node_7 */,
     "167.86.113.14"/* Node_8 */,
-    "82.44.107.19",
+    "it-support.mal-bit.com",
     "161.97.102.172"
   };
 
@@ -277,7 +277,7 @@ namespace wsbc
 
   const char *const stagenet_core_nodes[] =
   {
-    "82.44.107.19",
+    "it-support.mal-bit.com",
     "161.97.102.172",
     "164.68.123.118"
   };

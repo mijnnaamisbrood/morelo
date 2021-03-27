@@ -92,7 +92,8 @@ static const struct {
  // version 1 from the start of the blockchain
  { 1, 0, 0, 1613599975 },
  { 15, 1, 0, 1613600045 },
- { 16, 6180, 0, 1614350592 }
+ { 16, 6180, 0, 1614350592 },
+ { 17, 49600, 0, 1617050340 }
 };
 
 static const struct {
@@ -2897,7 +2898,7 @@ bool Blockchain::check_tx_inputs(transaction& tx, tx_verification_context &tvc, 
 
   if(hf_version > 1)
   {
-    for (const auto& txin : tx.vin)
+    for(const auto& txin : tx.vin)
     {
       if(boost::get<txin_to_key>(txin).key_offsets.size() != config::tx_settings::default_ringsize)
       {
@@ -2919,10 +2920,7 @@ bool Blockchain::check_tx_inputs(transaction& tx, tx_verification_context &tvc, 
         return false;
       }
     }
-  }
 
-  if(hf_version > 1)
-  {
     const crypto::key_image *last_key_image = NULL;
     for (size_t n = 0; n < tx.vin.size(); ++n)
     {
@@ -4834,7 +4832,7 @@ void Blockchain::cancel()
 }
 
 #if defined(PER_BLOCK_CHECKPOINT)
-static const char expected_block_hashes_hash[] = "7048335562a513de384d4d7b6bea25c7ea32cfda38a2ded40aee77e6fd93495f";
+static const char expected_block_hashes_hash[] = "c5b61b62f5b0fae525e0be285b9aeb84a00c20ff5e57d3c29d99c24501c411fa";
 void Blockchain::load_compiled_in_block_hashes(const GetCheckpointsCallback& get_checkpoints)
 {
   if (get_checkpoints == nullptr || !m_fast_sync)

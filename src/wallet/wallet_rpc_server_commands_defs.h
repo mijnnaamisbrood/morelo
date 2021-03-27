@@ -48,7 +48,7 @@
 // advance which version they will stop working with
 // Don't go over 32767 for any of these
 #define WALLET_RPC_VERSION_MAJOR 1
-#define WALLET_RPC_VERSION_MINOR 18
+#define WALLET_RPC_VERSION_MINOR 19
 #define MAKE_WALLET_RPC_VERSION(major,minor) (((major)<<16)|(minor))
 #define WALLET_RPC_VERSION MAKE_WALLET_RPC_VERSION(WALLET_RPC_VERSION_MAJOR, WALLET_RPC_VERSION_MINOR)
 namespace tools
@@ -455,7 +455,6 @@ namespace wallet_rpc
       uint32_t account_index;
       std::set<uint32_t> subaddr_indices;
       uint32_t priority;
-      uint64_t mixin;
       uint64_t ring_size;
       uint64_t unlock_time;
       std::string payment_id;
@@ -469,7 +468,6 @@ namespace wallet_rpc
         KV_SERIALIZE(account_index)
         KV_SERIALIZE(subaddr_indices)
         KV_SERIALIZE(priority)
-        KV_SERIALIZE_OPT(mixin, (uint64_t)0)
         KV_SERIALIZE_OPT(ring_size, (uint64_t)0)
         KV_SERIALIZE(unlock_time)
         KV_SERIALIZE(payment_id)
@@ -514,7 +512,6 @@ namespace wallet_rpc
       uint32_t account_index;
       std::set<uint32_t> subaddr_indices;
       uint32_t priority;
-      uint64_t mixin;
       uint64_t ring_size;
       uint64_t unlock_time;
       std::string payment_id;
@@ -528,7 +525,6 @@ namespace wallet_rpc
         KV_SERIALIZE(account_index)
         KV_SERIALIZE(subaddr_indices)
         KV_SERIALIZE(priority)
-        KV_SERIALIZE_OPT(mixin, (uint64_t)0)
         KV_SERIALIZE_OPT(ring_size, (uint64_t)0)
         KV_SERIALIZE(unlock_time)
         KV_SERIALIZE(payment_id)
@@ -703,7 +699,6 @@ namespace wallet_rpc
       uint32_t account_index;
       std::set<uint32_t> subaddr_indices;
       uint32_t priority;
-      uint64_t mixin;
       uint64_t ring_size;
       uint64_t outputs;
       uint64_t unlock_time;
@@ -719,7 +714,6 @@ namespace wallet_rpc
         KV_SERIALIZE(account_index)
         KV_SERIALIZE(subaddr_indices)
         KV_SERIALIZE(priority)
-        KV_SERIALIZE_OPT(mixin, (uint64_t)0)
         KV_SERIALIZE_OPT(ring_size, (uint64_t)0)
         KV_SERIALIZE_OPT(outputs, (uint64_t)1)
         KV_SERIALIZE(unlock_time)
@@ -773,7 +767,6 @@ namespace wallet_rpc
     {
       std::string address;
       uint32_t priority;
-      uint64_t mixin;
       uint64_t ring_size;
       uint64_t outputs;
       uint64_t unlock_time;
@@ -787,7 +780,6 @@ namespace wallet_rpc
       BEGIN_KV_SERIALIZE_MAP()
         KV_SERIALIZE(address)
         KV_SERIALIZE(priority)
-        KV_SERIALIZE_OPT(mixin, (uint64_t)0)
         KV_SERIALIZE_OPT(ring_size, (uint64_t)0)
         KV_SERIALIZE_OPT(outputs, (uint64_t)1)
         KV_SERIALIZE(unlock_time)
@@ -949,6 +941,8 @@ namespace wallet_rpc
     std::string tx_hash;
     cryptonote::subaddress_index subaddr_index;
     std::string key_image;
+    std::string pubkey;
+    uint64_t block_height;
     bool unlocked;
 
     BEGIN_KV_SERIALIZE_MAP()
@@ -958,6 +952,8 @@ namespace wallet_rpc
       KV_SERIALIZE(tx_hash)
       KV_SERIALIZE(subaddr_index)
       KV_SERIALIZE(key_image)
+      KV_SERIALIZE(pubkey)
+      KV_SERIALIZE(block_height)
       KV_SERIALIZE(unlocked)
     END_KV_SERIALIZE_MAP()
   };

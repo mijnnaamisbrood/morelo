@@ -879,7 +879,7 @@ namespace tools
 
     try
     {
-      uint64_t mixin = m_wallet->adjust_mixin(req.mixin);
+      uint64_t mixin = m_wallet->adjust_mixin(req.ring_size ? req.ring_size - 1 : 0);
       uint32_t priority = m_wallet->adjust_priority(req.priority);
       std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_2(dsts, mixin, req.unlock_time, priority, extra, req.account_index, req.subaddr_indices);
 
@@ -931,15 +931,7 @@ namespace tools
 
     try
     {
-      uint64_t mixin;
-      if(req.ring_size != 0)
-      {
-        mixin = m_wallet->adjust_mixin(req.ring_size - 1);
-      }
-      else
-      {
-        mixin = m_wallet->adjust_mixin(req.mixin);
-      }
+      uint64_t mixin = m_wallet->adjust_mixin(req.ring_size ? req.ring_size - 1 : 0);
       uint32_t priority = m_wallet->adjust_priority(req.priority);
       LOG_PRINT_L2("on_transfer_split calling create_transactions_2");
       std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_2(dsts, mixin, req.unlock_time, priority, extra, req.account_index, req.subaddr_indices);
@@ -1334,7 +1326,7 @@ namespace tools
 
     try
     {
-      uint64_t mixin = m_wallet->adjust_mixin(req.mixin);
+      uint64_t mixin = m_wallet->adjust_mixin(req.ring_size ? req.ring_size - 1 : 0);
       uint32_t priority = m_wallet->adjust_priority(req.priority);
       std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_all(req.below_amount, dsts[0].addr, dsts[0].is_subaddress, req.outputs, mixin, req.unlock_time, priority, extra, req.account_index, req.subaddr_indices);
 
@@ -1389,7 +1381,7 @@ namespace tools
 
     try
     {
-      uint64_t mixin = m_wallet->adjust_mixin(req.mixin);
+      uint64_t mixin = m_wallet->adjust_mixin(req.ring_size ? req.ring_size - 1 : 0);
       uint32_t priority = m_wallet->adjust_priority(req.priority);
       std::vector<wallet2::pending_tx> ptx_vector = m_wallet->create_transactions_single(ki, dsts[0].addr, dsts[0].is_subaddress, req.outputs, mixin, req.unlock_time, priority, extra);
 
@@ -1750,13 +1742,15 @@ namespace tools
         if (req.account_index != td.m_subaddr_index.major || (!req.subaddr_indices.empty() && req.subaddr_indices.count(td.m_subaddr_index.minor) == 0))
           continue;
         wallet_rpc::transfer_details rpc_transfers;
-        rpc_transfers.amount       = td.amount();
-        rpc_transfers.spent        = td.m_spent;
-        rpc_transfers.global_index = td.m_global_output_index;
-        rpc_transfers.tx_hash      = epee::string_tools::pod_to_hex(td.m_txid);
+        rpc_transfers.amount        = td.amount();
+        rpc_transfers.spent         = td.m_spent;
+        rpc_transfers.global_index  = td.m_global_output_index;
+        rpc_transfers.tx_hash       = epee::string_tools::pod_to_hex(td.m_txid);
         rpc_transfers.subaddr_index = {td.m_subaddr_index.major, td.m_subaddr_index.minor};
-        rpc_transfers.key_image    = td.m_key_image_known ? epee::string_tools::pod_to_hex(td.m_key_image) : "";
-        rpc_transfers.unlocked     = m_wallet->is_transfer_unlocked(td);
+        rpc_transfers.key_image     = td.m_key_image_known ? epee::string_tools::pod_to_hex(td.m_key_image) : "";
+        rpc_transfers.pubkey        = epee::string_tools::pod_to_hex(td.get_public_key());
+        rpc_transfers.block_height  = td.m_block_height;
+        rpc_transfers.unlocked      = m_wallet->is_transfer_unlocked(td);
         res.transfers.push_back(rpc_transfers);
       }
     }
