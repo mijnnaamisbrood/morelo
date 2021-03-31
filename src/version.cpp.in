@@ -5,7 +5,7 @@
 
 #define WSBC_MAJOR_VERSION "8"
 #define WSBC_MINOR_VERSION "1"
-#define WSBC_PATCH_NO "0"
+#define WSBC_PATCH_NO "1"
 
 #define WSBC_RELEASE_NAME "WBSC"
 

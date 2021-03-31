@@ -114,14 +114,11 @@ namespace cryptonote
           return base_reward * 0.1 / 100;
       }
     }
-    else if(nettype == cryptonote::STAGENET)
+    else
     {
       if(hard_fork_version >= 16)
         return base_reward * 10 / 100;
     }
-    else if(hard_fork_version >= 17)
-      return base_reward * 10 / 100;
-
     return 0;
   }
 
@@ -169,7 +166,7 @@ namespace cryptonote
     return correct_key == output_key;
   }
   //---------------------------------------------------------------
-  bool construct_miner_tx(size_t height, size_t median_weight, uint64_t already_generated_coins, size_t current_block_weight, uint64_t fee, const account_public_address &miner_address, transaction& tx, const blobdata& extra_nonce, size_t max_outs, uint8_t hard_fork_version, network_type nettype) {
+  bool construct_miner_tx(size_t height, size_t median_weight, uint64_t already_generated_coins, size_t current_block_weight, uint64_t fee, const account_public_address &miner_address, transaction& tx, const blobdata& extra_nonce, uint8_t hard_fork_version, network_type nettype) {
     tx.vin.clear();
     tx.vout.clear();
     tx.extra.clear();

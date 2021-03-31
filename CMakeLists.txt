@@ -126,7 +126,7 @@ if(IOS)
 endif()
 
 project(wallstreetbets
-  VERSION 8.1.0
+  VERSION 8.1.1
   LANGUAGES CXX C)
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 7.3.0)
@@ -425,7 +425,7 @@ endif()
 
 if(BUILD_SHARED_LIBS)
   statusinfo("Building internal libraries with Position Independent Code")
-  add_definition("-DBUILD_SHARED_LIBS")
+  add_definitions("-DBUILD_SHARED_LIBS")
 else()
   statusinfo("Building internals libraries as static")
 endif()
