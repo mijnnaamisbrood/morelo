@@ -1307,7 +1307,6 @@ namespace wallet_rpc
     typedef epee::misc_utils::struct_init<response_t> response;
   };
 
-  typedef std::vector<uint64_t> amounts_container;
   struct transfer_entry
   {
     std::string txid;
@@ -1315,7 +1314,6 @@ namespace wallet_rpc
     uint64_t height;
     uint64_t timestamp;
     uint64_t amount;
-    amounts_container amounts;
     uint64_t fee;
     std::string note;
     std::list<transfer_destination> destinations;
@@ -1333,7 +1331,6 @@ namespace wallet_rpc
       KV_SERIALIZE(height)
       KV_SERIALIZE(timestamp)
       KV_SERIALIZE(amount)
-      KV_SERIALIZE(amounts)
       KV_SERIALIZE(fee)
       KV_SERIALIZE(note)
       KV_SERIALIZE(destinations)

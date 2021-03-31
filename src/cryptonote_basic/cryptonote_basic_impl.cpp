@@ -85,7 +85,7 @@ namespace cryptonote {
   uint64_t get_penalized_amount(const uint64_t amount, const size_t median_weight, const size_t current_block_weight)
   {
     assert(median_weight < std::numeric_limits<uint32_t>::max());
-    assert(current_block_weight < std:::numeric_limits<uint32_t>::max());
+    assert(current_block_weight < std::numeric_limits<uint32_t>::max());
 
     if(amount == 0)
       return amount;
