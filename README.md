@@ -176,7 +176,7 @@ $ git clone git@github.com:wsbc-coin/wallstreetbets.git
 
 If you already have a repo cloned, initialize and update:
 
-$ cd wallstreetbets && git checkout release-v8.1
+$ cd wallstreetbets && git checkout release-v8.2
 
 $ git submodule init && git submodule update
 
@@ -199,9 +199,9 @@ invokes cmake commands as needed.
     available per thread.
 
 
-* The resulting executables can be found in `build/<host>/release-v8.1/release/bin`
+* The resulting executables can be found in `build/<host>/release-v8.2/release/bin`
 
-* Add `PATH="$PATH:$HOME/wallstreetbets/build/release-v8.1/release/bin"` to `.profile`
+* Add `PATH="$PATH:$HOME/wallstreetbets/build/release-v8.2/release/bin"` to `.profile`
 
 * Run WallStreetBets with `wallstreetbetsd --detach`
 
@@ -242,7 +242,7 @@ Tested on a Raspberry Pi Zero with a clean install of minimal Raspbian Stretch (
 ```
 * Clone wallstreetbets and checkout most recent release version:
 ```
-  git clone git@github.com:wsbc-coin/wallstreetbets.git -b release-v8.1 --recursive
+  git clone git@github.com:wsbc-coin/wallstreetbets.git -b release-v8.2 --recursive
 	cd wallstreetbets
 
 ```
