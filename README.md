@@ -252,9 +252,9 @@ Tested on a Raspberry Pi Zero with a clean install of minimal Raspbian Stretch (
 ```
 * Wait 4-6 hours
 
-* The resulting executables can be found in `build/<host>/release-v8.1/release/bin`
+* The resulting executables can be found in `build/<host>/release-v8.2/release/bin`
 
-* Add `PATH="$PATH:$HOME/wallstreetbets/build/<host>/release-v8.1/release/bin"` to `.profile`
+* Add `PATH="$PATH:$HOME/wallstreetbets/build/<host>/release-v8.2/release/bin"` to `.profile`
 
 * Run WallStreetBets with `wallstreetbetsd --detach`
 
@@ -328,7 +328,7 @@ application.
 
 * Download WallStreetBets with command:
 
-	`git clone git@github.com:wsbc-coin/wallstreetbets.git -b release-v8.1 --recursive
+	`git clone git@github.com:wsbc-coin/wallstreetbets.git -b release-v8.2 --recursive
 
 * Change branch to last Release:
 
@@ -342,7 +342,7 @@ application.
 
         make release-static-win
 
-* The resulting executables can be found in `build/MINGW64_NT-10.0-nnnnn/release-v8.1/release/bin (where "nnnnn" point to msys2_mingw wersion)`
+* The resulting executables can be found in `build/MINGW64_NT-10.0-nnnnn/release-v8.2/release/bin (where "nnnnn" point to msys2_mingw wersion)`
 
 * **Optional**: to build Windows binaries suitable for debugging on a 64-bit system, run:
 
