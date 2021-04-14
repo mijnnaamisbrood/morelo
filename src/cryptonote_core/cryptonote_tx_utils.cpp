@@ -102,23 +102,12 @@ namespace cryptonote
     return k;
   }
 
-  uint64_t get_governance_reward(uint64_t height, uint64_t base_reward, uint8_t hard_fork_version, network_type nettype)
+  uint64_t get_governance_reward(uint64_t height, uint64_t base_reward, uint8_t hard_fork_version)
   {
-    if(nettype == cryptonote::MAINNET)
-    {
-      if(hard_fork_version >= 16)
-      {
-        if(height < 9022)
-          return base_reward * 10 / 100;
-        else
-          return base_reward * 0.1 / 100;
-      }
-    }
-    else
-    {
-      if(hard_fork_version >= 16)
-        return base_reward * 10 / 100;
-    }
+    if(hard_fork_version > 15 && height < 9022)
+      return base_reward * 10 / 100;
+    else if(hard_fork_version < 18 && height >= 9022)
+      return base_reward * 0.1 / 100;
     return 0;
   }
 
@@ -166,7 +155,8 @@ namespace cryptonote
     return correct_key == output_key;
   }
   //---------------------------------------------------------------
-  bool construct_miner_tx(size_t height, size_t median_weight, uint64_t already_generated_coins, size_t current_block_weight, uint64_t fee, const account_public_address &miner_address, transaction& tx, const blobdata& extra_nonce, uint8_t hard_fork_version, network_type nettype) {
+  bool construct_miner_tx(size_t height, size_t median_weight, uint64_t already_generated_coins, size_t current_block_weight, uint64_t fee, const account_public_address &miner_address, transaction& tx, const blobdata& extra_nonce, uint8_t hard_fork_version, network_type nettype)
+  {
     tx.vin.clear();
     tx.vout.clear();
     tx.extra.clear();
@@ -199,9 +189,9 @@ namespace cryptonote
 #endif
 
     uint64_t governance_reward = 0;
-    if(hard_fork_version >= 16)
+    if(hard_fork_version > 15 && hard_fork_version < 18)
     {
-      governance_reward = get_governance_reward(height, block_reward, hard_fork_version, nettype);
+      governance_reward = get_governance_reward(height, block_reward, hard_fork_version);
       block_reward -= governance_reward;
     }
 
@@ -223,7 +213,7 @@ namespace cryptonote
     out.target = tk;
     tx.vout.push_back(out);
 
-    if(hard_fork_version >= 16)
+    if(hard_fork_version > 15 && hard_fork_version < 18)
     {
       keypair gov_key = get_deterministic_keypair_from_height(height);
       add_tx_pub_key_to_extra(tx, gov_key.pub);
@@ -256,7 +246,6 @@ namespace cryptonote
 
       txout_to_key tk;
       tk.key = out_eph_public_key;
-
       tx_out out;
       summary_amounts += out.amount = governance_reward;
       out.target = tk;
@@ -732,7 +721,7 @@ namespace cryptonote
     bl.nonce = config::GENESIS_NONCE;
     miner::find_nonce_for_given_block([](const cryptonote::block &b, uint64_t height, const crypto::hash *seed_hash, unsigned int threads, crypto::hash &hash){
       return cryptonote::get_block_longhash(NULL, b, hash, height, seed_hash, threads);
-    }, bl, 0, 0, NULL);
+    }, bl, 1, 0, NULL);
     bl.invalidate_hashes();
     return true;
   }

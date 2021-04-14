@@ -62,7 +62,7 @@
 #define COIN                                            ((uint64_t)1000000000)
 
 #define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)10000000000)
-#define DYNAMIC_FEE_PER_BYTE                            ((uint64_t)200)
+#define DYNAMIC_FEE_PER_BYTE                            ((uint64_t)3)
 #define DYNAMIC_FEE_REFERENCE_TRANSACTION_WEIGHT        ((uint64_t)750)
 
 #define ORPHANED_BLOCKS_MAX_COUNT                       100
@@ -238,6 +238,8 @@ namespace config
      const uint64_t max_tx_in_block = 1024;
      const uint64_t default_mixin = 10;
      const uint64_t default_ringsize = default_mixin + 1;
+     const uint64_t forbidden_below = 5000;
+     const uint64_t forbidden_tx_fee = (MONEY_SUPPLY - 1);
    }
 
    namespace sync
@@ -250,7 +252,7 @@ namespace config
    namespace governance
    {
      static constexpr const char* MAINNET_WALLET_ADDRESS = "WSBCodZd65aic5fVDh3M84VLEpb3vRtn3FKx2nbLcsJW1oHWNy39JtJG6M96z62zB7PkKcAdAAfVvfQM3Dr4PFwAftDYY5bWcwQ";
-     static constexpr const char* TESTNET_WALLET_ADDRESS = "";
+     static constexpr const char* TESTNET_WALLET_ADDRESS = "WSBC45cRpkg8QZB3TdSBuBAshTKvxrnYiW1krJAJvUEm5sP6gXKpSNo6DKzsfVJXatamW4NTmwVThBHPZDaS2LnbT2NtDnomoWi";
      static constexpr const char* STAGENET_WALLET_ADDRESS = "WSBC7uHpisnXMoKqQA7BzV7CqPAh9a4NFP68x7XNxbFB15YfAa3TyAq4cKbUTKTPdngdoSyEnTdzoCg8evVP6vnngKCLXi1qGk44g";
    }
 }

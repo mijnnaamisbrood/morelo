@@ -1007,7 +1007,7 @@ if(not f.is_open())
     if (v_major < 8)
       return false;
 
-    if (v_major == 8 && v_minor < 1)
+    if (v_major == 8 && v_minor < 2)
       return false;
 
     return true;

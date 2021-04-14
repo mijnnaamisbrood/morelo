@@ -239,6 +239,7 @@ BEGIN_RPC_MESSAGE_CLASS(GetBlockTemplate);
     RPC_MESSAGE_MEMBER(uint64_t, reserve_size);
     RPC_MESSAGE_MEMBER(std::string, wallet_address);
     RPC_MESSAGE_MEMBER(std::string, prev_block);
+    RPC_MESSAGE_MEMBER(std::string, extra_nonce);
   END_RPC_MESSAGE_REQUEST;
   BEGIN_RPC_MESSAGE_RESPONSE;
     RPC_MESSAGE_MEMBER(std::string, blockhashing_blob);

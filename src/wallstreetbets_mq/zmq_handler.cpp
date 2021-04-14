@@ -558,6 +558,20 @@ namespace wallstreetbetsMQ
       return;
     }
 
+    if(req.reserve_size && !req.extra_nonce.empty())
+    {
+      res.status  = cryptonote::rpc::Message::STATUS_FAILED;
+      res.error_details = "Cannot specify both a reserve_size and an extra_nonce";
+      return;
+    }
+
+    if(req.extra_nonce.size() > 510)
+    {
+      res.status  = cryptonote::rpc::Message::STATUS_FAILED;
+      res.error_details = "Too big extra_nonce size, maximum 510 hex chars";
+      return;
+    }
+
     cryptonote::address_parse_info info;
 
     if(!req.wallet_address.size() || !cryptonote::get_account_address_from_str(info, nettype(), req.wallet_address))
@@ -575,7 +589,17 @@ namespace wallstreetbetsMQ
 
     cryptonote::block b;
     cryptonote::blobdata blob_reserve;
-    blob_reserve.resize(req.reserve_size, 0);
+    if(!req.extra_nonce.empty())
+    {
+      if(!string_tools::parse_hexstr_to_binbuff(req.extra_nonce, blob_reserve))
+      {
+        res.status = cryptonote::rpc::Message::STATUS_FAILED;
+        res.error_details = "Parameter extra_nonce should be a hex string";
+        return;
+      }
+    }
+    else
+      blob_reserve.resize(req.reserve_size, 0);
     size_t reserved_offset;
     crypto::hash seed_hash, next_seed_hash;
     if(!get_block_template(info.address, NULL, blob_reserve, reserved_offset, res.difficulty, res.height, res.expected_reward, b, res.seed_height, seed_hash, next_seed_hash, res))

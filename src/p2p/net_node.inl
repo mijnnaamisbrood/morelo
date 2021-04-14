@@ -758,7 +758,7 @@ namespace nodetool
         return;
       }
 
-      if(rsp.payload_data.current_height >= 49600)
+      if(rsp.payload_data.hf_version >= 18)
         if(!tools::check_remote_client_version(rsp.payload_data.client_version))
         {
           MGINFO_MAGENTA("COMMAND_HANDSHAKE Failed due to Wrong Client Version: " << rsp.payload_data.client_version << ", Closing Connection.");
@@ -1894,7 +1894,7 @@ namespace nodetool
   template<class t_payload_net_handler>
   int node_server<t_payload_net_handler>::handle_handshake(int command, typename COMMAND_HANDSHAKE::request& arg, typename COMMAND_HANDSHAKE::response& rsp, p2p_connection_context& context)
   {
-    if(arg.payload_data.current_height >= 49600)
+    if(arg.payload_data.hf_version >= 18)
     {
       if(!tools::check_remote_client_version(arg.payload_data.client_version))
       {
@@ -2001,7 +2001,8 @@ namespace nodetool
     zone.m_peerlist.get_peerlist_head(rsp.local_peerlist_new, true);
     get_local_node_data(rsp.node_data, zone);
     m_payload_handler.get_payload_sync_data(rsp.payload_data);
-    MGINFO_GREEN("COMMAND_HANDSHAKE: v" << arg.payload_data.client_version << " top: " << epee::string_tools::pod_to_hex(arg.payload_data.top_id).substr(0,6) << "@" << arg.payload_data.current_height - 1);
+    MGINFO_GREEN("COMMAND_HANDSHAKE: WSBC client version: " << arg.payload_data.client_version << " top: " << epee::string_tools::pod_to_hex(arg.payload_data.top_id).substr(0,6) << "@"
+                                                            << arg.payload_data.current_height - 1 << " HardFork Version: " << arg.payload_data.hf_version);
     return 1;
   }
   //-----------------------------------------------------------------------------------

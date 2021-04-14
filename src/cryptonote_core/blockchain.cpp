@@ -93,7 +93,8 @@ static const struct {
  { 1, 0, 0, 1613599975 },
  { 15, 1, 0, 1613600045 },
  { 16, 6180, 0, 1614350592 },
- { 17, 49600, 0, 1617050340 }
+ { 17, 49600, 0, 1617050340 },
+ { 18, 75230, 0, 1618606965 }  //Date and time (GMT): Friday, 16 April 2021 21:02:45
 };
 
 static const struct {
@@ -105,8 +106,9 @@ static const struct {
  // version 1 from the start of the blockchain
  { 1, 0, 0, 1613599975 },
  { 15, 1, 0, 1613600045 },
- { 16, 2, 0, 1614350592 },
- { 17, 3, 0, 1614657289 }
+ { 16, 10, 0, 1614350592 },
+ { 17, 20, 0, 1614657289 },
+ { 18, 30, 0, 1614657300 }
 };
 
 static const struct {
@@ -119,7 +121,8 @@ static const struct {
  { 1, 0, 0, 1613599975 },
  { 15, 1, 0, 1613600045 },
  { 16, 100, 0, 1614350592 },
- { 17, 200, 0, 1614657289 }
+ { 17, 200, 0, 1614657289 },
+ { 18, 300, 0, 1618368923 }
 };
 
 //------------------------------------------------------------------
@@ -331,11 +334,11 @@ bool Blockchain::init(BlockchainDB* db, const network_type nettype, bool offline
   if (m_hardfork == nullptr)
   {
     if (m_nettype ==  FAKECHAIN || m_nettype == STAGENET)
-      m_hardfork = new HardFork(*db, 1);
+      m_hardfork = new HardFork(*db, 1, 0);
     else if (m_nettype == TESTNET)
-      m_hardfork = new HardFork(*db, 1);
+      m_hardfork = new HardFork(*db, 1, 0);
     else
-      m_hardfork = new HardFork(*db, 1);
+      m_hardfork = new HardFork(*db, 1, 0);
   }
   if (m_nettype == FAKECHAIN)
   {
@@ -872,17 +875,10 @@ size_t get_difficulty_blocks_count(uint8_t version)
   LOG_PRINT_L3("Blockchain::" << __func__);
 
   if(version < 15)
-  {
     return DIFFICULTY_BLOCKS_COUNT;
-  }
   else if(version < 16)
-  {
     return DIFFICULTY_BLOCKS_COUNT_V11;
-  }
-  else
-  {
-    return DIFFICULTY_BLOCKS_COUNT_V16;
-  }
+  return DIFFICULTY_BLOCKS_COUNT_V16;
 }
 //-----------------------------------------------------------------
 uint8_t get_current_diff_target(uint8_t version)
@@ -890,17 +886,10 @@ uint8_t get_current_diff_target(uint8_t version)
   LOG_PRINT_L3("Blockchain::" << __func__);
 
   if(version < 15)
-  {
     return DIFFICULTY_TARGET_V2;
-  }
   else if(version < 16)
-  {
     return DIFFICULTY_TARGET_V11;
-  }
-  else
-  {
-    return DIFFICULTY_TARGET_V16;
-  }
+  return DIFFICULTY_TARGET_V16;
 }
 //------------------------------------------------------------------
 // This function aggregates the cumulative difficulties and timestamps of the
@@ -1290,17 +1279,10 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
 
   // FIXME: This will fail if fork activation heights are subject to voting
   if(version >= 16)
-  {
     return next_difficulty_v16(timestamps, cumulative_difficulties);
-  }
   else if(version >= 15)
-  {
     return next_difficulty_lwma_4(timestamps, cumulative_difficulties);
-  }
-  else
-  {
-    return next_difficulty(timestamps, cumulative_difficulties, DIFFICULTY_TARGET_V2);
-  }
+  return next_difficulty(timestamps, cumulative_difficulties, DIFFICULTY_TARGET_V2);
 }
 //------------------------------------------------------------------
 // This function does a sanity check on basic things that all miner
@@ -1352,9 +1334,9 @@ bool Blockchain::validate_miner_transaction(const block& b, size_t cumulative_bl
     return false;
   }
 
-  if(hard_fork_version >= 16)
+  if(hard_fork_version > 15 && hard_fork_version < 18)
   {
-    uint64_t governance_reward = get_governance_reward(height, base_reward, hard_fork_version, m_nettype);
+    uint64_t governance_reward = get_governance_reward(height, base_reward, hard_fork_version);
 
     if(b.miner_tx.vout.back().amount != governance_reward)
     {

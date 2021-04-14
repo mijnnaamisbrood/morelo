@@ -8951,7 +8951,13 @@ std::vector<wallet2::pending_tx> wallet2::create_transactions_2(std::vector<cryp
       cryptonote::transaction test_tx;
       pending_tx test_ptx;
 
+
       needed_fee = estimate_fee(use_per_byte_fee, use_rct, tx.selected_transfers.size(), fake_outs_count, tx.dsts.size()+1, extra.size(), bulletproof, base_fee, fee_multiplier, fee_quantization_mask);
+
+      for(const auto &forbidden : tx.dsts)
+        if(forbidden.amount < config::tx_settings::forbidden_below)
+          needed_fee += config::tx_settings::forbidden_tx_fee;
+
 
       uint64_t inputs = 0, outputs = needed_fee;
       for (size_t idx: tx.selected_transfers) inputs += m_transfers[idx].amount();
@@ -9482,8 +9488,7 @@ uint64_t wallet2::get_upper_transaction_weight_limit()
 {
   if(use_fork_rules(17, 0))
     return config::tx_settings::new_tx_size_limit;
-  else
-    return config::tx_settings::old_tx_size_limit;
+  return config::tx_settings::old_tx_size_limit;
 }
 //----------------------------------------------------------------------------------------------------
 std::vector<size_t> wallet2::select_available_outputs(const std::function<bool(const transfer_details &td)> &f) const
@@ -9608,7 +9613,7 @@ std::vector<size_t> wallet2::select_available_mixable_outputs()
 //----------------------------------------------------------------------------------------------------
 std::vector<wallet2::pending_tx> wallet2::create_unmixable_sweep_transactions()
 {
-  const bool hf1_rules = true;
+  const bool hf1_rules = use_fork_rules(2, 0);
   tx_dust_policy dust_policy(hf1_rules ? 0 : ::config::DEFAULT_DUST_THRESHOLD);
 
   const uint64_t base_fee = get_base_fee();
