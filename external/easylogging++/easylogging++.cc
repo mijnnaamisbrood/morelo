@@ -18,7 +18,6 @@
 #include "easylogging++.h"
 
 #include <unistd.h>
-#include <boost/algorithm/string.hpp>
 
 #if defined(AUTO_INITIALIZE_EASYLOGGINGPP)
 INITIALIZE_EASYLOGGINGPP
@@ -682,6 +681,13 @@ void LogBuilder::convertToColoredOutput(base::type::string_t* logLine, Level lev
     else if (level == Level::Trace)
       *logLine = ELPP_LITERAL("\x1b[35m") + *logLine + resetColor;
   }
+}
+
+void LogBuilder::setColor(Color color, bool bright) {
+#if !ELPP_OS_WINDOWS
+  if (m_termSupportsColor)
+#endif
+    el::base::utils::setConsoleColor(color, bright);
 }
 
 // Logger
@@ -2193,27 +2199,26 @@ std::string VRegistry::getCategories() {
   return m_categoriesString;
 }
 
-bool VRegistry::allowed(Level level, const char* category) {
+bool VRegistry::allowed(Level level, const std::string &category) {
   const int pri = priority(level);
   if (pri > m_lowest_priority)
     return false;
   base::threading::ScopedLock scopedLock(lock());
-  const std::string scategory = category;
-  const std::map<std::string, int>::const_iterator it = m_cached_allowed_categories.find(scategory);
+  const std::map<std::string, int>::const_iterator it = m_cached_allowed_categories.find(category);
   if (it != m_cached_allowed_categories.end())
     return pri <= it->second;
-  if (m_categories.empty() || category == nullptr) {
+  if (m_categories.empty()) {
     return false;
   } else {
     std::vector<std::pair<std::string, Level>>::const_reverse_iterator it = m_categories.rbegin();
     for (; it != m_categories.rend(); ++it) {
-      if (base::utils::Str::wildCardMatch(category, it->first.c_str())) {
+      if (base::utils::Str::wildCardMatch(category.c_str(), it->first.c_str())) {
         const int p = priority(it->second);
-        m_cached_allowed_categories.insert(std::make_pair(std::move(scategory), p));
+        m_cached_allowed_categories.insert(std::make_pair(category, p));
         return pri <= p;
       }
     }
-    m_cached_allowed_categories.insert(std::make_pair(std::move(scategory), -1));
+    m_cached_allowed_categories.insert(std::make_pair(category, -1));
     return false;
   }
 }
@@ -2257,16 +2262,11 @@ void VRegistry::setFromArgs(const base::utils::CommandLineArgs* commandLineArgs)
 #   define ELPP_DEFAULT_LOGGING_FLAGS 0x0
 #endif // !defined(ELPP_DEFAULT_LOGGING_FLAGS)
 // Storage
-el::base::type::StoragePointer getresetELPP(bool reset)
+el::base::type::StoragePointer &el::base::Storage::getELPP()
 {
-  static el::base::type::StoragePointer p(new el::base::Storage(el::LogBuilderPtr(new el::base::DefaultLogBuilder())));
-  if (reset)
-    p = NULL;
-  return p;
-}
-el::base::type::StoragePointer el::base::Storage::getELPP()
-{
-  return getresetELPP(false);
+  if (!el::base::elStorage)
+    el::base::elStorage = new el::base::Storage(el::LogBuilderPtr(new el::base::DefaultLogBuilder()));
+  return el::base::elStorage;
 }
 static struct EnsureELPP { EnsureELPP() { el::base::Storage::getELPP(); } } ensureELPP;
 #if ELPP_ASYNC_LOGGING
@@ -2323,7 +2323,6 @@ Storage::Storage(const LogBuilderPtr& defaultLogBuilder) :
 
 Storage::~Storage(void) {
   ELPP_INTERNAL_INFO(4, "Destroying storage");
-  getresetELPP(true);
 #if ELPP_ASYNC_LOGGING
   ELPP_INTERNAL_INFO(5, "Replacing log dispatch callback to synchronous");
   uninstallLogDispatchCallback<base::AsyncLogDispatchCallback>(std::string("AsyncLogDispatchCallback"));
@@ -2445,7 +2444,19 @@ void DefaultLogDispatchCallback::handle(const LogDispatchData* data) {
   if (strchr(msg.c_str(), '\n'))
   {
     std::vector<std::string> v;
-    boost::split(v, msg, boost::is_any_of("\n"));
+    const char *s = msg.c_str();
+    while (true)
+    {
+      const char *ptr = strchr(s, '\n');
+      if (!ptr)
+      {
+        if (*s)
+          v.push_back(s);
+        break;
+      }
+      v.push_back(std::string(s, ptr - s));
+      s = ptr + 1;
+    }
     for (const std::string &s: v)
     {
       LogMessage msgline(logmsg->level(), logmsg->color(), logmsg->file(), logmsg->line(), logmsg->func(), logmsg->verboseLevel(), logmsg->logger(), &s);
@@ -2492,11 +2503,11 @@ void DefaultLogDispatchCallback::dispatch(base::type::string_t&& rawLinePrefix, 
       if (m_data->logMessage()->logger()->m_typedConfigurations->toStandardOutput(m_data->logMessage()->level())) {
         const el::Level level = m_data->logMessage()->level();
         const el::Color color = m_data->logMessage()->color();
-        el::base::utils::setConsoleColor(el::base::utils::colorFromLevel(level), false);
+        m_data->logMessage()->logger()->logBuilder()->setColor(el::base::utils::colorFromLevel(level), false);
         ELPP_COUT << rawLinePrefix;
-        el::base::utils::setConsoleColor(color == el::Color::Default ? el::base::utils::colorFromLevel(level): color, color != el::Color::Default);
+        m_data->logMessage()->logger()->logBuilder()->setColor(color == el::Color::Default ? el::base::utils::colorFromLevel(level): color, color != el::Color::Default);
         ELPP_COUT << rawLinePayload;
-        el::base::utils::setConsoleColor(el::Color::Default, false);
+        m_data->logMessage()->logger()->logBuilder()->setColor(el::Color::Default, false);
         ELPP_COUT << std::flush;
       }
     }
@@ -2840,7 +2851,7 @@ void Writer::initializeLogger(const std::string& loggerId, bool lookup, bool nee
     }
     if (ELPP->hasFlag(LoggingFlag::HierarchicalLogging)) {
       m_proceed = m_level == Level::Verbose ? m_logger->enabled(m_level) :
-                  ELPP->vRegistry()->allowed(m_level, loggerId.c_str());
+                  ELPP->vRegistry()->allowed(m_level, loggerId);
     } else {
       m_proceed = m_logger->enabled(m_level);
     }

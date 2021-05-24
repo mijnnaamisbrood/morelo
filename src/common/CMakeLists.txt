@@ -28,6 +28,7 @@
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 include_directories(${OPENSSL_INCLUDE_DIR})
+include_directories(${UNBOUND_INCLUDE})
 
 set(common_sources
   base58.cpp
@@ -100,6 +101,7 @@ target_link_libraries(common
     libunbound
     miniupnpc
     ${LIBUNWIND_LIBRARIES}
+    ${Boost_PROGRAM_OPTIONS_LIBRARY}
     ${Boost_DATE_TIME_LIBRARY}
     ${Boost_FILESYSTEM_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}

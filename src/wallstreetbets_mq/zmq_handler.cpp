@@ -36,6 +36,7 @@
 #include "cryptonote_basic/cryptonote_format_utils.h"
 #include "cryptonote_basic/blobdatatype.h"
 #include "ringct/rctSigs.h"
+#include "version.h"
 
 namespace wallstreetbetsMQ
 {
@@ -49,9 +50,9 @@ namespace wallstreetbetsMQ
 
   void ZmqHandler::handle(const cryptonote::rpc::GetBlocksFast::Request& req, cryptonote::rpc::GetBlocksFast::Response& res)
   {
-    std::vector<std::pair<std::pair<cryptonote::blobdata, crypto::hash>, std::vector<std::pair<crypto::hash, cryptonote::blobdata>>>> blocks;
+    std::vector<std::pair<std::pair<cryptonote::blobdata, crypto::hash>, std::vector<std::pair<crypto::hash, cryptonote::blobdata> > > > blocks;
 
-    if(!m_core.find_blockchain_supplement(req.start_height, req.block_ids, blocks, res.current_height, res.start_height, req.prune, true, COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT))
+    if(!m_core.find_blockchain_supplement(req.start_height, req.block_ids, blocks, res.current_height, res.start_height, req.prune, true, COMMAND_RPC_GET_BLOCKS_FAST_MAX_BLOCK_COUNT, COMMAND_RPC_GET_BLOCKS_FAST_MAX_TX_COUNT))
     {
       res.status = cryptonote::rpc::Message::STATUS_FAILED;
       res.error_details = "core::find_blockchain_supplement() returned false";
@@ -139,7 +140,7 @@ namespace wallstreetbetsMQ
 
     auto& chain = m_core.get_blockchain_storage();
 
-    if (!chain.find_blockchain_supplement(req.known_hashes, res.hashes, res.start_height, res.current_height, false))
+    if (!chain.find_blockchain_supplement(req.known_hashes, res.hashes, NULL, res.start_height, res.current_height, false))
     {
       res.status = cryptonote::rpc::Message::STATUS_FAILED;
       res.error_details = "Blockchain::find_blockchain_supplement() returned false";
@@ -289,7 +290,7 @@ namespace wallstreetbetsMQ
     cryptonote::cryptonote_connection_context fake_context = AUTO_VAL_INIT(fake_context);
     cryptonote::tx_verification_context tvc = AUTO_VAL_INIT(tvc);
 
-    if(!m_core.handle_incoming_tx(tx_blob, tvc, false, false, !relay) || tvc.m_verifivation_failed)
+    if(!m_core.handle_incoming_tx({tx_blob, crypto::null_hash}, tvc, false, false, !relay) || tvc.m_verifivation_failed)
     {
       if (tvc.m_verifivation_failed)
       {
@@ -839,12 +840,12 @@ namespace wallstreetbetsMQ
 
   void ZmqHandler::handle(const cryptonote::rpc::GetOutputHistogram::Request& req, cryptonote::rpc::GetOutputHistogram::Response& res)
   {
-    std::map<uint64_t, std::tuple<uint64_t, uint64_t, uint64_t> > histogram;
+    std::map<uint64_t, std::tuple<uint64_t, uint64_t, uint64_t>> histogram;
     try
     {
       histogram = m_core.get_blockchain_storage().get_output_histogram(req.amounts, req.unlocked, req.recent_cutoff);
     }
-    catch (const std::exception &e)
+    catch (const std::exception& e)
     {
       res.status = cryptonote::rpc::Message::STATUS_FAILED;
       res.error_details = e.what();

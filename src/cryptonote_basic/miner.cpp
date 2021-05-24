@@ -95,7 +95,7 @@ namespace cryptonote
 
 
   miner::miner(i_miner_handler* phandler, const get_block_hash_t &gbh):m_stop(1),
-    m_template({}),
+    m_template{},
     m_template_no(0),
     m_diffic(0),
     m_thread_index(0),

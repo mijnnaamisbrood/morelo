@@ -413,12 +413,12 @@ namespace cryptonote
       }
     }
 
-    size_t max_blocks = COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT;
+    size_t max_blocks = COMMAND_RPC_GET_BLOCKS_FAST_MAX_BLOCK_COUNT;
     if (m_rpc_payment)
     {
       max_blocks = res.credits / COST_PER_BLOCK;
-      if (max_blocks > COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT)
-        max_blocks = COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT;
+      if (max_blocks > COMMAND_RPC_GET_BLOCKS_FAST_MAX_BLOCK_COUNT)
+        max_blocks = COMMAND_RPC_GET_BLOCKS_FAST_MAX_BLOCK_COUNT;
       if (max_blocks == 0)
       {
         res.status = CORE_RPC_STATUS_PAYMENT_REQUIRED;
@@ -427,7 +427,7 @@ namespace cryptonote
     }
 
     std::vector<std::pair<std::pair<cryptonote::blobdata, crypto::hash>, std::vector<std::pair<crypto::hash, cryptonote::blobdata>>>> bs;
-    if(!m_core.find_blockchain_supplement(req.start_height, req.block_ids, bs, res.current_height, res.start_height, req.prune, !req.no_miner_tx, max_blocks))
+    if(!m_core.find_blockchain_supplement(req.start_height, req.block_ids, bs, res.current_height, res.start_height, req.prune, !req.no_miner_tx, max_blocks, COMMAND_RPC_GET_BLOCKS_FAST_MAX_TX_COUNT))
     {
       res.status = "Failed";
       return false;
@@ -441,6 +441,7 @@ namespace cryptonote
     for(auto& bd: bs)
     {
       res.blocks.resize(res.blocks.size()+1);
+      res.blocks.back().pruned = req.prune;
       res.blocks.back().block = bd.first.first;
       pruned_size += bd.first.first.size();
       unpruned_size += bd.first.first.size();
@@ -453,10 +454,10 @@ namespace cryptonote
       for (std::vector<std::pair<crypto::hash, cryptonote::blobdata>>::iterator i = bd.second.begin(); i != bd.second.end(); ++i)
       {
         unpruned_size += i->second.size();
-        res.blocks.back().txs.push_back(std::move(i->second));
+        res.blocks.back().txs.push_back({std::move(i->second), crypto::null_hash});
         i->second.clear();
         i->second.shrink_to_fit();
-        pruned_size += res.blocks.back().txs.back().size();
+        pruned_size += res.blocks.back().txs.back().blob.size();
       }
 
       const size_t n_txes_to_lookup = bd.second.size() + (req.no_miner_tx ? 0 : 1);
@@ -539,7 +540,7 @@ namespace cryptonote
       res.blocks.resize(res.blocks.size() + 1);
       res.blocks.back().block = block_to_blob(blk);
       for (auto& tx : txs)
-        res.blocks.back().txs.push_back(tx_to_blob(tx));
+        res.blocks.back().txs.push_back({tx_to_blob(tx), crypto::null_hash});
     }
     res.status = CORE_RPC_STATUS_OK;
     return true;
@@ -555,7 +556,7 @@ namespace cryptonote
     CHECK_PAYMENT(req, res, 1);
 
     res.start_height = req.start_height;
-    if(!m_core.get_blockchain_storage().find_blockchain_supplement(req.block_ids, res.m_block_ids, res.start_height, res.current_height, false))
+    if(!m_core.get_blockchain_storage().find_blockchain_supplement(req.block_ids, res.m_block_ids, NULL, res.start_height, res.current_height, false))
     {
       res.status = "Failed";
       return false;
@@ -988,7 +989,7 @@ namespace cryptonote
 
     cryptonote_connection_context fake_context = AUTO_VAL_INIT(fake_context);
     tx_verification_context tvc = AUTO_VAL_INIT(tvc);
-    if(!m_core.handle_incoming_tx(tx_blob, tvc, false, false, req.do_not_relay) || tvc.m_verifivation_failed)
+    if(!m_core.handle_incoming_tx({tx_blob, crypto::null_hash},  tvc, false, false, req.do_not_relay) || tvc.m_verifivation_failed)
     {
       res.status = "Failed";
       std::string reason = "";
@@ -1938,10 +1939,10 @@ namespace cryptonote
     if (use_bootstrap_daemon_if_necessary<COMMAND_RPC_GET_BLOCKS_RANGE>(invoke_http_mode::JON_RPC, "getblocksrange", req, res, r))
       return r;
     size_t number_req_blocks = req.end_height - req.start_height + 1;
-    if (number_req_blocks > COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT)
+    if (number_req_blocks > COMMAND_RPC_GET_BLOCKS_FAST_MAX_BLOCK_COUNT)
     {
       error_resp.code = CORE_RPC_ERROR_CODE_WRONG_PARAM;
-      error_resp.message = "Requested " + boost::lexical_cast<std::string>(number_req_blocks) +  " blocks. Limit is " + boost::lexical_cast<std::string>(COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT) + " blocks!";
+      error_resp.message = "Requested " + boost::lexical_cast<std::string>(number_req_blocks) +  " blocks. Limit is " + boost::lexical_cast<std::string>(COMMAND_RPC_GET_BLOCKS_FAST_MAX_BLOCK_COUNT) + " blocks!";
       return false;
     }
     const uint64_t bc_height = m_core.get_current_blockchain_height();

@@ -220,7 +220,6 @@ namespace nodetool
       : m_payload_handler(payload_handler),
         m_external_port(0),
         m_rpc_port(0),
-        m_zmq_port(0),
         m_rpc_credits_per_hash(0),
         m_allow_local_ip(false),
         m_hide_my_port(false),
@@ -437,7 +436,7 @@ namespace nodetool
     uint32_t m_listening_port;
     uint32_t m_external_port;
     uint16_t m_rpc_port;
-	uint16_t m_zmq_port;
+    uint16_t m_zmq_port;
     uint16_t m_zmq_max_clients;
     bool m_zmq_enabled;
     uint32_t m_rpc_credits_per_hash;

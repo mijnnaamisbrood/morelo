@@ -31,7 +31,6 @@
 
 
 #include <boost/thread.hpp>
-#include <boost/bind/bind.hpp>
 
 #include "net/abstract_tcp_server2.h"
 #include "http_protocol_handler.h"
@@ -39,6 +38,8 @@
 
 #undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
 #define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "net.http"
+
+using namespace boost::placeholders;
 
 namespace epee
 {

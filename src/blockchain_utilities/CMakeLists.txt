@@ -27,17 +27,30 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+add_library(wsbc_bc_std_libs INTERFACE)
+target_link_libraries(wsbc_bc_std_libs
+  INTERFACE
+    cryptonote_core
+    lmdb
+    blockchain_db
+    version
+    epee
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
+    ${Boost_THREAD_LIBRARY}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${EXTRA_LIBRARIES})
+
+
 set(blockchain_import_sources
   blockchain_import.cpp
   bootstrap_file.cpp
-  blocksdat_file.cpp
-  )
+  blocksdat_file.cpp)
 
 set(blockchain_import_private_headers
   bootstrap_file.h
   blocksdat_file.h
-  bootstrap_serialization.h
-  )
+  bootstrap_serialization.h)
 
 wallstreetbets_private_headers(blockchain_import
 	  ${blockchain_import_private_headers})
@@ -45,35 +58,30 @@ wallstreetbets_private_headers(blockchain_import
 set(blockchain_export_sources
   blockchain_export.cpp
   bootstrap_file.cpp
-  blocksdat_file.cpp
-  )
+  blocksdat_file.cpp)
 
 set(blockchain_export_private_headers
   bootstrap_file.h
   blocksdat_file.h
-  bootstrap_serialization.h
-  )
+  bootstrap_serialization.h)
 
 wallstreetbets_private_headers(blockchain_export
 	  ${blockchain_export_private_headers})
 
 
 set(blockchain_blackball_sources
-  blockchain_blackball.cpp
-  )
+  blockchain_blackball.cpp)
 
 set(blockchain_blackball_private_headers
   bootstrap_file.h
   blocksdat_file.h
-  bootstrap_serialization.h
-  )
+  bootstrap_serialization.h)
 
 wallstreetbets_private_headers(blockchain_blackball
 	  ${blockchain_blackball_private_headers})
 
 set(blockchain_usage_sources
-  blockchain_usage.cpp
-  )
+  blockchain_usage.cpp)
 
 set(blockchain_usage_private_headers)
 
@@ -82,46 +90,36 @@ wallstreetbets_private_headers(blockchain_usage
 
 
 set(blockchain_prune_known_spent_data_sources
-  blockchain_prune_known_spent_data.cpp
-  )
+  blockchain_prune_known_spent_data.cpp)
 
 set(blockchain_prune_known_spent_data_private_headers)
 
 wallstreetbets_private_headers(blockchain_prune_known_spent_data
          ${blockchain_prune_known_spent_data_private_headers})
 
-
 set(blockchain_prune_sources
-  blockchain_prune.cpp
-  )
+  blockchain_prune.cpp)
 
 set(blockchain_prune_private_headers)
 
 wallstreetbets_private_headers(blockchain_prune
          ${blockchain_prune_private_headers})
 
-
-
-
 set(blockchain_ancestry_sources
-  blockchain_ancestry.cpp
-  )
+  blockchain_ancestry.cpp)
 
 set(blockchain_ancestry_private_headers)
 
 wallstreetbets_private_headers(blockchain_ancestry
 	  ${blockchain_ancestry_private_headers})
 
-
 set(blockchain_depth_sources
-  blockchain_depth.cpp
-  )
+  blockchain_depth.cpp)
 
 set(blockchain_depth_private_headers)
 
 wallstreetbets_private_headers(blockchain_depth
 	  ${blockchain_depth_private_headers})
-
 
 set(blockchain_stats_sources
   blockchain_stats.cpp)
@@ -132,38 +130,18 @@ wallstreetbets_add_executable(blockchain_stats
   ${blockchain_stats_sources}
   ${blockchain_stats_private_headers})
 
-target_link_libraries(blockchain_stats
-  PRIVATE
-    cryptonote_core
-    blockchain_db
-    version
-    epee
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    ${Boost_THREAD_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${EXTRA_LIBRARIES})
+target_link_libraries(blockchain_stats PRIVATE wsbc_bc_std_libs)
 
 set_property(TARGET blockchain_stats
         PROPERTY
         OUTPUT_NAME "wsbc-blockchain-stats")
  install(TARGETS blockchain_stats DESTINATION bin)
+
 wallstreetbets_add_executable(blockchain_import
   ${blockchain_import_sources}
   ${blockchain_import_private_headers})
 
-target_link_libraries(blockchain_import
-  PRIVATE
-    cryptonote_core
-    blockchain_db
-    version
-    epee
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    ${Boost_THREAD_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${EXTRA_LIBRARIES}
-    blocks)
+target_link_libraries(blockchain_import PRIVATE blocks wsbc_bc_std_libs)
 
 if(ARCH_WIDTH)
   target_compile_definitions(blockchain_import
@@ -179,17 +157,7 @@ wallstreetbets_add_executable(blockchain_export
   ${blockchain_export_sources}
   ${blockchain_export_private_headers})
 
-target_link_libraries(blockchain_export
-  PRIVATE
-    cryptonote_core
-    blockchain_db
-    version
-    epee
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    ${Boost_THREAD_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${EXTRA_LIBRARIES})
+target_link_libraries(blockchain_export PRIVATE wsbc_bc_std_libs)
 
 set_property(TARGET blockchain_export
 	PROPERTY
@@ -200,40 +168,18 @@ wallstreetbets_add_executable(blockchain_blackball
   ${blockchain_blackball_sources}
   ${blockchain_blackball_private_headers})
 
-target_link_libraries(blockchain_blackball
-  PRIVATE
-    wallet
-    cryptonote_core
-    blockchain_db
-    version
-    epee
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    ${Boost_THREAD_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${EXTRA_LIBRARIES})
+target_link_libraries(blockchain_blackball PRIVATE wallet wsbc_bc_std_libs)
 
 set_property(TARGET blockchain_blackball
 	PROPERTY
 	OUTPUT_NAME "wsbc-blockchain-mark-spent-outputs")
 install(TARGETS blockchain_blackball DESTINATION bin)
 
-
 wallstreetbets_add_executable(blockchain_usage
   ${blockchain_usage_sources}
   ${blockchain_usage_private_headers})
 
-target_link_libraries(blockchain_usage
-  PRIVATE
-    cryptonote_core
-    blockchain_db
-    version
-    epee
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    ${Boost_THREAD_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${EXTRA_LIBRARIES})
+target_link_libraries(blockchain_usage PRIVATE wsbc_bc_std_libs)
 
 set_property(TARGET blockchain_usage
 	PROPERTY
@@ -244,17 +190,7 @@ wallstreetbets_add_executable(blockchain_ancestry
   ${blockchain_ancestry_sources}
   ${blockchain_ancestry_private_headers})
 
-target_link_libraries(blockchain_ancestry
-  PRIVATE
-    cryptonote_core
-    blockchain_db
-    version
-    epee
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    ${Boost_THREAD_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${EXTRA_LIBRARIES})
+target_link_libraries(blockchain_ancestry PRIVATE wsbc_bc_std_libs)
 
 set_property(TARGET blockchain_ancestry
 	PROPERTY
@@ -265,17 +201,7 @@ wallstreetbets_add_executable(blockchain_depth
   ${blockchain_depth_sources}
   ${blockchain_depth_private_headers})
 
-target_link_libraries(blockchain_depth
-  PRIVATE
-    cryptonote_core
-    blockchain_db
-    version
-    epee
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    ${Boost_THREAD_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${EXTRA_LIBRARIES})
+target_link_libraries(blockchain_depth PRIVATE wsbc_bc_std_libs)
 
 set_property(TARGET blockchain_depth
 	PROPERTY
@@ -286,18 +212,7 @@ wallstreetbets_add_executable(blockchain_prune_known_spent_data
   ${blockchain_prune_known_spent_data_sources}
   ${blockchain_prune_known_spent_data_private_headers})
 
-target_link_libraries(blockchain_prune_known_spent_data
-  PRIVATE
-    cryptonote_core
-    blockchain_db
-    p2p
-    version
-    epee
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    ${Boost_THREAD_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${EXTRA_LIBRARIES})
+target_link_libraries(blockchain_prune_known_spent_data PRIVATE p2p wsbc_bc_std_libs)
 
 set_property(TARGET blockchain_prune_known_spent_data
 	PROPERTY
@@ -313,15 +228,4 @@ set_property(TARGET blockchain_prune
 	OUTPUT_NAME "wsbc-blockchain-prune")
 install(TARGETS blockchain_prune DESTINATION bin)
 
-target_link_libraries(blockchain_prune
-  PRIVATE
-    cryptonote_core
-    blockchain_db
-    p2p
-    version
-    epee
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
-    ${Boost_THREAD_LIBRARY}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${EXTRA_LIBRARIES})
+target_link_libraries(blockchain_prune PRIVATE p2p wsbc_bc_std_libs)
