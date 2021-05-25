@@ -34,6 +34,9 @@
 #include <limits>
 #include <type_traits>
 #include "string_tools.h"
+#ifdef GetObject
+  #undef GetObject
+#endif
 
 namespace cryptonote
 {
