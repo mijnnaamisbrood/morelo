@@ -99,8 +99,8 @@ namespace cryptonote
         m_batch = m_blockchain.get_db().batch_start();
         m_active = true;
       }
-      void commit() { try { if (m_batch && m_active) { m_blockchain.get_db().batch_stop(); m_active = false; } } catch (const std::exception &e) { MWARNING("LockedTXN::commit filtering exception: " << e.what()); } }
-      void abort() { try { if (m_batch && m_active) { m_blockchain.get_db().batch_abort(); m_active = false; } } catch (const std::exception &e) { MWARNING("LockedTXN::abort filtering exception: " << e.what()); } }
+      void commit() { try { if (m_batch && m_active) { m_blockchain.get_db().batch_stop(); m_active = false; } } catch (const std::exception& e) { MWARNING("LockedTXN::commit filtering exception: " << e.what()); } }
+      void abort() { try { if (m_batch && m_active) { m_blockchain.get_db().batch_abort(); m_active = false; } } catch (const std::exception& e) { MWARNING("LockedTXN::abort filtering exception: " << e.what()); } }
       ~LockedTXN() { abort(); }
     private:
       Blockchain &m_blockchain;
@@ -214,6 +214,7 @@ namespace cryptonote
         meta.relayed = relayed;
         meta.do_not_relay = do_not_relay;
         meta.double_spend_seen = have_tx_keyimges_as_spent(tx);
+        meta.pruned = tx.pruned;
         meta.bf_padding = 0;
         memset(meta.padding, 0, sizeof(meta.padding));
         try
@@ -228,7 +229,7 @@ namespace cryptonote
           m_txs_by_fee_and_receive_time.emplace(std::pair<double, std::time_t>(fee / (double)tx_weight, receive_time), id);
           lock.commit();
         }
-        catch (const std::exception &e)
+        catch (const std::exception& e)
         {
           MERROR("transaction already exists at inserting in memory pool: " << e.what());
           return false;
@@ -257,6 +258,7 @@ namespace cryptonote
       meta.relayed = relayed;
       meta.do_not_relay = do_not_relay;
       meta.double_spend_seen = false;
+      meta.pruned = tx.pruned;
       meta.bf_padding = 0;
       memset(meta.padding, 0, sizeof(meta.padding));
 
@@ -273,7 +275,7 @@ namespace cryptonote
         m_txs_by_fee_and_receive_time.emplace(std::pair<double, std::time_t>(fee / (double)tx_weight, receive_time), id);
         lock.commit();
       }
-      catch (const std::exception &e)
+      catch (const std::exception& e)
       {
         MERROR("internal error: transaction already exists at inserting in memory pool: " << e.what());
         return false;
@@ -365,7 +367,7 @@ namespace cryptonote
         m_txs_by_fee_and_receive_time.erase(it--);
         changed = true;
       }
-      catch (const std::exception &e)
+      catch (const std::exception& e)
       {
         MERROR("Error while pruning txpool: " << e.what());
         return;
@@ -426,7 +428,7 @@ namespace cryptonote
     return true;
   }
   //---------------------------------------------------------------------------------
-  bool tx_memory_pool::take_tx(const crypto::hash &id, transaction &tx, size_t& tx_weight, uint64_t& fee, bool &relayed, bool &do_not_relay, bool &double_spend_seen)
+  bool tx_memory_pool::take_tx(const crypto::hash &id, transaction &tx, cryptonote::blobdata &txblob, size_t& tx_weight, uint64_t& fee, bool &relayed, bool &do_not_relay, bool &double_spend_seen, bool &pruned)
   {
     CRITICAL_REGION_LOCAL(m_transactions_lock);
     CRITICAL_REGION_LOCAL1(m_blockchain);
@@ -444,13 +446,13 @@ namespace cryptonote
         MERROR("Failed to find tx in txpool");
         return false;
       }
-      cryptonote::blobdata txblob = m_blockchain.get_txpool_tx_blob(id);
+      txblob = m_blockchain.get_txpool_tx_blob(id);
       auto ci = m_parsed_tx_cache.find(id);
       if(ci != m_parsed_tx_cache.end())
       {
         tx = ci->second;
       }
-      else if(!parse_and_validate_tx_from_blob(txblob, tx))
+      else if(!(meta.pruned ? parse_and_validate_tx_base_from_blob(txblob, tx) : parse_and_validate_tx_from_blob(txblob, tx)))
       {
         MERROR("Failed to parse tx from txpool");
         return false;
@@ -464,6 +466,7 @@ namespace cryptonote
       relayed = meta.relayed;
       do_not_relay = meta.do_not_relay;
       double_spend_seen = meta.double_spend_seen;
+      pruned = meta.pruned;
 
       // remove first, in case this throws, so key images aren't removed
       m_blockchain.remove_txpool_tx(id);
@@ -471,7 +474,7 @@ namespace cryptonote
       remove_transaction_keyimages(tx, id);
       lock.commit();
     }
-    catch (const std::exception &e)
+    catch (const std::exception& e)
     {
       MERROR("Failed to remove tx from txpool: " << e.what());
       return false;
@@ -501,7 +504,7 @@ namespace cryptonote
     CRITICAL_REGION_LOCAL(m_transactions_lock);
     CRITICAL_REGION_LOCAL1(m_blockchain);
     std::list<std::pair<crypto::hash, uint64_t>> remove;
-    m_blockchain.for_all_txpool_txes([this, &remove](const crypto::hash &txid, const txpool_tx_meta_t &meta, const cryptonote::blobdata*) {
+    m_blockchain.for_all_txpool_txes([this, &remove](const crypto::hash &txid, const txpool_tx_meta_t &meta, const cryptonote::blobdata *) {
       uint64_t tx_age = time(nullptr) - meta.receive_time;
 
       if((tx_age > CRYPTONOTE_MEMPOOL_TX_LIVETIME && !meta.kept_by_block) ||
@@ -546,7 +549,7 @@ namespace cryptonote
             remove_transaction_keyimages(tx, txid);
           }
         }
-        catch (const std::exception &e)
+        catch (const std::exception& e)
         {
           MWARNING("Failed to remove stuck transaction: " << txid);
           // ignore error
@@ -567,7 +570,7 @@ namespace cryptonote
     txs.reserve(m_blockchain.get_txpool_tx_count());
     m_blockchain.for_all_txpool_txes([this, now, &txs](const crypto::hash &txid, const txpool_tx_meta_t &meta, const cryptonote::blobdata *){
       // 0 fee transactions are never relayed
-      if(meta.fee > 0 && !meta.do_not_relay && now - meta.last_relayed_time > get_relay_delay(now, meta.receive_time))
+      if(!meta.pruned && meta.fee > 0 && !meta.do_not_relay && now - meta.last_relayed_time > get_relay_delay(now, meta.receive_time))
       {
         // if the tx is older than half the max lifetime, we don't re-relay it, to avoid a problem
         // mentioned by smooth where nodes would flush txes at slightly different times, causing
@@ -580,7 +583,7 @@ namespace cryptonote
             cryptonote::blobdata bd = m_blockchain.get_txpool_tx_blob(txid);
             txs.push_back(std::make_pair(txid, bd));
           }
-          catch (const std::exception &e)
+          catch (const std::exception& e)
           {
             MERROR("Failed to get transaction blob from db");
             // ignore error
@@ -610,7 +613,7 @@ namespace cryptonote
           m_blockchain.update_txpool_tx(it->first, meta);
         }
       }
-      catch (const std::exception &e)
+      catch (const std::exception& e)
       {
         MERROR("Failed to update txpool transaction metadata: " << e.what());
         // continue
@@ -633,7 +636,7 @@ namespace cryptonote
     txs.reserve(m_blockchain.get_txpool_tx_count(include_unrelayed_txes));
     m_blockchain.for_all_txpool_txes([&txs](const crypto::hash &txid, const txpool_tx_meta_t &meta, const cryptonote::blobdata *bd){
       transaction tx;
-      if (!parse_and_validate_tx_from_blob(*bd, tx))
+      if(!(meta.pruned ? parse_and_validate_tx_base_from_blob(*bd, tx) : parse_and_validate_tx_from_blob(*bd, tx)))
       {
         MERROR("Failed to parse tx from txpool");
         // continue
@@ -756,7 +759,7 @@ namespace cryptonote
       txi.id_hash = epee::string_tools::pod_to_hex(txid);
       txi.tx_blob = *bd;
       transaction tx;
-      if (!parse_and_validate_tx_from_blob(*bd, tx))
+      if(!(meta.pruned ? parse_and_validate_tx_base_from_blob(*bd, tx) : parse_and_validate_tx_from_blob(*bd, tx)))
       {
         MERROR("Failed to parse tx from txpool");
         // continue
@@ -804,7 +807,7 @@ namespace cryptonote
               // Do not include that transaction if in restricted mode and it's not relayed
               continue;
           }
-          catch (const std::exception &e)
+          catch (const std::exception& e)
           {
             MERROR("Failed to get tx meta from txpool: " << e.what());
             return false;
@@ -828,7 +831,7 @@ namespace cryptonote
     m_blockchain.for_all_txpool_txes([&tx_infos, key_image_infos](const crypto::hash &txid, const txpool_tx_meta_t &meta, const cryptonote::blobdata *bd){
       cryptonote::rpc::tx_in_pool txi;
       txi.tx_hash = txid;
-      if (!parse_and_validate_tx_from_blob(*bd, txi.tx))
+      if(!(meta.pruned ? parse_and_validate_tx_base_from_blob(*bd, txi.tx) : parse_and_validate_tx_from_blob(*bd, txi.tx)))
       {
         MERROR("Failed to parse tx from txpool");
         // continue
@@ -889,7 +892,7 @@ namespace cryptonote
     {
       return m_blockchain.get_txpool_tx_blob(id, txblob);
     }
-    catch (const std::exception &e)
+    catch (const std::exception& e)
     {
       return false;
     }
@@ -1085,7 +1088,7 @@ namespace cryptonote
             {
               m_blockchain.update_txpool_tx(txid, meta);
             }
-            catch (const std::exception &e)
+            catch (const std::exception& e)
             {
               MERROR("Failed to update tx meta: " << e.what());
               // continue, not fatal
@@ -1108,7 +1111,7 @@ namespace cryptonote
       ss << "id: " << txid << std::endl;
       if (!short_format) {
         cryptonote::transaction tx;
-        if (!parse_and_validate_tx_from_blob(*txblob, tx))
+        if(!(meta.pruned ? parse_and_validate_tx_base_from_blob(*txblob, tx) : parse_and_validate_tx_from_blob(*txblob, tx)))
         {
           MERROR("Failed to parse tx from txpool");
           return true; // continue
@@ -1163,6 +1166,12 @@ namespace cryptonote
       }
       LOG_PRINT_L2("Considering " << sorted_it->second << ", weight " << meta.weight << ", current block weight " << total_weight << "/" << max_total_weight << ", current coinbase " << print_money(best_coinbase));
 
+      if(meta.pruned)
+      {
+        LOG_PRINT_L2(" tx is pruned");
+        continue;
+      }
+
       // Can not exceed maximum block weight
       if (max_total_weight < total_weight + meta.weight)
       {
@@ -1197,7 +1206,7 @@ namespace cryptonote
       {
         ready = is_transaction_ready_to_go(meta, sorted_it->second, txblob, tx);
       }
-      catch (const std::exception &e)
+      catch (const std::exception& e)
       {
         MERROR("Failed to check transaction readiness: " << e.what());
         // continue, not fatal
@@ -1208,7 +1217,7 @@ namespace cryptonote
         {
           m_blockchain.update_txpool_tx(sorted_it->second, meta);
         }
-        catch (const std::exception &e)
+        catch (const std::exception& e)
         {
           MERROR("Failed to update tx meta: " << e.what());
           // continue, not fatal
@@ -1292,7 +1301,7 @@ namespace cryptonote
           }
           ++n_removed;
         }
-        catch (const std::exception &e)
+        catch (const std::exception& e)
         {
           MERROR("Failed to remove invalid tx from pool");
           // continue
@@ -1352,7 +1361,7 @@ namespace cryptonote
         {
           m_blockchain.remove_txpool_tx(txid);
         }
-        catch (const std::exception &e)
+        catch (const std::exception& e)
         {
           MWARNING("Failed to remove corrupt transaction: " << txid);
           // ignore error

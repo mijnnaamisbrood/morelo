@@ -61,7 +61,7 @@
 #undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
 #define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "net"
 
-#define ABSTRACT_SERVER_SEND_QUE_MAX_COUNT 1000
+#define ABSTRACT_SERVER_SEND_QUE_MAX_COUNT 1750
 
 namespace epee
 {
@@ -127,7 +127,6 @@ namespace net_utils
     void save_dbg_log();
 
     bool rpc_speed_limit_is_enabled() const; // < tells us should we be sleeping here (e.g. do not sleep on RPC connections)
-    bool zmq_speed_limit_is_enabled() const; // < tells us should we be sleeping here (e.g. do not sleep on ZMQ connections)
 
     bool cancel();
 
@@ -194,7 +193,6 @@ namespace net_utils
 
   public:
     void setRpcStation();
-    void setZmqStation();
   };
 
 

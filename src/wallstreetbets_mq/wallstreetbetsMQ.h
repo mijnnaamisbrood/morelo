@@ -70,7 +70,7 @@
 
 using namespace cryptonote;
 using namespace rpc;
-
+using namespace boost::placeholders;
 
 namespace wallstreetbetsMQ {
 

@@ -66,7 +66,7 @@ typedef struct mdb_txn_cursors
 
   MDB_cursor *m_txc_txpool_meta;
   MDB_cursor *m_txc_txpool_blob;
-  
+
   MDB_cursor *m_txc_alt_blocks;
 
   MDB_cursor *m_txc_hf_versions;
@@ -76,22 +76,22 @@ typedef struct mdb_txn_cursors
 
 #define m_cur_blocks            m_cursors->m_txc_blocks
 #define m_cur_block_heights     m_cursors->m_txc_block_heights
-#define m_cur_block_info	m_cursors->m_txc_block_info
-#define m_cur_output_txs	m_cursors->m_txc_output_txs
-#define m_cur_output_amounts	m_cursors->m_txc_output_amounts
+#define m_cur_block_info        m_cursors->m_txc_block_info
+#define m_cur_output_txs        m_cursors->m_txc_output_txs
+#define m_cur_output_amounts    m_cursors->m_txc_output_amounts
 #define m_cur_txs               m_cursors->m_txc_txs
-#define m_cur_txs_pruned	m_cursors->m_txc_txs_pruned
-#define m_cur_txs_prunable	m_cursors->m_txc_txs_prunable
-#define m_cur_txs_prunable_hash	m_cursors->m_txc_txs_prunable_hash
-#define m_cur_txs_prunable_tip	m_cursors->m_txc_txs_prunable_tip
-#define m_cur_tx_indices	m_cursors->m_txc_tx_indices
-#define m_cur_tx_outputs	m_cursors->m_txc_tx_outputs
-#define m_cur_spent_keys	m_cursors->m_txc_spent_keys
-#define m_cur_txpool_meta	m_cursors->m_txc_txpool_meta
-#define m_cur_txpool_blob	m_cursors->m_txc_txpool_blob
+#define m_cur_txs_pruned        m_cursors->m_txc_txs_pruned
+#define m_cur_txs_prunable      m_cursors->m_txc_txs_prunable
+#define m_cur_txs_prunable_hash m_cursors->m_txc_txs_prunable_hash
+#define m_cur_txs_prunable_tip  m_cursors->m_txc_txs_prunable_tip
+#define m_cur_tx_indices        m_cursors->m_txc_tx_indices
+#define m_cur_tx_outputs        m_cursors->m_txc_tx_outputs
+#define m_cur_spent_keys        m_cursors->m_txc_spent_keys
+#define m_cur_txpool_meta       m_cursors->m_txc_txpool_meta
+#define m_cur_txpool_blob       m_cursors->m_txc_txpool_blob
 #define m_cur_alt_blocks        m_cursors->m_txc_alt_blocks
-#define m_cur_hf_versions	m_cursors->m_txc_hf_versions
-#define m_cur_properties	m_cursors->m_txc_properties
+#define m_cur_hf_versions       m_cursors->m_txc_hf_versions
+#define m_cur_properties        m_cursors->m_txc_properties
 
 typedef struct mdb_rflags
 {
@@ -254,6 +254,8 @@ public:
 
   virtual bool get_tx_blob(const crypto::hash& h, cryptonote::blobdata &tx) const;
   virtual bool get_pruned_tx_blob(const crypto::hash& h, cryptonote::blobdata &tx) const;
+  virtual bool get_pruned_tx_blobs_from(const crypto::hash& h, size_t count, std::vector<cryptonote::blobdata> &bd) const;
+  virtual bool get_blocks_from(uint64_t start_height, size_t min_block_count, size_t max_block_count, size_t max_tx_count, size_t max_size, std::vector<std::pair<std::pair<cryptonote::blobdata, crypto::hash>, std::vector<std::pair<crypto::hash, cryptonote::blobdata>>>>& blocks, bool pruned, bool skip_coinbase, bool get_miner_tx_hash) const;
   virtual bool get_prunable_tx_blob(const crypto::hash& h, cryptonote::blobdata &tx) const;
   virtual bool get_prunable_tx_hash(const crypto::hash& tx_hash, crypto::hash &prunable_hash) const;
 
@@ -291,7 +293,7 @@ public:
   virtual bool prune_blockchain(uint32_t pruning_seed = 0);
   virtual bool update_pruning();
   virtual bool check_pruning();
-  
+
   virtual void add_alt_block(const crypto::hash &blkid, const cryptonote::alt_block_data_t &data, const cryptonote::blobdata &blob);
   virtual bool get_alt_block(const crypto::hash &blkid, alt_block_data_t *data, cryptonote::blobdata *blob);
   virtual void remove_alt_block(const crypto::hash &blkid);
@@ -307,12 +309,12 @@ public:
   virtual bool for_all_outputs(uint64_t amount, const std::function<bool(uint64_t height)> &f) const;
   virtual bool for_all_alt_blocks(std::function<bool(const crypto::hash &blkid, const alt_block_data_t &data, const cryptonote::blobdata *blob)> f, bool include_blob = false) const;
 
-  virtual uint64_t add_block( const block& blk
+  virtual uint64_t add_block( const std::pair<block, blobdata>& blk
                             , size_t block_weight
                             , uint64_t long_term_block_weight
                             , const difficulty_type& cumulative_difficulty
                             , const uint64_t& coins_generated
-                            , const std::vector<transaction>& txs
+                            , const std::vector<std::pair<transaction, blobdata>>& txs
                             );
 
   virtual void set_batch_transactions(bool batch_transactions);
@@ -371,7 +373,7 @@ private:
 
   virtual void remove_block();
 
-  virtual uint64_t add_transaction_data(const crypto::hash& blk_hash, const transaction& tx, const crypto::hash& tx_hash, const crypto::hash& tx_prunable_hash);
+  virtual uint64_t add_transaction_data(const crypto::hash& blk_hash, const std::pair<transaction, blobdata>& tx, const crypto::hash& tx_hash, const crypto::hash& tx_prunable_hash);
 
   virtual void remove_transaction_data(const crypto::hash& tx_hash, const transaction& tx);
 

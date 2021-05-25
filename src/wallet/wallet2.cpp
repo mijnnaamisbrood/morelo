@@ -337,7 +337,7 @@ std::unique_ptr<tools::wallet2> make_basic(const boost::program_options::variabl
   else if (!daemon_ssl_ca_file.empty() || !daemon_ssl_allowed_fingerprints.empty())
   {
     std::vector<std::vector<uint8_t>> ssl_allowed_fingerprints{ daemon_ssl_allowed_fingerprints.size() };
-    std::transform(daemon_ssl_allowed_fingerprints.begin(), daemon_ssl_allowed_fingerprints.end(), ssl_allowed_fingerprints.begin(), epee::from_hex::vector);
+    std::transform(daemon_ssl_allowed_fingerprints.begin(), daemon_ssl_allowed_fingerprints.end(), ssl_allowed_fingerprints.begin(), epee::from_hex_locale::to_vector);
     for (const auto &fpr: ssl_allowed_fingerprints)
     {
       THROW_WALLET_EXCEPTION_IF(fpr.size() != SSL_FINGERPRINT_SIZE, tools::error::wallet_internal_error, "SHA-256 fingerprint should be " BOOST_PP_STRINGIZE(SSL_FINGERPRINT_SIZE) " bytes long.");
@@ -2248,9 +2248,7 @@ void wallet2::get_short_chain_history(std::list<crypto::hash>& ids, uint64_t gra
 //----------------------------------------------------------------------------------------------------
 void wallet2::parse_block_round(const cryptonote::blobdata &blob, cryptonote::block &bl, crypto::hash &bl_id, bool &error) const
 {
-  error = !cryptonote::parse_and_validate_block_from_blob(blob, bl);
-  if (!error)
-    bl_id = get_block_hash(bl);
+  error = !cryptonote::parse_and_validate_block_from_blob(blob, bl, bl_id);
 }
 //----------------------------------------------------------------------------------------------------
 void wallet2::pull_blocks(uint64_t start_height, uint64_t &blocks_start_height, const std::list<crypto::hash> &short_chain_history, std::vector<cryptonote::block_complete_entry> &blocks, std::vector<cryptonote::COMMAND_RPC_GET_BLOCKS_FAST::block_output_indices> &o_indices)
@@ -2492,7 +2490,7 @@ void wallet2::pull_and_parse_next_blocks(uint64_t start_height, uint64_t &blocks
       for (size_t j = 0; j < blocks[i].txs.size(); ++j)
       {
         tpool.submit(&waiter, [&, i, j](){
-          if (!parse_and_validate_tx_base_from_blob(blocks[i].txs[j], parsed_blocks[i].txes[j]))
+          if (!parse_and_validate_tx_base_from_blob(blocks[i].txs[j].blob, parsed_blocks[i].txes[j]))
           {
             boost::unique_lock<boost::mutex> lock(error_lock);
             error = true;
@@ -5441,6 +5439,25 @@ void wallet2::rescan_spent()
   }
 }
 //----------------------------------------------------------------------------------------------------
+void wallet2::mark_forbidden_amount_spent()
+{
+  std::vector<std::string> key_images;
+  for(size_t i = 0; i < m_transfers.size(); ++i)
+  {
+    const transfer_details& td = m_transfers[i];
+    key_images.push_back(string_tools::pod_to_hex(td.m_key_image));
+  }
+
+  for(size_t i = 0; i < m_transfers.size(); ++i)
+  {
+    transfer_details& td = m_transfers[i];
+    uint64_t amount = td.amount();
+    uint64_t height = get_blockchain_current_height();
+    if(amount < config::tx_settings::forbidden_below)
+      set_spent(i, height);
+    }
+}
+//----------------------------------------------------------------------------------------------------
 void wallet2::rescan_blockchain(bool hard, bool refresh, bool keep_key_images)
 {
   CHECK_AND_ASSERT_THROW_MES(!hard || !keep_key_images, "Cannot preserve key images on hard rescan");
@@ -8007,7 +8024,7 @@ std::vector<size_t> wallet2::pick_preferred_rct_inputs(uint64_t needed_money, ui
         if(!is_spent(td2, false) && !td2.m_key_image_partial && td2.is_rct() && td.amount() + td2.amount() >= needed_money && is_transfer_unlocked(td2) && td2.m_subaddr_index == td.m_subaddr_index)
         {
           float relatedness = get_output_relatedness(td, td2);
-          LOG_PRINT_L2(" with input: " << j << ", " << print_money(td2.amount()) << ", relateness to: " << relatedness);
+          LOG_PRINT_L2(" with input: " << j << ", " << print_money(td2.amount()) << ", relatedness to: " << relatedness);
           if(relatedness < current_output_relatdness)
           {
             picks.clear();

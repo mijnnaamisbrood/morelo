@@ -95,8 +95,8 @@ bool tx_sanity_check(const std::set<uint64_t> &rct_indices, size_t n_indices, ui
   uint64_t median = epee::misc_utils::median(offsets);
   if(median < rct_outs_available * 4 / 10)
   {
-    MERROR("median is " << median << "/" << rct_outs_available);
-    return false;
+    MDEBUG("median is " << median << "/" << rct_outs_available);
+    return true;
   }
 
   return true;

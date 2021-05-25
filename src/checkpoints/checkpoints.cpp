@@ -38,6 +38,9 @@
 #include <functional>
 #include <vector>
 
+#include <iostream>
+#include <utility>
+
 using namespace epee;
 
 #undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
@@ -291,7 +294,7 @@ namespace cryptonote
         // parse the second part as crypto::hash,
         // if this fails move on to the next record
         std::string hashStr = record.substr(pos + 1);
-        if (!epee::string_tools::parse_tpod_from_hex_string(hashStr, hash))
+        if (!epee::string_tools::hex_to_pod(hashStr, hash))
         {
     continue;
         }

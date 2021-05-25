@@ -197,7 +197,9 @@ bool t_daemon::run(bool interactive)
       wallstreetbetsNotifier.run();
 
       MGINFO_GREEN(std::string("ZMQ server started at ") << zmq_ip_str + ":" + zmq_port_str << " with Maximum Allowed Clients Connections: " << zmq_max_clients << ".");
-	}
+	  }
+	  else
+	    MGINFO_GREEN(std::string("WallStreetBets ZMQ Server Disabled"));
 
     if (public_rpc_port > 0)
     {
@@ -210,7 +212,7 @@ bool t_daemon::run(bool interactive)
     if (rpc_commands)
       rpc_commands->stop_handling();
 
-    if(command_line::get_arg(m_vm, daemon_args::arg_zmq_enabled))
+    if(zmq_enabled)
 	{
 		MGINFO_GREEN(std::string("ZMQ server stopping"));
 	    wallstreetbetsNotifier.stop();

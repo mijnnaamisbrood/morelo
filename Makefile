@@ -95,10 +95,6 @@ release-asan:
 	mkdir -p $(builddir)/release-asan
 	cd $(builddir)/release-asan && cmake -D SANITIZE=ON -D BUILD_TESTS=OFF -D CMAKE_BUILD_TYPE=Release $(topdir) && $(MAKE)
 
-debug-asan:
-	mkdir -p $(builddir)/debug-asan
-	cd $(builddir)/debug-asan && cmake -D SANITIZE=ON -D BUILD_TESTS=OFF -D CMAKE_BUILD_TYPE=Debug $(topdir) && $(MAKE)
-
 release-all:
 	mkdir -p $(builddir)/release
 	cd $(builddir)/release && cmake -D BUILD_TESTS=OFF -D CMAKE_BUILD_TYPE=Release $(topdir) && $(MAKE)

@@ -116,6 +116,7 @@ target_link_libraries(rpc_base
 
 target_link_libraries(rpc
   PUBLIC
+    wallstreetbets_mq
     rpc_base
     rpc_sig
     common
@@ -129,7 +130,8 @@ target_link_libraries(rpc
     ${EXTRA_LIBRARIES})
 
 target_link_libraries(daemon_messages
-  LINK_PRIVATE
+  PRIVATE
+    wallstreetbets_mq
     cryptonote_core
     cryptonote_protocol
     version
@@ -137,7 +139,8 @@ target_link_libraries(daemon_messages
     ${EXTRA_LIBRARIES})
 
 target_link_libraries(daemon_rpc_server
-  LINK_PRIVATE
+  PRIVATE
+    libzmq
     rpc
     cryptonote_core
     cryptonote_protocol
@@ -148,7 +151,7 @@ target_link_libraries(daemon_rpc_server
     ${Boost_REGEX_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
     ${Boost_THREAD_LIBRARY}
-    libzmq
     ${EXTRA_LIBRARIES})
+
 target_include_directories(daemon_rpc_server PUBLIC ${ZMQ_INCLUDE_DIRS})
 target_include_directories(obj_daemon_rpc_server PUBLIC ${ZMQ_INCLUDE_DIRS})

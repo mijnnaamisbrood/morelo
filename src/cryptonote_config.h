@@ -111,7 +111,8 @@
 #define CRYPTONOTE_MEMPOOL_TX_LIVETIME                  (86400*3) //seconds, three days
 #define CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME   604800 //seconds, one week
 
-#define COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT           1000
+#define COMMAND_RPC_GET_BLOCKS_FAST_MAX_BLOCK_COUNT     1000
+#define COMMAND_RPC_GET_BLOCKS_FAST_MAX_TX_COUNT        20000
 
 #define P2P_LOCAL_WHITE_PEERLIST_LIMIT                  1000
 #define P2P_LOCAL_GRAY_PEERLIST_LIMIT                   5000
@@ -157,7 +158,7 @@
 
 #define PER_KB_FEE_QUANTIZATION_DECIMALS                8
 
-#define HASH_OF_HASHES_STEP                             256
+#define HASH_OF_HASHES_STEP                             512
 
 #define DEFAULT_TXPOOL_MAX_WEIGHT                       648000000ull // 3 days at 300000, in bytes
 
@@ -245,8 +246,8 @@ namespace config
    namespace sync
    {
      const uint64_t HIGHEST_CHECKPOINT = 43520; // Blockchain height up to Rapid_Sync is ON.
-     const size_t NORMAL_SYNC = 20; // Amount of Blocks to download and Validate at ones while Synchronizung with Wallstreetbets Network.
-     const size_t RAPID_SYNC = 100; // Amount of Blocks to download at ones from already known by Wallstreetbets Daemon and Checkpoint are hardcoded into codebase
+     const size_t NORMAL_SYNC = 8; // Amount of Blocks to download and Validate at ones while Synchronizung with Wallstreetbets Network.
+     const size_t RAPID_SYNC = 16; // Amount of Blocks to download at ones from already known by Wallstreetbets Daemon and Checkpoint are hardcoded into codebase
    }
 
    namespace governance

@@ -32,6 +32,7 @@
 
 
 
+#include <boost/bind/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/uuid/random_generator.hpp>
 #include <boost/chrono.hpp>
@@ -49,9 +50,12 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+#include <functional>
 
 #undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
 #define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "net"
+
+using namespace boost::placeholders;
 
 #define DEFAULT_TIMEOUT_MS_LOCAL 1800000 // 30 minutes
 #define DEFAULT_TIMEOUT_MS_REMOTE 300000 // 5 minutes
@@ -854,20 +858,6 @@ PRAGMA_WARNING_DISABLE_VS(4355)
 		MDEBUG("set m_connection_type = RPC ");
 	}
 
-
-	template<class t_protocol_handler>
-	void connection<t_protocol_handler>::setZmqStation()
-	{
-		m_connection_type = e_connection_type_ZMQ;
-		MDEBUG("set m_connection_type = ZMQ ");
-	}
-
-	template<class t_protocol_handler>
-	bool connection<t_protocol_handler>::zmq_speed_limit_is_enabled() const
-	{
-		return m_connection_type != e_connection_type_ZMQ;
-	}
-
 	template<class t_protocol_handler>
 	bool connection<t_protocol_handler>::rpc_speed_limit_is_enabled() const {
 		return m_connection_type != e_connection_type_RPC ;
@@ -924,7 +914,6 @@ PRAGMA_WARNING_DISABLE_VS(4355)
 	{
 		server_type_map["NET"] = e_connection_type_NET;
 		server_type_map["RPC"] = e_connection_type_RPC;
-		server_type_map["ZMQ"] = e_connection_type_ZMQ;
 		server_type_map["P2P"] = e_connection_type_P2P;
 	}
 	//---------------------------------------------------------------------------------
@@ -953,7 +942,7 @@ PRAGMA_WARNING_DISABLE_VS(4355)
 
 		return true;
 		}
-		catch (const std::exception &e)
+		catch (const std::exception& e)
 		{
 			MFATAL("Error starting server: " << e.what());
 			return false;
@@ -1179,7 +1168,7 @@ POP_WARNINGS
 			MERROR("Error in boosted_tcp_server<t_protocol_handler>::handle_accept: " << e);
 		}
 		}
-		catch (const std::exception &e)
+		catch (const std::exception& e)
 		{
 			MERROR("Exception in boosted_tcp_server<t_protocol_handler>::handle_accept: " << e.what());
 		}

@@ -252,7 +252,7 @@ public:
   std::list<boost::shared_ptr<invoke_response_handler_base> > m_invoke_response_handlers;
 
   template<class callback_t>
-  bool add_invoke_response_handler(const callback_t &cb, uint64_t timeout,  async_protocol_handler& con, int command)
+  bool add_invoke_response_handler(const callback_t &cb, uint64_t timeout, async_protocol_handler& con, int command)
   {
     CRITICAL_REGION_LOCAL(m_invoke_response_handlers_lock);
     boost::shared_ptr<invoke_response_handler_base> handler(boost::make_shared<anvoke_handler<callback_t>>(cb, timeout, con, command));

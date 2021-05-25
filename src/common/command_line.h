@@ -37,9 +37,7 @@
 #include <array>
 #include <type_traits>
 
-#include <boost/program_options/parsers.hpp>
-#include <boost/program_options/options_description.hpp>
-#include <boost/program_options/variables_map.hpp>
+#include <boost/program_options.hpp>
 #include "include_base_utils.h"
 
 namespace command_line

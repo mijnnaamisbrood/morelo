@@ -104,6 +104,25 @@ namespace cryptonote
       ge_p1p1_to_p3(&A2, &tmp3);
       ge_p3_tobytes(&AB, &A2);
   }
+
+  uint64_t get_transaction_weight_clawback(const transaction &tx, size_t n_padded_outputs)
+  {
+    const rct::rctSig &rv = tx.rct_signatures;
+    const uint64_t bp_base = 368;
+    const size_t n_outputs = tx.vout.size();
+    if(n_padded_outputs <= 2)
+      return 0;
+    size_t nlr = 0;
+    while ((1u << nlr) < n_padded_outputs)
+      ++nlr;
+    nlr += 6;
+    const size_t bp_size = 32 * (9 + 2 * nlr);
+    CHECK_AND_ASSERT_THROW_MES_L1(n_outputs <= BULLETPROOF_MAX_OUTPUTS, "maximum number of outputs is " + std::to_string(BULLETPROOF_MAX_OUTPUTS) + " per transaction");
+    CHECK_AND_ASSERT_THROW_MES_L1(bp_base * n_padded_outputs >= bp_size, "Invalid bulletproof clawback: bp_base " + std::to_string(bp_base) + ", n_padded_outputs "
+        + std::to_string(n_padded_outputs) + ", bp_size " + std::to_string(bp_size));
+    const uint64_t bp_clawback = (bp_base * n_padded_outputs - bp_size) * 4 / 5;
+    return bp_clawback;
+  }
 }
 
 namespace cryptonote
@@ -399,24 +418,48 @@ namespace cryptonote
     if(tx.version < 2)
       return blob_size;
     const rct::rctSig &rv = tx.rct_signatures;
-    if (!rct::is_rct_bulletproof(rv.type))
-      return blob_size;
-    const size_t n_outputs = tx.vout.size();
-    if (n_outputs <= 2)
-      return blob_size;
     if (rv.type != rct::RCTTypeBulletproof)
       return blob_size;
-    const uint64_t bp_base = 368;
     const size_t n_padded_outputs = rct::n_bulletproof_max_amounts(rv.p.bulletproofs);
-    size_t nlr = 0;
-    for (const auto &bp: rv.p.bulletproofs)
-      nlr += bp.L.size() * 2;
-    const size_t bp_size = 32 * (9 + nlr);
-    CHECK_AND_ASSERT_THROW_MES_L1(n_outputs <= BULLETPROOF_MAX_OUTPUTS, "maximum number of outputs is " + std::to_string(BULLETPROOF_MAX_OUTPUTS) + " per transaction");
-    CHECK_AND_ASSERT_THROW_MES_L1(bp_base * n_padded_outputs >= bp_size, "Invalid bulletproof clawback");
-    const uint64_t bp_clawback = (bp_base * n_padded_outputs - bp_size) * 4 / 5;
+    uint64_t bp_clawback = get_transaction_weight_clawback(tx, n_padded_outputs);
     CHECK_AND_ASSERT_THROW_MES_L1(bp_clawback <= std::numeric_limits<uint64_t>::max() - blob_size, "Weight overflow");
     return blob_size + bp_clawback;
+  }
+  //---------------------------------------------------------------
+  uint64_t get_pruned_transaction_weight(const transaction &tx)
+  {
+    CHECK_AND_ASSERT_MES(tx.pruned, std::numeric_limits<uint64_t>::max(), "get_pruned_transaction_weight does not support non pruned txes");
+    CHECK_AND_ASSERT_MES(tx.version >= 2, std::numeric_limits<uint64_t>::max(), "get_pruned_transaction_weight does not support v1 txes");
+    CHECK_AND_ASSERT_MES(tx.rct_signatures.type >= rct::RCTTypeBulletproof, std::numeric_limits<uint64_t>::max(), "get_pruned_transaction_weight does not support older range proof types");
+    CHECK_AND_ASSERT_MES(!tx.vin.empty(), std::numeric_limits<uint64_t>::max(), "empty vin");
+    CHECK_AND_ASSERT_MES(tx.vin[0].type() == typeid(cryptonote::txin_to_key), std::numeric_limits<uint64_t>::max(), "empty vin");
+
+    std::ostringstream s;
+    binary_archive<true> a(s);
+    ::serialization::serialize(a, const_cast<transaction&>(tx));
+    uint64_t weight = s.str().size(), extra;
+
+    weight += 1;
+
+    size_t nrl = 0, n_padded_outputs;
+    while ((n_padded_outputs = (1u << nrl)) < tx.vout.size())
+      ++nrl;
+    nrl += 6;
+    extra = 32 * (9 + 2 * nrl) + 2;
+    weight += extra;
+
+    const size_t ring_size = boost::get<cryptonote::txin_to_key>(tx.vin[0]).key_offsets.size();
+    extra = tx.vin.size() * (ring_size * (1 + 1) * 32 + 32 /* cc */);
+    weight += extra;
+
+    extra =  32 * (tx.vin.size());
+    weight += extra;
+
+    uint64_t bp_clawback = get_transaction_weight_clawback(tx, n_padded_outputs);
+    CHECK_AND_ASSERT_THROW_MES_L1(bp_clawback <= std::numeric_limits<uint64_t>::max() - weight, "Weight overflow");
+    weight += bp_clawback;
+
+    return weight;
   }
   //---------------------------------------------------------------
   uint64_t get_transaction_weight(const transaction &tx)
@@ -1002,7 +1045,19 @@ namespace cryptonote
   crypto::hash get_transaction_prunable_hash(const transaction& t, const cryptonote::blobdata *blobdata)
   {
     crypto::hash res;
+    if(t.is_prunable_hash_valid())
+    {
+#ifdef ENABLE_HASH_CASH_INTEGRITY_CHECK
+      CHECK_AND_ASSERT_THROW_MES(!calculate_transaction_prunable_hash(t, blobdata, res) || t.hash == res, "tx hash cash integrity failure");
+#endif
+      res = t.prunable_hash;
+      ++tx_hashes_cached_count;
+      return res;
+    }
+
+    ++tx_hashes_calculated_count;
     CHECK_AND_ASSERT_THROW_MES(calculate_transaction_prunable_hash(t, blobdata, res), "Failed to calculate tx prunable hash");
+    t.set_prunable_hash(res);
     return res;
   }
   //---------------------------------------------------------------
@@ -1036,11 +1091,14 @@ namespace cryptonote
 
     // the tx hash is the hash of the 3 hashes
     crypto::hash res = cn_fast_hash(hashes, sizeof(hashes));
+    t.set_hash(res);
     return res;
   }
   //---------------------------------------------------------------
   bool calculate_transaction_hash(const transaction& t, crypto::hash& res, size_t* blob_size)
   {
+    CHECK_AND_ASSERT_MES(!t.pruned, false, "Cannot calculate the hash of a pruned transaction");
+
     // v1 transactions hash the entire blob
     if (t.version == 1)
     {
@@ -1077,8 +1135,14 @@ namespace cryptonote
     res = cn_fast_hash(hashes, sizeof(hashes));
 
     // we still need the size
-    if (blob_size)
-      *blob_size = get_object_blobsize(t);
+    if(blob_size)
+    {
+      if(!t.is_blob_size_valid())
+      {
+        t.set_blob_size(blob.size());
+      }
+      *blob_size = t.blob_size;
+    }
 
     return true;
   }
@@ -1095,8 +1159,7 @@ namespace cryptonote
       {
         if (!t.is_blob_size_valid())
         {
-          t.blob_size = get_object_blobsize(t);
-          t.set_blob_size_valid(true);
+          t.set_blob_size(get_object_blobsize(t));
         }
         *blob_size = t.blob_size;
       }
@@ -1107,12 +1170,10 @@ namespace cryptonote
     bool ret = calculate_transaction_hash(t, res, blob_size);
     if (!ret)
       return false;
-    t.hash = res;
-    t.set_hash_valid(true);
+    t.set_hash(res);
     if (blob_size)
     {
-      t.blob_size = *blob_size;
-      t.set_blob_size_valid(true);
+      t.set_blob_size(*blob_size);
     }
     return true;
   }
@@ -1131,8 +1192,15 @@ namespace cryptonote
     return blob;
   }
   //---------------------------------------------------------------
-  bool calculate_block_hash(const block& b, crypto::hash& res)
+  bool calculate_block_hash(const block& b, crypto::hash& res, const blobdata *blob)
   {
+    blobdata bd;
+    if(!blob)
+    {
+      bd = block_to_blob(b);
+      blob = &bd;
+    }
+
     bool hash_result = get_object_hash(get_block_hashing_blob(b), res);
     return hash_result;
   }
@@ -1152,8 +1220,7 @@ namespace cryptonote
     bool ret = calculate_block_hash(b, res);
     if (!ret)
       return false;
-    b.hash = res;
-    b.set_hash_valid(true);
+    b.set_hash(res);
     return true;
   }
   //---------------------------------------------------------------
@@ -1184,7 +1251,7 @@ namespace cryptonote
     return res;
   }
   //---------------------------------------------------------------
-  bool parse_and_validate_block_from_blob(const blobdata& b_blob, block& b)
+  bool parse_and_validate_block_from_blob(const blobdata& b_blob, block& b, crypto::hash *block_hash)
   {
     std::stringstream ss;
     ss << b_blob;
@@ -1193,7 +1260,23 @@ namespace cryptonote
     CHECK_AND_ASSERT_MES(r, false, "Failed to parse block from blob");
     b.invalidate_hashes();
     b.miner_tx.invalidate_hashes();
+    if(block_hash)
+    {
+      calculate_block_hash(b, *block_hash, &b_blob);
+      ++block_hashes_calculated_count;
+      b.set_hash(*block_hash);
+    }
     return true;
+  }
+  //---------------------------------------------------------------
+  bool parse_and_validate_block_from_blob(const blobdata& b_blob, block& b)
+  {
+    return parse_and_validate_block_from_blob(b_blob, b, NULL);
+  }
+  //---------------------------------------------------------------
+  bool parse_and_validate_block_from_blob(const blobdata& b_blob, block& b, crypto::hash &block_hash)
+  {
+    return parse_and_validate_block_from_blob(b_blob, b, &block_hash);
   }
   //---------------------------------------------------------------
   blobdata block_to_blob(const block& b)

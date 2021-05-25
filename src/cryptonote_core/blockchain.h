@@ -232,7 +232,7 @@ namespace cryptonote
      *
      * @return false on erroneous blocks, else true
      */
-    bool prepare_handle_incoming_blocks(const std::vector<block_complete_entry>  &blocks);
+    bool prepare_handle_incoming_blocks(const std::vector<block_complete_entry> &blocks_entry, std::vector<block> &blocks);
 
     /**
      * @brief incoming blocks post-processing, cleanup, and disk sync
@@ -395,7 +395,7 @@ namespace cryptonote
      *
      * @return true if a block found in common, else false
      */
-    bool find_blockchain_supplement(const std::list<crypto::hash>& qblock_ids, std::vector<crypto::hash>& hashes, uint64_t& start_height, uint64_t& current_height, bool clip_pruned) const;
+    bool find_blockchain_supplement(const std::list<crypto::hash>& qblock_ids, std::vector<crypto::hash>& hashes, std::vector<uint64_t>* weights, uint64_t& start_height, uint64_t& current_height, bool clip_pruned) const;
 
     /**
      * @brief get recent block hashes for a foreign chain
@@ -409,7 +409,7 @@ namespace cryptonote
      *
      * @return true if a block found in common, else false
      */
-    bool find_blockchain_supplement(const std::list<crypto::hash>& qblock_ids, NOTIFY_RESPONSE_CHAIN_ENTRY::request& resp) const;
+    bool find_blockchain_supplement(const std::list<crypto::hash>& qblock_ids, bool clip_pruned, NOTIFY_RESPONSE_CHAIN_ENTRY::request& resp) const;
 
     /**
      * @brief find the most recent common point between ours and a foreign chain
@@ -442,7 +442,7 @@ namespace cryptonote
      *
      * @return true if a block found in common or req_start_block specified, else false
      */
-    bool find_blockchain_supplement(const uint64_t req_start_block, const std::list<crypto::hash>& qblock_ids, std::vector<std::pair<std::pair<cryptonote::blobdata, crypto::hash>, std::vector<std::pair<crypto::hash, cryptonote::blobdata> > > >& blocks, uint64_t& total_height, uint64_t& start_height, bool pruned, bool get_miner_tx_hash, size_t max_count) const;
+    bool find_blockchain_supplement(const uint64_t req_start_block, const std::list<crypto::hash>& qblock_ids, std::vector<std::pair<std::pair<cryptonote::blobdata, crypto::hash>, std::vector<std::pair<crypto::hash, cryptonote::blobdata> > > >& blocks, uint64_t& total_height, uint64_t& start_height, bool pruned, bool get_miner_tx_hash, size_t max_block_count, size_t max_tx_count) const;
 
     /**
      * @brief retrieves a set of blocks and their transactions, and possibly other transactions
@@ -683,8 +683,8 @@ namespace cryptonote
      *
      * @return false if an unexpected exception occurs, else true
      */
-    template<class t_ids_container, class t_tx_container, class t_missed_container>
-    bool get_transactions_blobs(const t_ids_container& txs_ids, t_tx_container& txs, t_missed_container& missed_txs, bool pruned = false) const;
+    bool get_transactions_blobs(const std::vector<crypto::hash>& txs_ids, std::vector<cryptonote::blobdata>& txs, std::vector<crypto::hash>& missed_txs, bool pruned = false) const;
+    bool get_transactions_blobs(const std::vector<crypto::hash>& txs_ids, std::vector<tx_blob_entry>& txs, std::vector<crypto::hash>& missed_txs, bool pruned = false) const;
     template<class t_ids_container, class t_tx_container, class t_missed_container>
     bool get_split_transactions_blobs(const t_ids_container& txs_ids, t_tx_container& txs, t_missed_container& missed_txs) const;
     template<class t_ids_container, class t_tx_container, class t_missed_container>
@@ -976,9 +976,8 @@ namespace cryptonote
     cryptonote::blobdata get_txpool_tx_blob(const crypto::hash& txid) const;
     bool for_all_txpool_txes(std::function<bool(const crypto::hash&, const txpool_tx_meta_t&, const cryptonote::blobdata*)>, bool include_blob = false, bool include_unrelayed_txes = true) const;
 
-    bool is_within_compiled_block_hash_area(uint64_t height) const;
     bool is_within_compiled_block_hash_area() const { return is_within_compiled_block_hash_area(m_db->height()); }
-    uint64_t prevalidate_block_hashes(uint64_t height, const std::vector<crypto::hash> &hashes);
+    uint64_t prevalidate_block_hashes(uint64_t height, const std::vector<crypto::hash> &hashes, const std::vector<uint64_t> &weights);
     uint32_t get_blockchain_pruning_seed() const { return m_db->get_blockchain_pruning_seed(); }
     bool prune_blockchain(uint32_t pruning_seed = 0);
     bool update_blockchain_pruning();
@@ -1002,6 +1001,10 @@ namespace cryptonote
      * @param nblocks number of blocks to be removed
      */
     void pop_blocks(uint64_t nblocks);
+
+    bool is_within_compiled_block_hash_area(uint64_t height) const;
+
+    bool has_block_weights(uint64_t height, uint64_t nblocks) const;
 
 #ifndef IN_UNIT_TESTS
   private:
@@ -1031,8 +1034,8 @@ namespace cryptonote
     std::unordered_map<crypto::hash, std::unordered_map<crypto::key_image, bool>> m_check_txin_table;
 
     // SHA-3 hashes for each block and for fast pow checking
-    std::vector<crypto::hash> m_blocks_hash_of_hashes;
-    std::vector<crypto::hash> m_blocks_hash_check;
+    std::vector<std::pair<crypto::hash, crypto::hash>> m_blocks_hash_of_hashes;
+    std::vector<std::pair<crypto::hash, uint64_t>> m_blocks_hash_check;
     std::vector<crypto::hash> m_blocks_txs_check;
 
     blockchain_db_sync_mode m_db_sync_mode;
@@ -1445,7 +1448,7 @@ namespace cryptonote
      * @return true
      */
     bool update_next_cumulative_weight_limit(uint64_t *long_term_effective_median_block_weight = NULL);
-    void return_tx_to_pool(std::vector<transaction> &txs);
+    void return_tx_to_pool(std::vector<std::pair<transaction, blobdata>> &txs);
 
     /**
      * @brief make sure a transaction isn't attempting a double-spend

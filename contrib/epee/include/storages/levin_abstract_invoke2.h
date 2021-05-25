@@ -32,8 +32,12 @@
 #include "span.h"
 #include "net/levin_base.h"
 
+#include <boost/bind/bind.hpp>
+
 #undef WALLSTREETBETS_DEFAULT_LOG_CATEGORY
 #define WALLSTREETBETS_DEFAULT_LOG_CATEGORY "net"
+
+using namespace boost::placeholders;
 
 namespace epee
 {
